@@ -1,0 +1,2 @@
+# inventorytech
+Repositorio inventario tech
