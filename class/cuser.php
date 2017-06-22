@@ -1,11 +1,11 @@
 <?php
 /* 
- * Entity class. Itech interface.
+ * User class. Itech interface.
  */
-class centity extends cparent
+class cuser extends cparent
 {
     // Constante de nombre de entidad
-    const cname = "entidad";  
+    const cname = "usuario";  
 
     public function newclass($arow)
     {

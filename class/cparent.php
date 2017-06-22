@@ -4,16 +4,6 @@
  */
 class cparent implements itech
 {
-    // Variables privadas
-    private $nentity;
-
-    // Asignar/obtener
-    private function setentity($ID) {
-        $this->nentity = $ID;
-    }
-    private function getentity() {
-        return $this->nentity;
-    }
     // Connectar al bucket configurado en el init
     public function connbucket()
     {
