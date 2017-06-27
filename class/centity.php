@@ -4,9 +4,9 @@
  */
 class centity extends cparent
 {
-    // Constante de nombre de entidad
-    const cname = "entidad";  
-
+    function __construct(){
+        $this->setName("entidad"); 
+    }
     public function newclass($arow)
     {
         // Recorre el array identificado y crea/actualiza

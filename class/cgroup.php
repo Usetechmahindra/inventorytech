@@ -4,9 +4,6 @@
  */
 class cgroup extends cparent
 {
-    // Constante de nombre de entidad
-    const cname = "grupo";  
-    
     public function newclass($arow)
     {
         // Recorre el array identificado y crea/actualiza
