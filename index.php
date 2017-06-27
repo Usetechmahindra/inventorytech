@@ -66,11 +66,11 @@ and open the template in the editor.
         echo '</tr>';
         echo '<tr>';
         echo '<td style="text-align: right"><p style="color: white;">Nombre de usuario</p></td>';
-        echo '<td><input type="text" name="user" id="user" value=""/></td>';
+        echo '<td><input type="text" name="user" id="user" required="required" value="'.$_POST['user'].'"/></td>';
         echo '</tr>';
         echo '<tr>';
         echo '<td style="text-align: right"><p style="color: white;">Password</p></td>';
-        echo '<td><input type="password" name="password" id="password" value=""/></td>';
+        echo '<td><input type="password" name="password" id="password" required="required" value="'.$_POST['password'].'"/></td>';
         echo '</tr>';
         echo '<tr>';
         echo '<td></td>';

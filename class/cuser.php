@@ -16,27 +16,21 @@ class cuser extends cparent
         
         $query = CouchbaseN1qlQuery::fromString($n1ql);
         // Gets the properties of the given objec
-        $arows = (array)$_SESSION['bucket']->query($query);
-        
-        if($arows['metrics']['resultCount'] == 0)
+        $result = $_SESSION['bucket']->query($query);
+
+        if($result->metrics['resultCount'] == 0)
         {
             $_SESSION['textsesion']="No existe ningún usuario con los datos introducidos.";
             return 0;
         }
-        $a = (array)$arows['rows'];
-        var_dump($a);
-
-
-        // Control de password en code64
-        //var_dump($arows);
-
-        
+        // Array de rows. Cada row tiene una propiedad por cada columna
+        $cdoc = $result->rows[0]->u;
+  
         $codecpass = base64_encode($_POST['password']);
 
-        
         //echo $codecpass;
         
-        if ($arows['results']['u']['password'] <> $codecpass)
+        if ($cdoc->password <> $codecpass)
         {
             $_SESSION['textsesion']="No existe ningún usuario con la contraseña introducida.";
             return 0; 
@@ -47,6 +41,9 @@ class cuser extends cparent
             //echo $_SESSION['textsesion'];
             return -1;
         }
+        $_SESSION['textsesion']="Bienvenido:".$cdoc->description;
+        $_SESSION['usuario']=$cdoc->username;
+        return 1;
     }
     
 //    public function insert($arow);
