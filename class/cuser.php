@@ -8,44 +8,68 @@ class cuser extends cparent
     {
         // Localizar doc tipo usuario
         try {
-        if($this->connbucket() == -1)
+        $bucket = $this->connbucket();
+        if($bucket == -1)
         {
             return -1;
         }
-        $n1ql="select * from techinventory u where u.entidad='usuario' and u.username='".$_POST['user']."'";
-        
+        $n1ql="select meta(u).id,* from techinventory u where u.entidad='usuario' and u.username='".$_POST['user']."' and bloginapp=TRUE";
+
         $query = CouchbaseN1qlQuery::fromString($n1ql);
         // Gets the properties of the given objec
-        $result = $_SESSION['bucket']->query($query);
+        $result = $bucket->query($query);
 
         if($result->metrics['resultCount'] == 0)
         {
             $_SESSION['textsesion']="No existe ningún usuario con los datos introducidos.";
             return 0;
         }
-        // Array de rows. Cada row tiene una propiedad por cada columna
-        $cdoc = $result->rows[0]->u;
-  
+        
         $codecpass = base64_encode($_POST['password']);
 
         //echo $codecpass;
         
-        if ($cdoc->password <> $codecpass)
+        if ($result->rows[0]->u->password <> $codecpass)
         {
             $_SESSION['textsesion']="No existe ningún usuario con la contraseña introducida.";
             return 0; 
         }
+        $_SESSION['textsesion']="Bienvenido:".$result->rows[0]->u->description;
+        $_SESSION['user']=$result->rows[0]->u->username;
+        $_SESSION['minsesion'] = 10;
+        $_SESSION['tlogon'] = time();
+        // Configuración tamaño sesion
+        $this->setformsize($result->rows[0]->u->appsize);
         } catch (Exception $e) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
             //echo $_SESSION['textsesion'];
             return -1;
         }
-        $_SESSION['textsesion']="Bienvenido:".$cdoc->description;
-        $_SESSION['usuario']=$cdoc->username;
         return 1;
     }
-    
+    // Dependiendo del tamaño configurado en el usuario configurar el contenedor principal
+    private function setformsize($csize)
+    {
+        switch ($csize) {
+            case 'S':
+                $_SESSION['cwidth'] = '800px';
+                $_SESSION['cheight'] = '600px';
+                break;
+            case 'M':
+                $_SESSION['cwidth'] = '1024px';
+                $_SESSION['cheight'] = '768px';
+                break;
+            case 'F':
+                $_SESSION['cwidth'] = '1600px';
+                $_SESSION['cheight'] = '900px';
+                break;
+            default:
+                $_SESSION['cwidth'] = '1600px';
+                $_SESSION['cheight'] = '900px';  
+            }
+        return 1;
+    }
 //    public function insert($arow);
 //    public function audit($arow);
 //    public function create($arow);

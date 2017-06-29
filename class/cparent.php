@@ -11,9 +11,7 @@ class cparent implements itech
     
     function __construct($nclase)
     {
-        session_start();
         $this->nclase = $nclase;
-        
     }
     // Leer init
     public function readcfg() {
@@ -32,10 +30,10 @@ class cparent implements itech
         try {
             // Connectar al bucket
             $cluster = new CouchbaseCluster($_SESSION['couchserver']);
-            $_SESSION['bucket'] = $cluster->openBucket($_SESSION['bucketName'],$_SESSION['passbucket']);
+            $bucket = $cluster->openBucket($_SESSION['bucketName'],$_SESSION['passbucket']);
             // Bien
             //echo "Bucket conectado:".var_dump($_SESSION['bucket']);
-            return 1;
+            return $bucket;
         } catch (Exception $e) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
@@ -72,6 +70,23 @@ class cparent implements itech
     }
     public function delete($arow)
     {
+    }
+    public function CheckLogin()
+    {
+        if(empty($_SESSION['user']))
+        {
+           $_SESSION['textsesion'] = "Sesión no iniciada.";
+            return -1;
+        }
+        // máximo tiempo de sesión.
+        if ($_SESSION['tlogon'] + $_SESSION['minsesion'] * 60 < time()) {
+             $_SESSION['textsesion'] = "Por razones de seguridad su sesión ha esperiado, vuelva a ingresar sus datos en el sistema.";
+             return -1;
+             // session timed out
+         }
+         // Añadimos tiempo a la sesion
+         $_SESSION['tlogon'] = time();
+        return 1;
     }
     // Log error generico
     public function error() {

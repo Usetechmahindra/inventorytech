@@ -4,9 +4,36 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+<?php
+session_start(); 
+// Control de parametros intro
+$vuser = addslashes(strip_tags($_GET["usuario"]));
+$vpass = addslashes(strip_tags($_GET["pass"]));
+
+if (!empty($vuser))
+{
+    $_POST['bvalida']=1;
+    $_POST['user'] =$vuser;
+    $_POST['password']=$vpass;
+}
+
+ // Declarar la usuario. Se necesitan importar la clase padre e hija
+require('class/cparent.php');
+require('class/cuser.php');
+$cuser = new cuser("cuser");
+$cuser->readcfg();
+if(isset($_POST['bvalida']))
+{
+    $ilogin = $cuser->login();
+    if ($ilogin > 0){
+        header("Location: f_techinventory.php");
+    }
+}
+?>
 <html>
     <head>
         <meta charset="UTF-8">
+        <title>Login TechInventory</title>
         <link rel="stylesheet" type="text/css" href="css/techinventory.css">
         <style>
         body{
@@ -39,21 +66,10 @@ and open the template in the editor.
         }
         .boton:hover {background-color: #3e8e41}
         </style>
-        <title>Login TechInventory</title>
     </head>
-    <?php
-    // Declarar la usuario. Se necesitan importar la clase padre e hija
-        require('class/cparent.php');
-        require('class/cuser.php');
-        $cuser = new cuser("cuser");
-        $cuser->readcfg();
-        if(isset($_POST['bvalida']))
-        {
-            $cuser->login();
-        }
-        
+    <body>
+    <?php 
     // El body dentro de php
-        echo '<body>';
         echo '<img src = "upload/images/Tech_Mahindra_logo.png" alt = "techmahindra-white"/>';
         echo '<div id="contlogin">';
         echo '<form name="flogin" method="post">';
@@ -79,8 +95,10 @@ and open the template in the editor.
         echo '</tr>';
         echo '</tbody>';
         echo '</table>';
+        // Control pulsado.
         echo $_SESSION['textsesion'];
         echo '</form>';
         echo '</div>';
     ?>
+    </body>
 </html>
