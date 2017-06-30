@@ -53,20 +53,20 @@ class cuser extends cparent
     {
         switch ($csize) {
             case 'S':
-                $_SESSION['cwidth'] = '800px';
-                $_SESSION['cheight'] = '600px';
+                $_SESSION['cwidth'] = '900';
+                $_SESSION['cheight'] = '550';
                 break;
             case 'M':
-                $_SESSION['cwidth'] = '1024px';
-                $_SESSION['cheight'] = '768px';
+                $_SESSION['cwidth'] = '1280';
+                $_SESSION['cheight'] = '570';
                 break;
             case 'F':
-                $_SESSION['cwidth'] = '1600px';
-                $_SESSION['cheight'] = '900px';
+                $_SESSION['cwidth'] = '1680';
+                $_SESSION['cheight'] = '900';
                 break;
             default:
-                $_SESSION['cwidth'] = '1600px';
-                $_SESSION['cheight'] = '900px';  
+                $_SESSION['cwidth'] = '1280';
+                $_SESSION['cheight'] = '570';  
             }
         return 1;
     }

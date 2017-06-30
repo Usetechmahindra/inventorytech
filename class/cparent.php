@@ -44,12 +44,13 @@ class cparent implements itech
     // Funciones de interfaz
     public function counter($ivalue=1,$vpref='c') {
         // Permite incrementar o disminuir por defecto 1
-        if($this->connbucket() == -1)
+        $bucket=$this->connbucket();
+        if($bucket == -1)
         {
             return -1;
         }
         //echo $this->nclase;
-        $icount = $_SESSION['bucket']->counter($vpref.'_'.$this->nclase, $ivalue, array('initial' => 1));
+        $icount = $bucket->counter($vpref.'_'.$this->nclase, $ivalue, array('initial' => 1));
         //$icount = $_SESSION['bucket']->counter($vpref.'_pruebas', $ivalue, array('initial' => 1));
         return $icount;
     }
@@ -89,12 +90,12 @@ class cparent implements itech
         return 1;
     }
     // Log error generico
-    public function error() {
+    public function error($bucket) {
         try {
             // Contador de error
             $icount = $this->counter(1,'e');
             // Grabar doc error
-            $result = $_SESSION['bucket']->upsert('e_'.$this->nclase.'_'.$icount, array(
+            $result = $bucket->upsert('e_'.$this->nclase.'_'.$icount, array(
             "docid" => $icount,
             "entidad" =>'e_'.$this->$cname,
             "fcreate" => date(),

@@ -26,7 +26,7 @@ if(isset($_POST['bvalida']))
 {
     $ilogin = $cuser->login();
     if ($ilogin > 0){
-        header("Location: f_techinventory.php");
+        header("Location: form/f_techinventory.php");
     }
 }
 ?>
@@ -53,18 +53,6 @@ if(isset($_POST['bvalida']))
         th, td {
             padding: 5px;
         }
-        .boton {
-            background-color: #758697;
-            border: 1px solid #e7e7e7;
-            color: white;
-            padding: 5px 31px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            margin: 4px 2px;
-            cursor: pointer;
-        }
-        .boton:hover {background-color: #3e8e41}
         </style>
     </head>
     <body>
