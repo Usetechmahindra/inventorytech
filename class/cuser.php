@@ -36,6 +36,7 @@ class cuser extends cparent
         }
         $_SESSION['textsesion']="Bienvenido:".$result->rows[0]->u->description;
         $_SESSION['user']=$result->rows[0]->u->username;
+        $_SESSION['fkentity']=$result->rows[0]->u->fkentity;
         $_SESSION['minsesion'] = 10;
         $_SESSION['tlogon'] = time();
         // Configuración tamaño sesion
@@ -69,6 +70,56 @@ class cuser extends cparent
                 $_SESSION['cheight'] = '570';  
             }
         return 1;
+    }
+    public function usermenudim()
+    {
+        try
+        {
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            // Conectado a couch. cargar las entidades >= a la fk del usuario (Sesión).
+            $result = $bucket->get($_SESSION['fkentity']);
+            // Coger el valor de doc ID
+            $n1ql="select meta(u).id,* from techinventory e where e.entidad='entidad' and docid>=".$result->value->docid." order by docid";
+            $query = CouchbaseN1qlQuery::fromString($n1ql);
+            $result = $bucket->query($query);
+
+            if($result->metrics['resultCount'] == 0)
+            {
+                $_SESSION['textsesion']="El usuario no tiene un menú dinámico disponible.";
+                return 0;
+            }
+            // Recorrer la filas he ir insertando menu
+            foreach($result->rows as $row) {
+                echo "<h3>".$row->e->entityname."</h3>";
+                echo "<div>";
+                // Control de formularios
+//                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";
+//                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
+                if($row->e->buser){
+                    echo "<p>Usuarios</p>";
+                }
+                if($row->e->bgroup){
+                    echo "<p>Grupos</p>";
+                }
+                if($row->e->bparameter){
+                    echo "<p>Parametros</p>";
+                }
+                if($row->e->bexcel){
+                    echo "<p>Importación Excel</p>";
+                }
+                echo "</div>";
+            }
+            
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
+            // Grabar auditoria de error.
+            $this->error($bucket);
+            return -1;
+        }
     }
 //    public function insert($arow);
 //    public function audit($arow);

@@ -24,21 +24,6 @@ session_start();
                 echo 'height:'.$sizemenu.';';
             ?> 
         }
-        th, td {
-            padding: 5px;
-        }
-        .boton {
-            background-color: #758697;
-            border: 1px solid #e7e7e7;
-            color: white;
-            padding: 5px 31px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            margin: 4px 2px;
-            cursor: pointer;
-        }
-        .boton:hover {background-color: #3e8e41}
         </style>
     </head>
     <body>
@@ -46,8 +31,10 @@ session_start();
     // El body dentro de php
         echo '<img src = "../upload/images/Tech_Mahindra_logo.png" style="opacity: 0.5; filter: alpha(opacity=50);" alt = "techmahindra-white"/>';
         echo '<div id="contenedor">';
-        echo '<div id="menuleft">';
-        echo '</div>';
+            // DIV de MENU
+            echo '<div id="menuleft">';
+                include 'f_menuleft.php';
+            echo '</div>';
         echo '</div>';
     ?>
     </body>

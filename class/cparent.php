@@ -3,7 +3,7 @@
  * Parent class. Itech interface.
  */
 
-include('./interfaces/itech.php');
+include('itech.php');
 
 class cparent implements itech
 {
