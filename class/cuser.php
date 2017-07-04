@@ -54,19 +54,19 @@ class cuser extends cparent
     {
         switch ($csize) {
             case 'S':
-                $_SESSION['cwidth'] = '900';
+                $_SESSION['cwidth'] = '870';
                 $_SESSION['cheight'] = '550';
                 break;
             case 'M':
-                $_SESSION['cwidth'] = '1280';
+                $_SESSION['cwidth'] = '1250';
                 $_SESSION['cheight'] = '570';
                 break;
             case 'F':
-                $_SESSION['cwidth'] = '1680';
+                $_SESSION['cwidth'] = '1650';
                 $_SESSION['cheight'] = '900';
                 break;
             default:
-                $_SESSION['cwidth'] = '1280';
+                $_SESSION['cwidth'] = '1250';
                 $_SESSION['cheight'] = '570';  
             }
         return 1;
@@ -100,16 +100,16 @@ class cuser extends cparent
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";
 //                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
                 if($row->e->buser){
-                    echo "<p>Usuarios</p>";
+                    echo '<p>Usuarios</p>';
                 }
                 if($row->e->bgroup){
-                    echo "<p>Grupos</p>";
+                    echo '<p>Grupos</p>';
                 }
                 if($row->e->bparameter){
-                    echo "<p>Parametros</p>";
+                    echo '<p>Parametros</p>';
                 }
                 if($row->e->bexcel){
-                    echo "<p>Importación Excel</p>";
+                    echo '<p>Importación Excel</p>';
                 }
                 echo "</div>";
             }

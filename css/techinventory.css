@@ -18,8 +18,8 @@ body {
   	font: 85% "Trebuchet MS", sans-serif;
 }
 div#contenedor{
-    margin: 10px;
     background-color:#e7e7e7;
+    margin: 10px;
     opacity: 0.95; 
     filter: alpha(opacity=95);
     box-shadow: 2px 5px 8px;
@@ -33,10 +33,20 @@ div#menuleft{
     margin: auto;
     margin-top : 0px;
     margin-left:0px;
-    width : 240px;
+    width : 20%;
     font-size :13px;
 /*    -moz-border-radius:20px;
     -webkit-border-radius:20px; */
+}
+div#dcuerpo{
+    float:right;
+    margin: auto;
+    width : 80%;
+/*    background-color: red;*/
+}
+
+div#bodytabs{
+    overflow: auto;  
 }
 
 .boton {
