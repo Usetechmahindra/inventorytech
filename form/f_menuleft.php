@@ -3,9 +3,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
   <script>
-  function showOpcion(str) {
-    if (str=="") {
-      document.getElementById("txtHint").innerHTML="";
+  function showOpcion(ventity) {
+    if (ventity=="") {
       return;
     } 
     if (window.XMLHttpRequest) {
@@ -19,7 +18,9 @@
         document.getElementById("dcuerpo").innerHTML=this.responseText;
       }
     }
-    xmlhttp.open("GET","f_getgroup.php?q="+str,true);
+    // Controlar el tipo de form pasado
+    
+    xmlhttp.open("GET","f_getgroup.php?q="+ventity,true);
     xmlhttp.send();
   }    
 //  Script de menú acorderon    
@@ -42,15 +43,6 @@ $cuser->usermenudim();
 //echo $_SESSION['fkentity'];
 ?>
 </div>
-<form>
-<select name="users" onchange="showOpcion(this.value)">
-<option value="">Selecionar click:</option>
-<option value="1">Formulario grupo</option>
-<option value="2">Formulario usuario</option>
-<option value="3">Formulario entidad</option>
-</select>
-</form>
-<br>
 
 </body>
 </html>

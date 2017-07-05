@@ -61,5 +61,17 @@ div#bodytabs{
     cursor: pointer;
 }
 .boton:hover {
-    background-color: #3e8e41
+    background-color: #3e8e41;
+}
+
+.mboton {
+    background-color: transparent;
+    border: 0px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+.mboton:hover {
+    color: #e31732;
 }

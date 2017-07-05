@@ -83,7 +83,7 @@ class cuser extends cparent
             // Conectado a couch. cargar las entidades >= a la fk del usuario (Sesión).
             $result = $bucket->get($_SESSION['fkentity']);
             // Coger el valor de doc ID
-            $n1ql="select meta(u).id,* from techinventory e where e.entidad='entidad' and docid>=".$result->value->docid." order by docid";
+            $n1ql="select meta(e).id,* from techinventory e where e.entidad='entidad' and docid>=".$result->value->docid." order by docid";
             $query = CouchbaseN1qlQuery::fromString($n1ql);
             $result = $bucket->query($query);
 
@@ -99,18 +99,24 @@ class cuser extends cparent
                 // Control de formularios
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";
 //                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
+                // Pintar siempre administración (detalles de entidad).
+                echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(this.value)" style="">Entidades</button>';
+                echo '<br>';
                 if($row->e->buser){
-                    echo '<p>Usuarios</p>';
-                    echo '<button value="1" onclick="showOpcion(this.value)">Usuarios</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(U,this.value)" style="">Usuarios</button>';
+                    echo '<br>';
                 }
                 if($row->e->bgroup){
-                    echo '<p>Grupos</p>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(G,this.value)" style="">Grupos</button>';
+                    echo '<br>';
                 }
                 if($row->e->bparameter){
-                    echo '<p>Parametros</p>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(P,this.value)" style="">Parametros</button>';
+                    echo '<br>';
                 }
                 if($row->e->bexcel){
-                    echo '<p>Importación Excel</p>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(I,this.value)" style="">Importación Excel</button>';
+                    echo '<br>';
                 }
                 echo "</div>";
             }
