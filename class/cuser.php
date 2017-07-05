@@ -101,6 +101,7 @@ class cuser extends cparent
 //                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
                 if($row->e->buser){
                     echo '<p>Usuarios</p>';
+                    echo '<button value="1" onclick="showOpcion(this.value)">Usuarios</button>';
                 }
                 if($row->e->bgroup){
                     echo '<p>Grupos</p>';
