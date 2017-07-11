@@ -18,7 +18,7 @@
                 text-align: left;
             }
             th {
-                background-color: <?php echo $_SESSION['color'] ?>;
+                background-color: <?php echo $_SESSION['color']; ?>;
                 color: white;
             }
             tr:hover{background-color:#f5f5f5}

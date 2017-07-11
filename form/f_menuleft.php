@@ -2,6 +2,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
+  <style>
+      .ui-state-active {
+          background: <?php echo $_SESSION['color']; ?>;
+      }
+  </style>
   <script>
   function showOpcion(vop,ventity) {
     if (vop=="" || ventity=="") {
