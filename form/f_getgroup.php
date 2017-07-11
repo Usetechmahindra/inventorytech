@@ -25,10 +25,10 @@ and open the template in the editor.
     ?>
     </head>
     <body>
-        <div divtitle>
-            <img src="../upload/images/i_group.png" alt="i_group" width="100" align="botton">
-            <p style="font-weight: bold">Administración de grupos </p>
+        <div id="divtitle">
+            <img src="../upload/images/i_group.png" alt="i_group" width="70" align="left">
         </div>
+        <p style="font-weight: bold">Administración de grupos </p>
         <div class="tabbody">
           <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
           <button class="tablinks" onclick="openTab(event, 'Parametros')">Parametros</button>
@@ -43,7 +43,6 @@ and open the template in the editor.
         </div>
         <div id="Parametros" class="tabbodycontent">
           <?php
-
           ?>
         </div>
         <div id="Edición" class="tabbodycontent">

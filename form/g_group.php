@@ -1,6 +1,5 @@
 <html>
     <head>
-        <meta charset="UTF-8">
         <style>
             div#dgrid {
                 background-color: white;
@@ -9,15 +8,17 @@
                 width: 100%;
             }
             table#tgrid {
+                width: 100%;
+                font-size: 12px;
                 border-collapse: collapse;
-                tab-size: 100%;
             }
 
             th, td {
+                padding: 4px;
                 text-align: left;
             }
             th {
-                background-color: #3A72A5;
+                background-color: <?php echo $_SESSION['color'] ?>;
                 color: white;
             }
             tr:hover{background-color:#f5f5f5}
@@ -34,8 +35,8 @@
     </head>
     <body>
         <form name="fgroup" method="post">
-        <div id="dgrid" style="overflow-x:auto;" >
-        <table id="tgrid" >
+        <div id="dgrid">
+        <table id="tgrid">
         <thead>
            <tr>
              <?php

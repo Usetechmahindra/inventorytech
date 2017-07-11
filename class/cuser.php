@@ -13,7 +13,11 @@ class cuser extends cparent
         {
             return -1;
         }
-        $n1ql="select meta(u).id,* from techinventory u where u.entidad='usuario' and u.username='".$_POST['user']."' and bloginapp=TRUE";
+        
+        $n1ql="select meta(u).id,* from techinventory u inner join techinventory e on keys u.fkentity
+            where u.entidad='usuario' 
+            and u.username='".$_POST['user']."' 
+            and u.bloginapp=TRUE";
 
         $query = CouchbaseN1qlQuery::fromString($n1ql);
         // Gets the properties of the given objec
@@ -37,6 +41,7 @@ class cuser extends cparent
         $_SESSION['textsesion']="Bienvenido:".$result->rows[0]->u->description;
         $_SESSION['user']=$result->rows[0]->u->username;
         $_SESSION['fkentity']=$result->rows[0]->u->fkentity;
+        $_SESSION['color'] = $result->rows[0]->e->color;
         $_SESSION['minsesion'] = 10;
         $_SESSION['tlogon'] = time();
         // Configuración tamaño sesion
