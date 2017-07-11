@@ -9,15 +9,6 @@ and open the template in the editor.
         <meta charset="UTF-8">
         <title></title>
         <link rel="stylesheet" type="text/css" href="../css/techtabs.css">
-        <style>
-            div.divtitle {
-            <?php
-//                echo "color : #636161;";
-//                echo "background-color : #e31732;";
-//                  echo addslashes(strip_tags($_GET["gentity"]));
-            ?>
-            }
-        </style>
     <?php
         session_start(); 
         require('../class/cparent.php');

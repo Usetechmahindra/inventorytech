@@ -1,27 +1,10 @@
 <html>
     <head>
         <style>
-            div#dgrid {
-                background-color: white;
-                overflow: hidden;
-                overflow-y: scroll;
-                width: 100%;
-            }
-            table#tgrid {
-                width: 100%;
-                font-size: 12px;
-                border-collapse: collapse;
-            }
-
-            th, td {
-                padding: 4px;
-                text-align: left;
-            }
             th {
-                background-color: <?php echo $_SESSION['color']; ?>;
-                color: white;
+              background-color: <?php echo $_SESSION['color']; ?>;
+              color: white;
             }
-            tr:hover{background-color:#f5f5f5}
         </style>
         <!Funciones post>
         <?php
