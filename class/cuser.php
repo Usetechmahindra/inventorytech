@@ -55,19 +55,19 @@ class cuser extends cparent
         switch ($csize) {
             case 'S':
                 $_SESSION['cwidth'] = '870';
-                $_SESSION['cheight'] = '550';
+                $_SESSION['cheight'] = '500';
                 break;
             case 'M':
                 $_SESSION['cwidth'] = '1250';
-                $_SESSION['cheight'] = '570';
+                $_SESSION['cheight'] = '550';
                 break;
             case 'F':
                 $_SESSION['cwidth'] = '1650';
-                $_SESSION['cheight'] = '900';
+                $_SESSION['cheight'] = '850';
                 break;
             default:
                 $_SESSION['cwidth'] = '1250';
-                $_SESSION['cheight'] = '570';  
+                $_SESSION['cheight'] = '550';  
             }
         return 1;
     }
@@ -99,23 +99,23 @@ class cuser extends cparent
                 // Control de formularios
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";
 //                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
-                // Pintar siempre administración (detalles de entidad).
-                echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(this.value)" style="">Entidades</button>';
+                // Pintar siempre administración (detalles de entidad).  onclick="return a1_onclick('a1')"
+                echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'E\' , this.value)" style="">Entidades</button>';
                 echo '<br>';
                 if($row->e->buser){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(U,this.value)" style="">Usuarios</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'U\' , this.value)" style="">Usuarios</button>';
                     echo '<br>';
                 }
                 if($row->e->bgroup){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(G,this.value)" style="">Grupos</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'G\' ,this.value)" style="">Grupos</button>';
                     echo '<br>';
                 }
                 if($row->e->bparameter){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(P,this.value)" style="">Parametros</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'P\' , this.value)" style="">Parametros</button>';
                     echo '<br>';
                 }
                 if($row->e->bexcel){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(I,this.value)" style="">Importación Excel</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'I\' , this.value)" style="">Importación Excel</button>';
                     echo '<br>';
                 }
                 echo "</div>";

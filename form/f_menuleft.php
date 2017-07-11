@@ -3,8 +3,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
   <script>
-  function showOpcion(ventity) {
-    if (ventity=="") {
+  function showOpcion(vop,ventity) {
+    if (vop=="" || ventity=="") {
       return;
     } 
     if (window.XMLHttpRequest) {
@@ -19,8 +19,27 @@
       }
     }
     // Controlar el tipo de form pasado
-    
-    xmlhttp.open("GET","f_getgroup.php?q="+ventity,true);
+    switch (vop) {
+        case 'E':
+            xmlhttp.open("GET","f_getentity.php?gentity="+ventity,true);
+            break; 
+        case 'U':
+            xmlhttp.open("GET","f_getuser.php?gentity="+ventity,true);
+            break; 
+        case 'G':
+            xmlhttp.open("GET","f_getgroup.php?gentity="+ventity,true);
+            break;
+         case 'P':
+            xmlhttp.open("GET","f_getparameter.php?gentity="+ventity,true);
+            break;
+         case 'I':
+            xmlhttp.open("GET","f_getimport.php?gentity="+ventity,true); 
+            break; 
+        default: 
+            // E
+            xmlhttp.open("GET","f_getentity.php?gentity="+ventity,true);
+    }
+    // Ejecutar tabs
     xmlhttp.send();
   }    
 //  Script de menú acorderon    
@@ -43,6 +62,5 @@ $cuser->usermenudim();
 //echo $_SESSION['fkentity'];
 ?>
 </div>
-
 </body>
 </html>

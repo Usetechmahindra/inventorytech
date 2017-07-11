@@ -20,33 +20,38 @@ body {
 div#contenedor{
     background-color:#e7e7e7;
     margin: 10px;
-    opacity: 0.95; 
-    filter: alpha(opacity=95);
+    height: 84%;
     box-shadow: 2px 5px 8px;
     border-collapse: separate;
+    opacity: 0.97; 
+    filter: alpha(opacity=97);
 }
+
+div#headbody{
+    margin: 10px;
+}
+
+div#detbody{
+    width: 100%;
+    margin: auto;
+}
+
 div#menuleft{
-    box-shadow: 0px 5px 8px 0px #333333;
+    box-shadow: 0px 0px 4px;
     border-collapse: separate;
     float:left;
     /*background-color: green;*/ 
     margin: auto;
-    margin-top : 0px;
-    margin-left:0px;
     width : 20%;
     font-size :13px;
-/*    -moz-border-radius:20px;
-    -webkit-border-radius:20px; */
 }
 div#dcuerpo{
+    background-color:#e7e7e7;
+    margin: 5px;
     float:right;
     margin: auto;
     width : 80%;
 /*    background-color: red;*/
-}
-
-div#bodytabs{
-    overflow: auto;  
 }
 
 .boton {
