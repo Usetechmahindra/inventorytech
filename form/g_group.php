@@ -9,8 +9,7 @@
         <!Funciones post>
         <?php
         // Crear clase de para llamada a funciones genericas
-        // Control post
-        $gentity = addslashes(strip_tags($_GET["gentity"]));
+        // Control POST
         $cgroup = new cgroup("cgroup");
         // Retornar array de grupos de entidad
         $rows = $cgroup->getgroupentity($gentity);
@@ -45,16 +44,21 @@
     //          while( $row = mysql_fetch_assoc( $result ) ){
                 // Recorrer todas las filas y cada columna
                 foreach($rows as $cfila){
-                    echo "<tr>";
+                    //echo '<tr onclick="openTab(event, \'Edición\')">';
                     $afila = get_object_vars($cfila);
+                    echo '<tr onclick="Fsubmit(\'fgroup\', \''.$afila["id"].'\')">';
                     echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
                     // Poner el orden establecido
                     echo "<td>".$afila["entityname"]."</td>";
                     echo "<td>".$afila["groupname"]."</td>";
                     echo "<td>".$afila["description"]."</td>";
                     echo "<td>".$afila["emailgroup"]."</td>";
-                    echo "<td>".$afila["fcreate"]."</td>";
-                    echo "<td>".$afila["fmodif"]."</td>";
+                    echo "<td>".date("d/m/Y",strtotime($afila["fcreate"]))."</td>";
+                    if(!empty($afila["fmodif"])) {
+                        echo "<td>".date("d/m/Y",strtotime($afila["fmodif"]))."</td>";
+                    }else {
+                        echo "<td></td>";
+                    }
 //                    foreach($afila as $clave =>$valor){
 //                        echo "<td>".$valor."</td>";
 //                    }

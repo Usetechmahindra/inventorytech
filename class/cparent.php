@@ -72,6 +72,21 @@ class cparent implements itech
     public function delete($arow)
     {
     }
+    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired="",$bisabled="enabled")
+    {
+        // A la función se le pasan los parametros para que pinte en bloque el input con el label y su tipo
+        try {
+            echo '<div class="labelinput">';
+                echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
+                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$brequired.' '.$bisabled.' value="'.$svalue.'" />';
+                // Si es tipo fecha poner su clase formato jquery
+            echo '</div>  ';
+            $_SESSION['textsesion']="";
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error crear input: '.$e->getMessage();
+            return -1;
+        }
+    }
     public function CheckLogin()
     {
         if(empty($_SESSION['user']))

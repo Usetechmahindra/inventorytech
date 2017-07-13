@@ -44,36 +44,12 @@ class cuser extends cparent
         $_SESSION['color'] = $result->rows[0]->e->color;
         $_SESSION['minsesion'] = 10;
         $_SESSION['tlogon'] = time();
-        // Configuración tamaño sesion
-        $this->setformsize($result->rows[0]->u->appsize);
         } catch (Exception $e) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
             //echo $_SESSION['textsesion'];
             return -1;
         }
-        return 1;
-    }
-    // Dependiendo del tamaño configurado en el usuario configurar el contenedor principal
-    private function setformsize($csize)
-    {
-        switch ($csize) {
-            case 'S':
-                $_SESSION['cwidth'] = '870';
-                $_SESSION['cheight'] = '500';
-                break;
-            case 'M':
-                $_SESSION['cwidth'] = '1250';
-                $_SESSION['cheight'] = '550';
-                break;
-            case 'F':
-                $_SESSION['cwidth'] = '1650';
-                $_SESSION['cheight'] = '850';
-                break;
-            default:
-                $_SESSION['cwidth'] = '1250';
-                $_SESSION['cheight'] = '550';  
-            }
         return 1;
     }
     public function usermenudim()
@@ -105,22 +81,22 @@ class cuser extends cparent
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";
 //                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
                 // Pintar siempre administración (detalles de entidad).  onclick="return a1_onclick('a1')"
-                echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'E\' , this.value)" style="">Entidades</button>';
+                echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getentity\')" style="">Entidades</button>';
                 echo '<br>';
                 if($row->e->buser){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'U\' , this.value)" style="">Usuarios</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getuser\')" style="">Usuarios</button>';
                     echo '<br>';
                 }
                 if($row->e->bgroup){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'G\' ,this.value)" style="">Grupos</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getgroup\')" style="">Grupos</button>';
                     echo '<br>';
                 }
                 if($row->e->bparameter){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'P\' , this.value)" style="">Parametros</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getparameter\')" style="">Parametros</button>';
                     echo '<br>';
                 }
                 if($row->e->bexcel){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="showOpcion(\'I\' , this.value)" style="">Importación Excel</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getimport\')" style="">Importación Excel</button>';
                     echo '<br>';
                 }
                 echo "</div>";

@@ -1,5 +1,9 @@
 <?php
 session_start();
+require('../class/cparent.php');
+require('../class/cgroup.php');
+require('../class/cuser.php');
+// Función del parametro pasado por el get
 ?>
 <html>
     <head>
@@ -26,10 +30,38 @@ session_start();
                 for (i = 0; i < tablinks.length; i++) {
                     tablinks[i].className = tablinks[i].className.replace(" active", "");
                 }
-
+                
                 // Show the current tab, and add an "active" class to the button that opened the tab
                 document.getElementById(tabName).style.display = "block";
                 evt.currentTarget.className += " active";
+                // Guardar tab activa
+                document.cookie = "ctabname="+tabName;
+            }
+            // Control de active menu
+            function openbody(pentity,pform) {
+                document.cookie = "cactivemenu="+$("#dinmenu").accordion( "option", "active" );
+                document.cookie = "centity="+pentity;
+                document.cookie = "cform="+pform;
+                window.location="../form/f_techinventory.php";
+    //            var activemenu = getCookie("cactivemenu");
+    //            alert("Active index: " + activemenu);
+                //window.location="http://www.cristalab.com";
+
+            }
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for(var i = 0; i <ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
             }
         </script>
         <style>
@@ -41,7 +73,10 @@ session_start();
         </style>
     </head>
     <body>
-    <?php 
+    <?php
+    // Control cookies
+    $gentity = $_COOKIE['centity'];
+    $gform = $_COOKIE['cform'].'.php';
     // El body dentro de php
         echo '<div id="headbody">';
             echo '<img src = "../upload/images/i_inventario.png" width = "75" alt = "i_inventario"/>';
@@ -55,6 +90,8 @@ session_start();
                 echo '</div>';
                 // Div cuerpo
                 echo '<div id="dcuerpo">';
+                    //include $gform;
+                    include $gform;
                 echo '</div>';
             echo '</div>';
         echo '</div>';
