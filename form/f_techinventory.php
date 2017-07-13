@@ -3,6 +3,7 @@ session_start();
 require('../class/cparent.php');
 require('../class/cgroup.php');
 require('../class/cuser.php');
+
 // Función del parametro pasado por el get
 ?>
 <html>
@@ -48,6 +49,7 @@ require('../class/cuser.php');
                 //window.location="http://www.cristalab.com";
 
             }
+            // Función para obtener una cookie determinada
             function getCookie(cname) {
                 var name = cname + "=";
                 var decodedCookie = decodeURIComponent(document.cookie);

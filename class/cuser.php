@@ -8,42 +8,34 @@ class cuser extends cparent
     {
         // Localizar doc tipo usuario
         try {
-        $bucket = $this->connbucket();
-        if($bucket == -1)
-        {
-            return -1;
-        }
-        
-        $n1ql="select meta(u).id,* from techinventory u inner join techinventory e on keys u.fkentity
-            where u.entidad='usuario' 
-            and u.username='".$_POST['user']."' 
-            and u.bloginapp=TRUE";
+            $n1ql="select meta(u).id,* from techinventory u inner join techinventory e on keys u.fkentity
+                where u.entidad='usuario' 
+                and u.username='".$_POST['user']."' 
+                and u.bloginapp=TRUE";
+            // Gets the properties of the given objec
+            $result = $this->select($n1ql);
 
-        $query = CouchbaseN1qlQuery::fromString($n1ql);
-        // Gets the properties of the given objec
-        $result = $bucket->query($query);
+            if(count($result) == 0 || $result == -1)
+            {
+                $_SESSION['textsesion']="No existe ningún usuario con los datos introducidos.";
+                return 0;
+            }
 
-        if($result->metrics['resultCount'] == 0)
-        {
-            $_SESSION['textsesion']="No existe ningún usuario con los datos introducidos.";
-            return 0;
-        }
-        
-        $codecpass = base64_encode($_POST['password']);
+            $codecpass = base64_encode($_POST['password']);
 
-        //echo $codecpass;
+            //echo $codecpass;
         
-        if ($result->rows[0]->u->password <> $codecpass)
-        {
-            $_SESSION['textsesion']="No existe ningún usuario con la contraseña introducida.";
-            return 0; 
-        }
-        $_SESSION['textsesion']="Bienvenido:".$result->rows[0]->u->description;
-        $_SESSION['user']=$result->rows[0]->u->username;
-        $_SESSION['fkentity']=$result->rows[0]->u->fkentity;
-        $_SESSION['color'] = $result->rows[0]->e->color;
-        $_SESSION['minsesion'] = 10;
-        $_SESSION['tlogon'] = time();
+            if ($result[0]->u->password <> $codecpass)
+            {
+                $_SESSION['textsesion']="No existe ningún usuario con la contraseña introducida.";
+                return 0; 
+            }
+            $_SESSION['textsesion']="Bienvenido:".$result[0]->u->description;
+            $_SESSION['user']=$result[0]->u->username;
+            $_SESSION['fkentity']=$result[0]->u->fkentity;
+            $_SESSION['color'] = $result[0]->e->color;
+            $_SESSION['minsesion'] = 10;
+            $_SESSION['tlogon'] = time();
         } catch (Exception $e) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
@@ -65,16 +57,16 @@ class cuser extends cparent
             $result = $bucket->get($_SESSION['fkentity']);
             // Coger el valor de doc ID
             $n1ql="select meta(e).id,* from techinventory e where e.entidad='entidad' and docid>=".$result->value->docid." order by docid";
-            $query = CouchbaseN1qlQuery::fromString($n1ql);
-            $result = $bucket->query($query);
+            
+            $result = $this->select($n1ql);
 
-            if($result->metrics['resultCount'] == 0)
+            if(count($result) == 0)
             {
                 $_SESSION['textsesion']="El usuario no tiene un menú dinámico disponible.";
                 return 0;
             }
             // Recorrer la filas he ir insertando menu
-            foreach($result->rows as $row) {
+            foreach($result as $row) {
                 echo "<h3>".$row->e->entityname."</h3>";
                 echo "<div>";
                 // Control de formularios

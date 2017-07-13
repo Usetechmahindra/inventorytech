@@ -57,6 +57,28 @@ class cparent implements itech
     public function newclass($arow)
     {
     }
+    public function select($n1ql)
+    {
+        try {
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            $query = CouchbaseN1qlQuery::fromString($n1ql);
+            // Gets the properties of the given objec
+            $result = $bucket->query($query);
+
+            if($result->metrics['resultCount'] == 0)
+            {
+                $_SESSION['textsesion']="No existen filas.";
+            }
+            return $result->rows;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
+            return -1;
+        }
+    }
     public function insert($arow)
     {
     }
@@ -72,21 +94,46 @@ class cparent implements itech
     public function delete($arow)
     {
     }
-    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired="",$bisabled="enabled")
+    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$brequired="",$bisabled="enabled")
     {
         // A la función se le pasan los parametros para que pinte en bloque el input con el label y su tipo
         try {
             echo '<div class="labelinput">';
                 echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
+                // Dependiendo del tipo de caja.
+                $this->configlavel($svalue,$stype,$isize);
                 echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$brequired.' '.$bisabled.' value="'.$svalue.'" />';
                 // Si es tipo fecha poner su clase formato jquery
+                // Si hay que pintar la busqueda
             echo '</div>  ';
+            if($bfind)
+            {
+                echo ' <input type="submit" class="bfind" name="f'.$skey.'" id="f'.$skey.'" value=""/> ';
+            }
             $_SESSION['textsesion']="";
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error crear input: '.$e->getMessage();
             return -1;
         }
     }
+    
+    private function configlavel(&$svalue,&$stype,&$isize)
+    {
+        // Permite recotar los parametros
+        switch ($stype) {
+            case 'date':
+                $stype = "text";
+                if ($svalue <> null)
+                {
+                    $isize = 15;
+                    $svalue = date('d/m/Y h:m:s',strtotime($svalue));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
     public function CheckLogin()
     {
         if(empty($_SESSION['user']))

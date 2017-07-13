@@ -80,3 +80,20 @@ div#dcuerpo{
 .mboton:hover {
     color: #e31732;
 }
+
+.bfind {
+    background-color: transparent;
+    background-image: url("../upload/images/i_find.png");
+    background-size: 70%;
+    background-repeat:no-repeat;
+    width: 20px;
+    height: 20px;
+    border: 1px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+.bfind:hover {
+    color: #e31732;
+}
