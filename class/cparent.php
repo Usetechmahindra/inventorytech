@@ -52,10 +52,20 @@ class cparent implements itech
         //echo $this->nclase;
         $icount = $bucket->counter($vpref.'_'.$this->nclase, $ivalue, array('initial' => 1));
         //$icount = $_SESSION['bucket']->counter($vpref.'_pruebas', $ivalue, array('initial' => 1));
-        return $icount;
+        return $icount->value;
     }
     public function newclass($arow)
     {
+        // En array añadir el contador
+        try { 
+            $arow['docid'] = $this->counter();
+            $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
+            $arow['fcreate']=date("d/m/Y H:m:s");
+            return $arow;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
+            return -1;
+        }
     }
     public function select($n1ql)
     {
@@ -87,9 +97,37 @@ class cparent implements itech
     }
     public function create($arow)
     {
+        // La función limpia el formulario $arow en el post resetear todo el array
+        try {
+            foreach ($arow as &$valor) {
+                $valor = NULL;
+            }
+            return $arow;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error al inicializar datos '.$e->getMessage();
+            // Si no se ha podido conectar al bucket, no se puede grabar el error.
+            //echo $_SESSION['textsesion'];
+            return -1;
+        }
     }
     public function update($arow)
     {
+        try {
+            // Controlar si es nuevo, llamar a la función create
+            if(empty($arow['id']))
+            {
+                $arow = $this->newclass($arow);
+            }else{
+                $arow['fmodif']=date("d/m/Y H:m:s");    
+            }
+            return $arrow;
+        } catch (Exception $ex) {
+            // Llamar a función de error..........................................................................
+            $_SESSION['textsesion']='Error al inicializar datos '.$e->getMessage();
+            // Si no se ha podido conectar al bucket, no se puede grabar el error.
+            //echo $_SESSION['textsesion'];
+            return -1; 
+        }
     }
     public function delete($arow)
     {
@@ -126,7 +164,7 @@ class cparent implements itech
                 if ($svalue <> null)
                 {
                     $isize = 15;
-                    $svalue = date('d/m/Y h:m:s',strtotime($svalue));
+                    $svalue = date('d/m/Y H:m:s',strtotime($svalue));
                 }
                 break;
             default:

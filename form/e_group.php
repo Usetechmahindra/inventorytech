@@ -10,9 +10,19 @@ and open the template in the editor.
     
     // Control de post para pintar valores
     
-    // El evento de búsqueda siempre es el último
+    // El evento de búsqueda
     if (isset($_POST['fgroupname'])) {
         $rgrupo=$cgroup->getgroupbyname($gentity, $_POST['groupname']); 
+    }
+    // Nuevo. Resetea el form.
+    if (isset($_POST['bnewg'])) {
+        $apost = $_POST;
+        $rgrupo = $cgroup->create($apost); 
+    }
+    // Grabar. (Crea/actualiza)
+    if (isset($_POST['bsaveg'])) {
+        $apost = $_POST;
+        $rgrupo = $cgroup->update($apost); 
     }
 ?>
 <form name="fgroupe" method="post">
@@ -20,6 +30,8 @@ and open the template in the editor.
         // Parametro oculto
         echo '<div id="dgride">';
         echo '<input type="hidden" name="id" value="'.$rgrupo[0]->id.'">';
+        // Forzar a la entidad que esta en la variable del menú elegido
+        echo '<input type="hidden" name="fkentity" value="'.$gentity.'">';
             $cgroup->labelinput('groupname',$rgrupo[0]->groupname,'Nombre grupo','text',20,true,"required");
             $cgroup->labelinput('description',$rgrupo[0]->description,'Descripción grupo','text',60,false);
             $cgroup->labelinput('emailgroup',$rgrupo[0]->emailgroup,'Email Grupo','email',30,false);
@@ -29,7 +41,8 @@ and open the template in the editor.
         echo '</div>';
         // Botonera
         echo '<hr style="color:'.$_SESSION['color'].';" />';
-        echo '<input type="submit" class="boton" name="bvalidag" id="bvalidag" value="Aceptar"/>';
+        echo ' <input type="submit" class="boton" name="bsaveg" id="bsaveg" value="Grabar"/>';
+        echo ' <input type="submit" class="boton" name="bnewg" id="bnewg" value="Nuevo"/>';
      ?>
     
  </form>

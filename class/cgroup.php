@@ -29,7 +29,7 @@ class cgroup extends cparent
              $_SESSION['textsesion'] = "";
              $n1ql="select meta(g).id,e.entityname,g.*
                     from techinventory g inner join techinventory e
-                    on keys g.fkentity
+                    on keys g.fkentity 
                     where g.fkentity='".$pentity."'
                     and g.entidad='grupo'
                     and g.groupname like '%$pgroupname%'";
@@ -43,7 +43,7 @@ class cgroup extends cparent
     }
 //    public function insert($arow);
 //    public function audit($arow);
-//    public function create($arow);
+
 //    public function update($arow);
 //    public function delete($arow);
 }
