@@ -12,6 +12,7 @@ class cparent implements itech
     function __construct($nclase)
     {
         $this->nclase = $nclase;
+        date_default_timezone_set($_SESSION['timezone']); 
     }
     // Leer init
     public function readcfg() {
@@ -57,10 +58,11 @@ class cparent implements itech
     public function newclass($arow)
     {
         // En array añadir el contador
-        try { 
+        try {
+            $arow['entidad'] = $this->nclase;
             $arow['docid'] = $this->counter();
             $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
-            $arow['fcreate']=date("d/m/Y H:m:s");
+            $arow['fcreate']=date('d/m/Y H:i:s');
             return $arow;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
@@ -118,9 +120,19 @@ class cparent implements itech
             {
                 $arow = $this->newclass($arow);
             }else{
-                $arow['fmodif']=date("d/m/Y H:m:s");    
+                $arow['fmodif']=date('d/m/Y H:i:s');    
             }
-            return $arrow;
+            // Lanzar el UPSERT en BD
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            $result = $bucket->upsert($arow['id'],$this->avalues($arow));
+            // Control resultados
+            
+            // Correcto
+            return $arow;
         } catch (Exception $ex) {
             // Llamar a función de error..........................................................................
             $_SESSION['textsesion']='Error al inicializar datos '.$e->getMessage();
@@ -132,7 +144,7 @@ class cparent implements itech
     public function delete($arow)
     {
     }
-    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$brequired="",$bisabled="enabled")
+    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$brequired="",$readonly="")
     {
         // A la función se le pasan los parametros para que pinte en bloque el input con el label y su tipo
         try {
@@ -140,7 +152,7 @@ class cparent implements itech
                 echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
                 // Dependiendo del tipo de caja.
                 $this->configlavel($svalue,$stype,$isize);
-                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$brequired.' '.$bisabled.' value="'.$svalue.'" />';
+                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$brequired.' '.$readonly.' value="'.$svalue.'" />';
                 // Si es tipo fecha poner su clase formato jquery
                 // Si hay que pintar la busqueda
             echo '</div>  ';
@@ -148,7 +160,6 @@ class cparent implements itech
             {
                 echo ' <input type="submit" class="bfind" name="f'.$skey.'" id="f'.$skey.'" value=""/> ';
             }
-            $_SESSION['textsesion']="";
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error crear input: '.$e->getMessage();
             return -1;
@@ -164,7 +175,6 @@ class cparent implements itech
                 if ($svalue <> null)
                 {
                     $isize = 15;
-                    $svalue = date('d/m/Y H:m:s',strtotime($svalue));
                 }
                 break;
             default:
@@ -189,6 +199,19 @@ class cparent implements itech
          $_SESSION['tlogon'] = time();
         return 1;
     }
+    ////////////////////////////////////////////////////////////////////////////
+    // Funciones auxiliares
+    private function avalues($arow)
+    {
+        // Retorna el el id del arow
+        $avalues = $arow;
+        unset($avalues['id']);
+        // botones
+        unset($avalues['bsave']);
+        return $avalues;
+    }
+    
+    
     // Log error generico
     public function error($bucket) {
         try {
@@ -198,7 +221,7 @@ class cparent implements itech
             $result = $bucket->upsert('e_'.$this->nclase.'_'.$icount, array(
             "docid" => $icount,
             "entidad" =>'e_'.$this->$cname,
-            "fcreate" => date(),
+            "fcreate" => date('d/m/Y H:m:s'),
             "error" => $_SESSION['textsesion']));
             // Bien
             return 1;

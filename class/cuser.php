@@ -35,6 +35,7 @@ class cuser extends cparent
             $_SESSION['fkentity']=$result[0]->u->fkentity;
             $_SESSION['color'] = $result[0]->e->color;
             $_SESSION['minsesion'] = 10;
+            $_SESSION['timezone'] = $result[0]->e->timezone;
             $_SESSION['tlogon'] = time();
         } catch (Exception $e) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();

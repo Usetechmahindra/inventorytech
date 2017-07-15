@@ -32,7 +32,7 @@ class cgroup extends cparent
                     on keys g.fkentity 
                     where g.fkentity='".$pentity."'
                     and g.entidad='grupo'
-                    and g.groupname like '%$pgroupname%'";
+                    and g.groupname like '%".$pgroupname."%'";
              return $this->select($n1ql);
         } catch (Exception $ex) {
              $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();

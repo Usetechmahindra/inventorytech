@@ -10,7 +10,7 @@
         <?php
         // Crear clase de para llamada a funciones genericas
         // Control POST
-        $cgroup = new cgroup("cgroup");
+        $cgroup = new cgroup("grupo");
         // Retornar array de grupos de entidad
         $rows = $cgroup->getgroupentity($gentity);
         ?>
@@ -53,9 +53,9 @@
                     echo "<td>".$afila["groupname"]."</td>";
                     echo "<td>".$afila["description"]."</td>";
                     echo "<td>".$afila["emailgroup"]."</td>";
-                    echo "<td>".date("d/m/Y",strtotime($afila["fcreate"]))."</td>";
+                    echo "<td>".$afila["fcreate"]."</td>";
                     if(!empty($afila["fmodif"])) {
-                        echo "<td>".date("d/m/Y",strtotime($afila["fmodif"]))."</td>";
+                        echo "<td>".$afila["fmodif"]."</td>";
                     }else {
                         echo "<td></td>";
                     }
