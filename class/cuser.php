@@ -10,7 +10,7 @@ class cuser extends cparent
         try {
             $n1ql="select meta(u).id,* from techinventory u inner join techinventory e on keys u.fkentity
                 where u.entidad='usuario' 
-                and u.username='".$_POST['user']."' 
+                and u.name='".$_POST['user']."' 
                 and u.bloginapp=TRUE";
             // Gets the properties of the given objec
             $result = $this->select($n1ql);
@@ -31,7 +31,7 @@ class cuser extends cparent
                 return 0; 
             }
             $_SESSION['textsesion']="Bienvenido:".$result[0]->u->description;
-            $_SESSION['user']=$result[0]->u->username;
+            $_SESSION['user']=$result[0]->u->name;
             $_SESSION['fkentity']=$result[0]->u->fkentity;
             $_SESSION['color'] = $result[0]->e->color;
             $_SESSION['minsesion'] = 10;
@@ -68,7 +68,7 @@ class cuser extends cparent
             }
             // Recorrer la filas he ir insertando menu
             foreach($result as $row) {
-                echo "<h3>".$row->e->entityname."</h3>";
+                echo "<h3>".$row->e->name."</h3>";
                 echo "<div>";
                 // Control de formularios
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";

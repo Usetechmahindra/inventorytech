@@ -14,5 +14,8 @@ interface itech
     public function create($arow);
     public function update($arow);
     public function delete($arow);
-    public function error($bucket);
+    public function getbysearch($item,$value,$fkentity,$blike=TRUE);
+    public function itementity();
+    public function getfkname($key);
+    public function error();
 }

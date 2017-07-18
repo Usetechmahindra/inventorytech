@@ -12,7 +12,9 @@
         // Control POST
         $cgroup = new cgroup("grupo");
         // Retornar array de grupos de entidad
-        $rows = $cgroup->getgroupentity($gentity);
+        $rows = $cgroup->getbysearch("", "", $gentity);
+        $afila = get_object_vars($rows[0]);
+        $cols = $cgroup->itementity();
         ?>
     </head>
     <body>
@@ -23,18 +25,23 @@
            <tr>
              <?php
                 //Recorrer el array y pintar los nombres de columnas
-                $afila = get_object_vars($rows[0]);
+                
                 // Realizar la asignación manual para evitar el orden con lo que lo retorna el motor de bd
                 // Utilizar esta lógica para los parámetros variables
 //                foreach($afila as $clave =>$valor){
 //                    echo "<th>".$clave."</th>";
 //                } 
-                echo "<th>Entidad</th>";
-                echo "<th>Nombre grupo</th>";
-                echo "<th>Descripción</th>";
-                echo "<th>Email</th>";
+                // Recorrer el array de columnas
+                foreach($cols as $col)
+                {
+                    $acol = get_object_vars($col);
+                    echo "<th>".$acol['label']."</th>";
+                }
+                // auditoria
                 echo "<th>Alta</th>";
+                echo "<th>U. Alta</th>";
                 echo "<th>Modificación</th>";
+                echo "<th>U. Modif.</th>";
              ?>
            </tr>
         </thead>
@@ -49,13 +56,22 @@
                     echo '<tr onclick="Fsubmit(\'fgroup\', \''.$afila["id"].'\')">';
                     echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
                     // Poner el orden establecido
-                    echo "<td>".$afila["entityname"]."</td>";
-                    echo "<td>".$afila["groupname"]."</td>";
-                    echo "<td>".$afila["description"]."</td>";
-                    echo "<td>".$afila["emailgroup"]."</td>";
+                    foreach($cols as $col)
+                    {
+                        $acol = get_object_vars($col);
+                        // Control tipo select
+                        if ($acol['type'] == 'select') {                          
+                            $afila[$acol['name']] = $cgroup->getfkname($afila[$acol['name']]);
+                        }
+                        echo "<td>".$afila[$acol['name']]."</td>";
+                        
+                    }
+                    // Auditoria
                     echo "<td>".$afila["fcreate"]."</td>";
+                    echo "<td>".$afila["ucreate"]."</td>";
                     if(!empty($afila["fmodif"])) {
                         echo "<td>".$afila["fmodif"]."</td>";
+                        echo "<td>".$afila["umodif"]."</td>";
                     }else {
                         echo "<td></td>";
                     }
