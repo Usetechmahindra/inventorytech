@@ -9,34 +9,11 @@ and open the template in the editor.
     $cols = $cgroup->itementity();
     // Valores de cookies
     
-    // Control de post para pintar valores
-    
-    // El evento de búsqueda
-    if (isset($_POST['fname'])) {
-        $rgrupo=$cgroup->getbysearch('name',$_POST['name'],$gentity);
-        $rgrupo=get_object_vars($rgrupo[0]);
-        if (is_null($rgrupo)){
-            $rgrupo=$_POST;
-        }
+    // El eventos post
+    if (count($_POST)>0) {
+        $rgrupo = $cgroup->postauto($gentity);
     }
-    // Nuevo. Resetea el form.
-    if (isset($_POST['bnew'])) {
-        $rgrupo = $_POST;
-        $rgrupo = $cgroup->create($rgrupo); 
-    }
-    // Grabar. (Crea/actualiza)
-    if (isset($_POST['bsave'])) {
-        $rgrupo = $_POST;
-        // Controlar si existe grupo por nombre
-        // Simpre entra por aqui.
-        $rgrupo = $cgroup->update($rgrupo); 
-        // Control de errores
-        if ($rgrupo == -1) {
-            // Asignar el post original, en la var de sesión mostrará el error.
-            $rgrupo = $_POST;
-        }
-        $_POST=$rgrupo;
-    }
+
 ?>
 <form name="fgroupe" method="post">
      <?php

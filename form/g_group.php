@@ -11,13 +11,34 @@
         // Crear clase de para llamada a funciones genericas
         // Control POST
         $cgroup = new cgroup("grupo");
+        
+        
         // Retornar array de grupos de entidad
+        if (!empty($_POST)){
+            $rows = $cgroup->postauto();
+        }
         $rows = $cgroup->getbysearch("", "", $gentity);
         $afila = get_object_vars($rows[0]);
         $cols = $cgroup->itementity();
+        $afilter = $cgroup->itementity(TRUE);
         ?>
     </head>
     <body>
+        <form name="ffind" method="post">
+            <div id="dfind">
+                <?php
+
+                    // Recorrer los parámetros dinámicos de la entidad
+                    foreach($afilter as $filtro)
+                    {
+                        $acol = get_object_vars($filtro);
+                        // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
+                        $cgroup->labelinput($acol['name'],"",$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
+                    }
+        echo '<hr style="color:'.$_SESSION['color'].';" />';
+                ?>    
+            </div>
+        </form>
         <form name="fgroup" method="post">
         <div id="dgrid">
         <table id="tgrid">

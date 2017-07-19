@@ -183,6 +183,8 @@ class cparent implements itech
         }
     }
     
+    
+    
     private function configlavel(&$svalue,&$stype,&$isize)
     {
         // Permite recotar los parametros
@@ -256,10 +258,14 @@ class cparent implements itech
             return -1;
         }
     }
-    public function itementity() {
+    public function itementity($bfind=false) {
         try {
             $_SESSION['textsesion'] = "";
-            $n1ql="select u.* from techinventory u where entidad='item' and nentidad='".$this->nclase."' order by ipos";
+            $n1ql="select u.* from techinventory u where entidad='item' and nentidad='".$this->nclase."'";
+            if ($bfind){
+                $n1ql.=" and bfind=TRUE";
+            }
+            $n1ql.=" order by ipos";
             return $this->select($n1ql);
             // Añadir 
         } catch (Exception $ex) {
@@ -280,6 +286,79 @@ class cparent implements itech
             return $key;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función getentityname: '.$e->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    // Check post auto. Dependiendo. Botones new, update, busquedas.....
+    public function postauto($pentity)
+    {
+        try {
+            $rfilas = NULL;
+            // Check new
+            if (isset($_POST['bnew'])) {
+                $rfilas = $_POST;
+                $rfilas = $this->create($rfilas); 
+            }
+            // Check update
+            if (isset($_POST['bsave'])) {
+                // Controlar si existe grupo por nombre
+                // Simpre entra por aqui.
+                $rfilas = $this->update($rfilas); 
+                // Control de errores
+                if ($rfilas == -1) {
+                    // Asignar el post original, en la var de sesión mostrará el error.
+                    $rfilas = $_POST;
+                }
+                $_POST=$rfilas;
+            }
+            // Check find buttons
+            if (is_null($rfilas)) {
+                $rfilas = $this->findbutton();
+            }
+//            //// BORRARRRRRRRRRRRRRRRRR
+//            if (isset($_POST['fname'])) {
+//                $cfilas=$this->getbysearch('name',$_POST['name'],$pentity);
+//                $rfilas=get_object_vars($cfilas[0]);
+//                if (is_null($rfilas)){
+//                    $rfilas=$_POST;
+//                }
+//            }
+            // Retorno
+            return $rfilas;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función postauto: '.$e->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    // La función hace localiza los campos de busqueda y hace la llamada a la busqueda
+    // En $_POST sólo aparecera el boton de búsqueda pinchado
+    private function findbutton($pentity)
+    {
+        try {
+            // Localizar y recorrer los campos de busqueda para identificar el boton q lanzo el post
+            $afilter = $this->itementity(TRUE);
+            foreach($afilter as $filtro)
+            {
+                $rfilas=$_POST;
+                $acol = get_object_vars($filtro);
+                // Localizar por boton: f+valor de campo
+                $clave = array_search('f'.$acol['name'], array_keys($_POST));
+                // Si es distinto de false ha encontrado la columna en el post
+                if($clave <> 'FALSE') {
+                    // Realizar la busqueda.
+                    $cfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
+                    $rfilas=get_object_vars($cfilas[0]);
+                    if (is_null($rfilas)){
+                        $rfilas=$_POST;
+                    }
+                }
+                return $rfilas;
+            }
+
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función findbutton: '.$e->getMessage();
             $this->error();
             return -1;
         }
