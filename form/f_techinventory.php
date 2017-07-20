@@ -3,6 +3,7 @@ session_start();
 require('../class/cparent.php');
 require('../class/cgroup.php');
 require('../class/cuser.php');
+require('../class/citem.php');
 
 // Función del parametro pasado por el get
 ?>

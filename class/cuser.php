@@ -85,7 +85,7 @@ class cuser extends cparent
                     echo '<br>';
                 }
                 if($row->e->bparameter){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getparameter\')" style="">Parametros</button>';
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getitem\')" style="">Parametros</button>';
                     echo '<br>';
                 }
                 if($row->e->bexcel){

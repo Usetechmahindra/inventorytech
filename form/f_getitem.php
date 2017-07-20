@@ -19,9 +19,9 @@ and open the template in the editor.
     </head>
     <body>
         <div id="divtitle">
-            <img src="../upload/images/i_group.png" alt="i_group" height="52" align="left">
+            <img src="../upload/images/i_config.png" alt="i_group" height="52" align="left">
         </div>
-        <p style="font-weight: bold">Administración de grupos </p>
+        <p style="font-weight: bold">Administración de parámetros </p>
         <div class="tabbody">
           <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
           <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
@@ -29,12 +29,12 @@ and open the template in the editor.
 
         <div id="Busqueda" class="tabbodycontent">
           <?php
-            include 'g_group.php';
+            include 'g_item.php';
           ?>
         </div>
         <div id="Edición" class="tabbodycontent">
             <?php
-                include 'e_group.php';
+
             ?>
         </div>
     </body>
