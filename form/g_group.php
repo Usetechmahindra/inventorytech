@@ -11,20 +11,21 @@
         // Crear clase de para llamada a funciones genericas
         // Control POST
         $cgroup = new cgroup("grupo");
-        
-        
-        // Retornar array de grupos de entidad
-        if (!empty($_POST)){
-            $rows = $cgroup->postauto();
-        }
-        $rows = $cgroup->getbysearch("", "", $gentity);
-        $afila = get_object_vars($rows[0]);
+        // Parametros de busqueda
         $cols = $cgroup->itementity();
         $afilter = $cgroup->itementity(TRUE);
+        // Función busquedagrid
+        if ($_POST['idform'] == 'ffindgroup') {
+            $rows = $cgroup->postauto();
+        }else {
+                $rows = $cgroup->getbysearch("", "", $gentity);
+        } 
         ?>
     </head>
     <body>
-        <form name="ffind" method="post">
+        <form name="ffindgroup" id="ffind" method="post">
+           <!--Parametro oculto que identificar el form.--> 
+           <input type="hidden" name="idform" value="ffindgroup">
             <div id="dfind">
                 <?php
 
@@ -33,6 +34,8 @@
                     {
                         $acol = get_object_vars($filtro);
                         // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
+                        // Requerido al falso
+                        $acol['brequeried'] = FALSE;
                         $cgroup->labelinput($acol['name'],"",$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
                     }
         echo '<hr style="color:'.$_SESSION['color'].';" />';
@@ -71,27 +74,27 @@
     //          $result = mysql_query("SELECT idalert,idparametro,idusuario,estado,tipo,operacion,valor,textalert,nbit,horaminbit,horamaxbit,falta from alertserver where idserver=".$_SESSION['idserver']." order by idusuario,idparametro");
     //          while( $row = mysql_fetch_assoc( $result ) ){
                 // Recorrer todas las filas y cada columna
-                foreach($rows as $cfila){
+                foreach($rows as $afila){
                     //echo '<tr onclick="openTab(event, \'Edición\')">';
-                    $afila = get_object_vars($cfila);
-                    echo '<tr onclick="Fsubmit(\'fgroup\', \''.$afila["id"].'\')">';
-                    echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
+//                    echo '<tr onclick="Fsubmit(\'fgroup\', \''.$afila["id"].'\')">';
+//                    echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
                     // Poner el orden establecido
+                    $afila = get_object_vars($afila);
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);
                         // Control tipo select
                         if ($acol['type'] == 'select') {                          
-                            $afila[$acol['name']] = $cgroup->getfkname($afila[$acol['name']]);
+                            $fkname = $cgroup->getfkname($afila[$acol['name']]);
+                            $afila[$acol['name']] = $fkname;
                         }
-                        echo "<td>".$afila[$acol['name']]."</td>";
-                        
+                        echo "<td>".$afila[$acol['name']]."</td>";                   
                     }
                     // Auditoria
-                    echo "<td>".$afila["fcreate"]."</td>";
+                    echo "<td>".date('d/m/Y H:i:s',$afila["fcreate"])."</td>";
                     echo "<td>".$afila["ucreate"]."</td>";
                     if(!empty($afila["fmodif"])) {
-                        echo "<td>".$afila["fmodif"]."</td>";
+                        echo "<td>".date('d/m/Y H:i:s',$afila["fmodif"])."</td>";
                         echo "<td>".$afila["umodif"]."</td>";
                     }else {
                         echo "<td></td>";
@@ -111,7 +114,12 @@
         <input type="submit" name="insert_alert" value="Insertar">
         <input type="submit" name="check_alert" value="Comprobar">-->
 <!--        <input type="submit" name="check_email" value="Check Email">-->
+        
         </form>
+        <?php
+            echo '<hr style="color:'.$_SESSION['color'].';" />';
+            echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
+        ?>
     </body>
 </html>
 

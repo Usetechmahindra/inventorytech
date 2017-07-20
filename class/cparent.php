@@ -62,7 +62,7 @@ class cparent implements itech
             $arow['entidad'] = $this->nclase;
             $arow['docid'] = $this->counter();
             $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
-            $arow['fcreate']=date('d/m/Y H:i:s');
+            $arow['fcreate']=time();
             $arow['ucreate']=$_SESSION['user'];
             return $arow;
         } catch (Exception $ex) {
@@ -128,12 +128,13 @@ class cparent implements itech
                 {
                     $arow = get_object_vars($findname[0]);
                     $_SESSION['textsesion'] ="Se ha localizado un registro previo.";
+                    return $arow;
                 }else{
                     $arow = $this->newclass($arow);
                     $_SESSION['textsesion'] ="Nueva creación realizada.";
                 }
             }else{
-                $arow['fmodif']=date('d/m/Y H:i:s'); 
+                $arow['fmodif']=time(); 
                 $arow['umodif']=$_SESSION['user'];
             }
             // Lanzar el UPSERT en BD
@@ -156,7 +157,7 @@ class cparent implements itech
     public function delete($arow)
     {
     }
-    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired=false,$bfind=false,$readonly="")
+    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired=false,$bfind=false,$disabledread="")
     {
         // A la función se le pasan los parametros para que pinte en bloque el input con el label y su tipo
         try {
@@ -168,7 +169,7 @@ class cparent implements itech
                 echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
                 // Dependiendo del tipo de caja.
                 $this->configlavel($svalue,$stype,$isize);
-                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$readonly.' value="'.$svalue.'" />';
+                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$disabledread.' value="'.$svalue.'" />';
                 // Si es tipo fecha poner su clase formato jquery
                 // Si hay que pintar la busqueda
             echo '</div>  ';
@@ -193,6 +194,7 @@ class cparent implements itech
                 $stype = "text";
                 if ($svalue <> null)
                 {
+                    $svalue = date('d/m/Y H:i:s',$svalue);
                     $isize = 15;
                 }
                 break;
@@ -294,11 +296,11 @@ class cparent implements itech
     public function postauto($pentity)
     {
         try {
-            $rfilas = NULL;
+            $rfilas = $_POST;
             // Check new
             if (isset($_POST['bnew'])) {
-                $rfilas = $_POST;
                 $rfilas = $this->create($rfilas); 
+                return $rfilas;
             }
             // Check update
             if (isset($_POST['bsave'])) {
@@ -310,20 +312,12 @@ class cparent implements itech
                     // Asignar el post original, en la var de sesión mostrará el error.
                     $rfilas = $_POST;
                 }
-                $_POST=$rfilas;
+                return $rfilas;
             }
             // Check find buttons
-            if (is_null($rfilas)) {
+            if (!is_null($rfilas)) {
                 $rfilas = $this->findbutton();
             }
-//            //// BORRARRRRRRRRRRRRRRRRR
-//            if (isset($_POST['fname'])) {
-//                $cfilas=$this->getbysearch('name',$_POST['name'],$pentity);
-//                $rfilas=get_object_vars($cfilas[0]);
-//                if (is_null($rfilas)){
-//                    $rfilas=$_POST;
-//                }
-//            }
             // Retorno
             return $rfilas;
         } catch (Exception $ex) {
@@ -346,13 +340,9 @@ class cparent implements itech
                 // Localizar por boton: f+valor de campo
                 $clave = array_search('f'.$acol['name'], array_keys($_POST));
                 // Si es distinto de false ha encontrado la columna en el post
-                if($clave <> 'FALSE') {
+                if($clave <> FALSE) {
                     // Realizar la busqueda.
-                    $cfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
-                    $rfilas=get_object_vars($cfilas[0]);
-                    if (is_null($rfilas)){
-                        $rfilas=$_POST;
-                    }
+                    $rfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
                 }
                 return $rfilas;
             }
