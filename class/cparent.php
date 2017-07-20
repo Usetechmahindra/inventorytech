@@ -260,10 +260,10 @@ class cparent implements itech
             return -1;
         }
     }
-    public function itementity($bfind=false) {
+    public function itementity($gentity,$bfind=false) {
         try {
             $_SESSION['textsesion'] = "";
-            $n1ql="select u.* from techinventory u where entidad='item' and nentidad='".$this->nclase."'";
+            $n1ql="select u.* from techinventory u where entidad='item' and fkentity ='".$gentity."' and nentidad='".$this->nclase."'";
             if ($bfind){
                 $n1ql.=" and bfind=TRUE";
             }
@@ -292,6 +292,25 @@ class cparent implements itech
             return -1;
         }
     }
+    public function getdocid($pid) {
+        try {
+            // Obtener por id
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                $_SESSION['textsesion']='Error en función getdocid: Sin conexión a base de datos.';
+                return -1;
+            }
+            $result = $bucket->get($pid);
+            $result->value->id = $pid;
+            return $result->value;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función getdocid: '.$e->getMessage();
+            $this->error();
+            return -1;
+        }
+        
+    }
     // Check post auto. Dependiendo. Botones new, update, busquedas.....
     public function postauto($pentity)
     {
@@ -316,7 +335,7 @@ class cparent implements itech
             }
             // Check find buttons
             if (!is_null($rfilas)) {
-                $rfilas = $this->findbutton();
+                $rfilas = $this->findbutton($pentity);
             }
             // Retorno
             return $rfilas;
@@ -332,7 +351,7 @@ class cparent implements itech
     {
         try {
             // Localizar y recorrer los campos de busqueda para identificar el boton q lanzo el post
-            $afilter = $this->itementity(TRUE);
+            $afilter = $this->itementity($pentity,TRUE);
             foreach($afilter as $filtro)
             {
                 $rfilas=$_POST;

@@ -12,11 +12,11 @@
         // Control POST
         $cgroup = new cgroup("grupo");
         // Parametros de busqueda
-        $cols = $cgroup->itementity();
-        $afilter = $cgroup->itementity(TRUE);
+        $cols = $cgroup->itementity($gentity);
+        $afilter = $cgroup->itementity($gentity,TRUE);
         // Función busquedagrid
         if ($_POST['idform'] == 'ffindgroup') {
-            $rows = $cgroup->postauto();
+            $rows = $cgroup->postauto($gentity);
         }else {
                 $rows = $cgroup->getbysearch("", "", $gentity);
         } 
@@ -76,10 +76,10 @@
                 // Recorrer todas las filas y cada columna
                 foreach($rows as $afila){
                     //echo '<tr onclick="openTab(event, \'Edición\')">';
-//                    echo '<tr onclick="Fsubmit(\'fgroup\', \''.$afila["id"].'\')">';
-//                    echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
                     // Poner el orden establecido
                     $afila = get_object_vars($afila);
+                    echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
+                    echo '<tr onclick="fclick(\''.$afila["id"].'\')">';
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);

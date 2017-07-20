@@ -6,11 +6,20 @@ and open the template in the editor.
 -->
 <?php
     $cgroup = new cgroup("grupo");
-    $cols = $cgroup->itementity();
+    $cols = $cgroup->itementity($gentity);
     // Valores de cookies
-    
+    if (isset($_COOKIE['cid'])) {
+        $rgrupo = $cgroup->getdocid($_COOKIE['cid']);
+        if (count($rgrupo) > 0) {
+           $rgrupo = get_object_vars($rgrupo); 
+        }
+        // Borrar la cookie
+        unset($_COOKIE['cid']);
+    }
     // El eventos post
     if ($_POST['idform'] == 'fgroupe') {
+        // No grabar el id de formulario
+        unset($_POST['idform']);
         $rgrupo = $cgroup->postauto($gentity);
         // Si es busqueda retorna clase, convertir primera coincidencia
         if(!isset($_POST['bsave']) AND !isset($_POST['bnew']))
@@ -22,6 +31,7 @@ and open the template in the editor.
 ?>
 <form name="fgroupe" id="fgroupe" method="post">
      <?php
+        // Asignar y borrar.
         // Parametro oculto
         echo '<div id="dgride">';
         //<!--Parametro oculto que identificar el form.--> 

@@ -50,6 +50,13 @@ require('../class/citem.php');
                 //window.location="http://www.cristalab.com";
 
             }
+            // Recoge el id del grid y lo muestra en edición.
+            function fclick(pid) {
+//                alert(pid);
+                document.cookie = "cid="+pid;
+                document.cookie = "ctabname=Edición";
+                window.location="../form/f_techinventory.php";
+            }
             // Función para obtener una cookie determinada
             function getCookie(cname) {
                 var name = cname + "=";
