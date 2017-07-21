@@ -12,8 +12,9 @@
         // Control POST
         $cgroup = new cgroup("grupo");
         // Parametros de busqueda
-        $cols = $cgroup->itementity($gentity);
-        $afilter = $cgroup->itementity($gentity,TRUE);
+        $cols = $cgroup->itementity($gentity,1);
+        // Campos de filtro
+        $afilter = $cgroup->itementity($gentity,2);
         // Función busquedagrid
         if ($_POST['idform'] == 'ffindgroup') {
             $rows = $cgroup->postauto($gentity);

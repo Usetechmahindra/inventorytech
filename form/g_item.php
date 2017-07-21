@@ -12,37 +12,17 @@
         // Control POST
         $citem = new citem("item");
         // Parametros de busqueda
-        $cols = $citem->itementity();
-        $afilter = $citem->itementity(TRUE);
+        $cols = $citem->columnitem($nentidad,$gentity);
         // Función busquedagrid
         if ($_POST['idform'] == 'ffinditem') {
-            $rows = $citem->postauto();
-        }else {
-                $rows = $citem->getbysearch("", "", $gentity);
+//            $rows = $citem->postauto();
+//        }else {
+//                $rows = $citem->getbysearch("", "", $gentity);
         } 
         ?>
     </head>
     <body>
-        <form name="ffinditem" id="ffind" method="post">
-           <!--Parametro oculto que identificar el form.--> 
-           <input type="hidden" name="idform" value="ffinditem">
-            <div id="dfind">
-                <?php
-
-                    // Recorrer los parámetros dinámicos de la entidad
-                    foreach($afilter as $filtro)
-                    {
-                        $acol = get_object_vars($filtro);
-                        // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
-                        // Requerido al falso
-                        $acol['brequeried'] = FALSE;
-                        $citem->labelinput($acol['name'],"",$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
-                    }
-        echo '<hr style="color:'.$_SESSION['color'].';" />';
-                ?>    
-            </div>
-        </form>
-        <form name="fgroup" method="post">
+        <form name="ffind" id="ffind" method="post">
         <div id="dgrid">
         <table id="tgrid">
         <thead>

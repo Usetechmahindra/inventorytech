@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <?php
     $cgroup = new cgroup("grupo");
-    $cols = $cgroup->itementity($gentity);
+    $cols = $cgroup->itementity($gentity,0);
     // Valores de cookies
     if (isset($_COOKIE['cid'])) {
         $rgrupo = $cgroup->getdocid($_COOKIE['cid']);

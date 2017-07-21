@@ -54,6 +54,7 @@ class cuser extends cparent
             {
                 return -1;
             }
+            //
             // Conectado a couch. cargar las entidades >= a la fk del usuario (Sesión).
             $result = $bucket->get($_SESSION['fkentity']);
             // Coger el valor de doc ID
@@ -84,10 +85,11 @@ class cuser extends cparent
                     echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getgroup\')" style="">Grupos</button>';
                     echo '<br>';
                 }
-                if($row->e->bparameter){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getitem\')" style="">Parametros</button>';
-                    echo '<br>';
-                }
+                // Parametros por entidad y tipo(entidad,usuario o grupo).
+//                if($row->e->bparameter){
+//                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getitem\')" style="">Parametros</button>';
+//                    echo '<br>';
+//                }
                 if($row->e->bexcel){
                     echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getimport\')" style="">Importación Excel</button>';
                     echo '<br>';

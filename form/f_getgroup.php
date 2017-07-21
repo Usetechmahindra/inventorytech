@@ -4,6 +4,10 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+<?php
+    // Variable que identifica la entidad de parametros
+    $nentidad = "grupo";
+?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -25,6 +29,7 @@ and open the template in the editor.
         <div class="tabbody">
           <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
           <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+          <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
         </div>
 
         <div id="Busqueda" class="tabbodycontent">
@@ -35,6 +40,11 @@ and open the template in the editor.
         <div id="Edición" class="tabbodycontent">
             <?php
                 include 'e_group.php';
+            ?>
+        </div>
+        <div id="Parámetros" class="tabbodycontent">
+            <?php
+                include 'g_item.php'
             ?>
         </div>
     </body>

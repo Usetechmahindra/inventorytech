@@ -25,6 +25,7 @@ and open the template in the editor.
         <div class="tabbody">
           <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
           <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+          <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
         </div>
 
         <div id="Busqueda" class="tabbodycontent">
@@ -37,5 +38,10 @@ and open the template in the editor.
 
             ?>
         </div>
+        <div id="Parámetros" class="tabbodycontent">
+            <?php
+
+            ?>
+        </div>        
     </body>
 </html>

@@ -61,7 +61,9 @@ class cparent implements itech
         try {
             $arow['entidad'] = $this->nclase;
             $arow['docid'] = $this->counter();
-            $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
+//            $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
+            // Las ordenaciones se hacen por docid, no es necesario formatear con 0.
+            $arow['id'] = $this->nclase.'_'.$arow['docid'];
             $arow['fcreate']=time();
             $arow['ucreate']=$_SESSION['user'];
             return $arow;
@@ -260,13 +262,22 @@ class cparent implements itech
             return -1;
         }
     }
-    public function itementity($gentity,$bfind=false) {
+    public function itementity($gentity,$itype=0) {
         try {
             $_SESSION['textsesion'] = "";
             $n1ql="select u.* from techinventory u where entidad='item' and fkentity ='".$gentity."' and nentidad='".$this->nclase."'";
-            if ($bfind){
-                $n1ql.=" and bfind=TRUE";
+            // Dependiendo del tipo: 0 Todos, 1 grid, 2 campos de filtro
+            switch ($itype) {
+               case 1:
+                   $n1ql.=" and bgrid=TRUE";
+                   break;
+               case 2:
+                   $n1ql.=" and bfind=TRUE";
+                   break;
+               default:
+                   break;
             }
+                
             $n1ql.=" order by ipos";
             return $this->select($n1ql);
             // Añadir 

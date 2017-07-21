@@ -15,7 +15,7 @@ interface itech
     public function update($arow);
     public function delete($arow);
     public function getbysearch($item,$value,$fkentity,$blike=TRUE);
-    public function itementity($gentity,$bfind=false);
+    public function itementity($gentity,$itype=0);
     public function getfkname($key);
     public function getdocid($pid);
     public function error();
