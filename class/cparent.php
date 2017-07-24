@@ -120,6 +120,13 @@ class cparent implements itech
     public function update($arow)
     {
         try {
+            // Recorrer todas las filas pasadas
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            // Solo actualizar la fila que se ha indicado.
             // Controlar si es nuevo, llamar a la función create 
             if(empty($arow['id']))
             {
@@ -132,7 +139,7 @@ class cparent implements itech
                     $_SESSION['textsesion'] ="Se ha localizado un registro previo.";
                     return $arow;
                 }else{
-                    $arow = $this->newclass($arow);
+                    $arow = $this->newclass($afila);
                     $_SESSION['textsesion'] ="Nueva creación realizada.";
                 }
             }else{
@@ -140,14 +147,7 @@ class cparent implements itech
                 $arow['umodif']=$_SESSION['user'];
             }
             // Lanzar el UPSERT en BD
-            $bucket = $this->connbucket();
-            if($bucket == -1)
-            {
-                return -1;
-            }
-            $result = $bucket->upsert($arow['id'],$this->avalues($arow));
-            // Control resultados
-            
+            $arow = $bucket->upsert($arow['id'],$this->avalues($arow));
             // Correcto
             return $arow;
         } catch (Exception $ex) {
@@ -158,6 +158,20 @@ class cparent implements itech
     }
     public function delete($arow)
     {
+        try {
+            // Borrado por id
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            $arow = $bucket->remove($arow['iddel']);
+            return $arow;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en borrado: '.$e->getMessage();
+            $this->error();
+            return -1;
+        }
     }
     public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired=false,$bfind=false,$disabledread="")
     {
@@ -229,6 +243,8 @@ class cparent implements itech
         // Retorna el el id del arow
         $avalues = $arow;
         unset($avalues['id']);
+        unset($avalues['idform']);
+        unset($avalues['iddel']);
         // botones
         unset($avalues['bsave']);
         return $avalues;
@@ -269,10 +285,10 @@ class cparent implements itech
             // Dependiendo del tipo: 0 Todos, 1 grid, 2 campos de filtro
             switch ($itype) {
                case 1:
-                   $n1ql.=" and bgrid=TRUE";
+                   $n1ql.=" and bgrid='1'";
                    break;
                case 2:
-                   $n1ql.=" and bfind=TRUE";
+                   $n1ql.=" and bfind='1'";
                    break;
                default:
                    break;
@@ -326,23 +342,29 @@ class cparent implements itech
     public function postauto($pentity)
     {
         try {
-            $rfilas = $_POST;
             // Check new
+            $rfilas = $_POST;
             if (isset($_POST['bnew'])) {
                 $rfilas = $this->create($rfilas); 
                 return $rfilas;
-            }
+            }         
             // Check update
             if (isset($_POST['bsave'])) {
                 // Controlar si existe grupo por nombre
-                // Simpre entra por aqui.
-                $rfilas = $this->update($rfilas); 
+                // Recorrer todas las filas
+                $result = $this->update($rfilas); 
                 // Control de errores
-                if ($rfilas == -1) {
+                if ($result == -1) {
                     // Asignar el post original, en la var de sesión mostrará el error.
-                    $rfilas = $_POST;
-                }
+                    $rfilas = array();
+                    array_push($rfilas,$_POST);
+                } 
                 return $rfilas;
+            }
+            // Baja
+            if (isset($_POST['bdown'])) {
+                // Control de baja
+                return $this->delete($rfilas);
             }
             // Check find buttons
             if (!is_null($rfilas)) {

@@ -19,8 +19,8 @@ and open the template in the editor.
     // El eventos post
     if ($_POST['idform'] == 'fgroupe') {
         // No grabar el id de formulario
-        unset($_POST['idform']);
         $rgrupo = $cgroup->postauto($gentity);
+        
         // Si es busqueda retorna clase, convertir primera coincidencia
         if(!isset($_POST['bsave']) AND !isset($_POST['bnew']))
         {

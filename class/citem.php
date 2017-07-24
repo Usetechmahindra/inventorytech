@@ -18,6 +18,7 @@ class citem extends cparent
             if (!empty($fkentity)) {
                 $n1ql.=" and u.fkentity='".$fkentity."'";
             }
+            $n1ql.=" order by u.ipos";
             // Traer filas de entidad
             return $this->select($n1ql);
         } catch (Exception $ex) {

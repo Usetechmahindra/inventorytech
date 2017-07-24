@@ -15,7 +15,7 @@ and open the template in the editor.
  }
  /* Style the buttons inside the tab */
  div.divtitle {
-     width: 100%;
+    width: 100%;
  }
  div.tabbody button {
      background-color: inherit;
@@ -50,8 +50,9 @@ and open the template in the editor.
 /*Formato de las busquedas grid  */
 div#dgrid {
   background-color: white;
-  overflow: hidden;
   overflow-y: scroll;
+  overflow-x: scroll;
+  overflow: auto;
   width: 100%;
 }
 table#tgrid {
