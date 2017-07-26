@@ -4,6 +4,19 @@
  */
 class citem extends cparent
 {
+    public function my_arrayclass()
+    {
+        // Retorna el array de campos obligatorios de la clase
+        // Cada clase tendra sus array default.
+        $acolclass = array();
+        array_push($acolclass, array("name" => "ipos", "type" => "number","default" => 0));     
+        array_push($acolclass, array("name" => "bfind", "type" => "bool","default" => 0));
+        array_push($acolclass, array("name" => "bgrid", "type" => "bool","default" => 0));
+        array_push($acolclass, array("name" => "brequeried", "type" => "bool","default" => 0));
+        array_push($acolclass, array("name" => "breadonly", "type" => "bool","default" => 0));
+        
+        return $acolclass;
+    }
     public function columnitem($pnentidad,$fkentity)
     {
         try {

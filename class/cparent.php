@@ -35,8 +35,8 @@ class cparent implements itech
             // Bien
             //echo "Bucket conectado:".var_dump($_SESSION['bucket']);
             return $bucket;
-        } catch (Exception $e) {
-            $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución: '.$ex->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
             //echo $_SESSION['textsesion'];
             return -1;
@@ -55,20 +55,28 @@ class cparent implements itech
         //$icount = $_SESSION['bucket']->counter($vpref.'_pruebas', $ivalue, array('initial' => 1));
         return $icount->value;
     }
-    public function newclass($arow)
+    public function newclass($fkentity=null,$nentidad=null)
     {
         // En array añadir el contador
         try {
+            $arrow = array();
             $arow['entidad'] = $this->nclase;
             $arow['docid'] = $this->counter();
+            if(!is_null($fkentity)) {
+                $arow['fkentity'] = $fkentity;
+            }
+            if(!is_null($nentidad)) {
+                $arow['nentidad'] = $nentidad;
+            }
 //            $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
             // Las ordenaciones se hacen por docid, no es necesario formatear con 0.
             $arow['id'] = $this->nclase.'_'.$arow['docid'];
             $arow['fcreate']=time();
             $arow['ucreate']=$_SESSION['user'];
+
             return $arow;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función newclass: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en función newclass: '.$ex->getMessage();
             $this->error();
             return -1;
         }
@@ -91,7 +99,7 @@ class cparent implements itech
             }
             return $result->rows;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en ejecución: '.$ex->getMessage();
             $this->error();
             return -1;
         }
@@ -111,7 +119,7 @@ class cparent implements itech
             }
             return $arow;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error al inicializar datos '.$e->getMessage();
+            $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
             $this->error();
             return -1;
@@ -128,6 +136,7 @@ class cparent implements itech
             }
             // Solo actualizar la fila que se ha indicado.
             // Controlar si es nuevo, llamar a la función create 
+            $_SESSION['textsesion'] ="Actualización realizada.";
             if(empty($arow['id']))
             {
                 // Realizar la busqueda por nombre. Siempre es el campo principal
@@ -147,11 +156,14 @@ class cparent implements itech
                 $arow['umodif']=$_SESSION['user'];
             }
             // Lanzar el UPSERT en BD
-            $arow = $bucket->upsert($arow['id'],$this->avalues($arow));
+            $id = $arow['id'];
+            $arow = $this->avalues($arow);
+            $arow = $bucket->upsert($id,$arow);
             // Correcto
+            $arow = $this->getdocid($id);
             return $arow;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error al inicializar datos '.$e->getMessage();
+            $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
             $this->error();
             return -1; 
         }
@@ -165,27 +177,31 @@ class cparent implements itech
             {
                 return -1;
             }
-            $arow = $bucket->remove($arow['iddel']);
+            $arow = $bucket->remove($arow['id']);
             return $arow;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en borrado: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en borrado: '.$ex->getMessage();
             $this->error();
             return -1;
         }
     }
-    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired=false,$bfind=false,$disabledread="")
+    public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired=false,$bfind=false,$breadonly=false)
     {
         // A la función se le pasan los parametros para que pinte en bloque el input con el label y su tipo
+        //$cgroup->labelinput($acol['name'],$rgrupo[$acol['name']],$acol['label'],c,$acol['size'],$acol['brequeried'],$acol['bfind'],false);
         try {
             // Si tiene busqueda es requerido.
             if($brequired) {
                 $srequired = "required";
             }
+            if($breadonly) {
+                $sreadonly = "readonly";
+            }
             echo '<div class="labelinput">';
                 echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
                 // Dependiendo del tipo de caja.
                 $this->configlavel($svalue,$stype,$isize);
-                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$disabledread.' value="'.$svalue.'" />';
+                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' value="'.$svalue.'" />';
                 // Si es tipo fecha poner su clase formato jquery
                 // Si hay que pintar la busqueda
             echo '</div>  ';
@@ -194,7 +210,7 @@ class cparent implements itech
                 echo ' <input type="submit" class="bfind" name="f'.$skey.'" id="f'.$skey.'" value=""/> ';
             }
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error crear input: '.$e->getMessage();
+            $_SESSION['textsesion']='Error crear input: '.$ex->getMessage();
             $this->error();
             return -1;
         }
@@ -244,9 +260,9 @@ class cparent implements itech
         $avalues = $arow;
         unset($avalues['id']);
         unset($avalues['idform']);
-        unset($avalues['iddel']);
         // botones
         unset($avalues['bsave']);
+        unset($avalues['bnew']);
         return $avalues;
     }
     // Obtener los datos de una entidad por un valor de busqueda. OP. fkentity
@@ -273,7 +289,7 @@ class cparent implements itech
              // Traer filas de entidad
              return $this->select($n1ql);
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función getbysearch: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en función getbysearch: '.$ex->getMessage();
             $this->error();
             return -1;
         }
@@ -285,10 +301,10 @@ class cparent implements itech
             // Dependiendo del tipo: 0 Todos, 1 grid, 2 campos de filtro
             switch ($itype) {
                case 1:
-                   $n1ql.=" and bgrid='1'";
+                   $n1ql.=" and bgrid=true";
                    break;
                case 2:
-                   $n1ql.=" and bfind='1'";
+                   $n1ql.=" and bfind=true";
                    break;
                default:
                    break;
@@ -298,23 +314,7 @@ class cparent implements itech
             return $this->select($n1ql);
             // Añadir 
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función itementity: '.$e->getMessage();
-            $this->error();
-            return -1;
-        }
-    }
-    // Obtiene el nombre de la entidad pasando el key del doc.
-    public function getfkname($key)
-    {
-        try {
-            $n1ql = "SELECT name FROM techinventory tech where META(tech).id = '".$key."'";
-            $docid = $this->select($n1ql);
-            if(!empty($docid)) {
-                $key = $docid[0]->name;
-            }
-            return $key;
-        } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función getentityname: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en función itementity: '.$ex->getMessage();
             $this->error();
             return -1;
         }
@@ -332,33 +332,32 @@ class cparent implements itech
             $result->value->id = $pid;
             return $result->value;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función getdocid: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en función getdocid: '.$ex->getMessage();
             $this->error();
             return -1;
         }
         
     }
     // Check post auto. Dependiendo. Botones new, update, busquedas.....
-    public function postauto($pentity)
+    public function postauto($pentity,$nentidad=null)
     {
         try {
             // Check new
-            $rfilas = $_POST;
+            // $_POST siempre son string reconfigurar a valores correctos
+            $rfilas = $this->postdatatype($_POST);
+            
             if (isset($_POST['bnew'])) {
-                $rfilas = $this->create($rfilas); 
+                $rfilas = $this->newclass($pentity,$nentidad);
+                
+                $rfilas = $this->update($rfilas); 
+                $rfilas = get_object_vars($rfilas); 
+                // Retornar array
                 return $rfilas;
             }         
             // Check update
             if (isset($_POST['bsave'])) {
-                // Controlar si existe grupo por nombre
-                // Recorrer todas las filas
-                $result = $this->update($rfilas); 
-                // Control de errores
-                if ($result == -1) {
-                    // Asignar el post original, en la var de sesión mostrará el error.
-                    $rfilas = array();
-                    array_push($rfilas,$_POST);
-                } 
+                $rfilas = $this->update($rfilas); 
+                $rfilas = get_object_vars($rfilas); 
                 return $rfilas;
             }
             // Baja
@@ -373,7 +372,7 @@ class cparent implements itech
             // Retorno
             return $rfilas;
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función postauto: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en función postauto: '.$ex->getMessage();
             $this->error();
             return -1;
         }
@@ -395,15 +394,65 @@ class cparent implements itech
                 if($clave <> FALSE) {
                     // Realizar la busqueda.
                     $rfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
+                    return $rfilas;
                 }
-                return $rfilas;
             }
 
         } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función findbutton: '.$e->getMessage();
+            $_SESSION['textsesion']='Error en función findbutton: '.$ex->getMessage();
             $this->error();
             return -1;
         }
+    }
+    public function my_arrayclass()
+    {
+    }
+    // Función que trata post para configurar los tipos de dato correctos.
+    public function postdatatype($arow)
+    {
+        try {
+            // Recorrer el post
+            //Control datos genericos
+            $arow['docid'] = (int)$arow['docid'];
+            // Cargar array de campos default de cada clase
+            $adefault = $this->my_arrayclass();
+            // Recorrer array
+            foreach ($adefault as $valor) {               
+                switch ($valor['type']) {
+                    case 'number':
+                    case 'date':
+                        $arow[$valor['name']] = (int)$arow[$valor['name']];
+                        break;
+                    case 'bool':
+                        $arow[$valor['name']] = (bool)$arow[$valor['name']];
+                        break; 
+                    default:
+                        $arow[$valor['name']] = (string)$arow[$valor['name']];
+                        break;
+                }
+                if (is_null($arow[$valor['name']])){
+                    $arow[$valor['name']] = $valor['default'];
+                }
+            }
+
+            //Control de auditoria
+            $arow['fcreate'] = (int)$arow['fcreate'];
+            $arow['fmodif'] = (int)$arow['fmodif'];
+            //Control de custom parameters si es distinto de item
+            if ($this->nclase <> 'item') {
+                $cols = $this->itementity($this->nclase,0);
+                foreach ($cols as $valor) {
+                    
+                }
+            }
+
+            return $arow;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución: '.$ex->getMessage();
+            // Si no se ha podido conectar al bucket, no se puede grabar el error.
+            //echo $_SESSION['textsesion'];
+            return -1;
+        }        
     }
     // Log error generico
     public function error() {
@@ -416,16 +465,19 @@ class cparent implements itech
             // Contador de error
             $icount = $this->counter(1,'e');
             // Grabar doc error
-            $result = $bucket->upsert('e_'.$this->nclase.'_'.$icount, array(
-            "docid" => $icount,
-            "entidad" =>'e_'.$this->$cname,
-            "fcreate" => date('d/m/Y H:m:s'),
+            $aid = 'e_'.$this->nclase.'_'.$icount;
+            
+            $aerr = array("docid" => $icount,
+            "entidad" =>'e_'.$this->nclase, 
+            "fcreate" => time(),
             "user" => $_SESSION['user'],
-            "error" => $_SESSION['textsesion']));
+            "error" => $_SESSION['textsesion']);
+            
+            $result = $bucket->upsert($aid,$aerr);
             // Bien
             return 1;
-        } catch (Exception $e) {
-            $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución: '.$ex->getMessage();
             return -1;
         }
     }

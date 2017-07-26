@@ -20,10 +20,7 @@ and open the template in the editor.
     if ($_POST['idform'] == 'fgroupe') {
         // No grabar el id de formulario
         $rgrupo = $cgroup->postauto($gentity);
-        
-        // Si es busqueda retorna clase, convertir primera coincidencia
-        if(!isset($_POST['bsave']) AND !isset($_POST['bnew']))
-        {
+        if (is_object($rgrupo[0])){
             $rgrupo = get_object_vars($rgrupo[0]);
         }
     }
@@ -46,19 +43,19 @@ and open the template in the editor.
         {
             $acol = get_object_vars($col);
             // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
-            $cgroup->labelinput($acol['name'],$rgrupo[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
+            $cgroup->labelinput($acol['name'],$rgrupo[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],$acol['breadonly']);
         }
         echo '<hr style="color:'.$_SESSION['color'].';" />';
+        //Los campos diabled no se envian al POST
+        $cgroup->labelinput('fcreate',$rgrupo['fcreate'],'Fecha Alta','date',20,false,false,true);
+        $cgroup->labelinput('ucreate',$rgrupo['ucreate'],'U. Alta','text',20,false,false,true);
+        $cgroup->labelinput('fmodif',$rgrupo['fmodif'],'Fecha Modif.','date',20,false,false,true);
+        $cgroup->labelinput('umodif',$rgrupo['umodif'],'U. Modif','text',20,false,false,true);
         // Columnas de auditoría. Los campos ocultos almacenan la fecha en unix format.
         echo '<input type="hidden" name="fcreate" value="'.$rgrupo['fcreate'].'">';
         echo '<input type="hidden" name="ucreate" value="'.$rgrupo['ucreate'].'">';
         echo '<input type="hidden" name="fmodif" value="'.$rgrupo['fmodif'].'">';
         echo '<input type="hidden" name="umodif" value="'.$rgrupo['umodif'].'">'; 
-        //Los campos diabled no se envian al POST
-        $cgroup->labelinput('fcreate',$rgrupo['fcreate'],'Fecha Alta','date',20,false,false,"disabled");
-        $cgroup->labelinput('ucreate',$rgrupo['ucreate'],'U. Alta','text',20,false,false,"disabled");
-        $cgroup->labelinput('fmodif',$rgrupo['fmodif'],'Fecha Modif.','date',20,false,false,"disabled");
-        $cgroup->labelinput('umodif',$rgrupo['umodif'],'U. Modif','text',20,false,false,"disabled");
         // Botonera
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         echo ' <input type="submit" class="boton" name="bsave" id="bsaveg" value="Grabar"/>';

@@ -6,6 +6,7 @@
  */
 interface itech
 {
+    public function my_arrayclass();
     public function counter($ivalue=1,$vpref='c');
     public function connbucket();
     public function select($ssql);
@@ -16,7 +17,7 @@ interface itech
     public function delete($arow);
     public function getbysearch($item,$value,$fkentity,$blike=TRUE);
     public function itementity($gentity,$itype=0);
-    public function getfkname($key);
     public function getdocid($pid);
+    public function postdatatype($arow);
     public function error();
 }

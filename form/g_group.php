@@ -84,11 +84,6 @@
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);
-                        // Control tipo select
-                        if ($acol['type'] == 'select') {                          
-                            $fkname = $cgroup->getfkname($afila[$acol['name']]);
-                            $afila[$acol['name']] = $fkname;
-                        }
                         echo "<td>".$afila[$acol['name']]."</td>";                   
                     }
                     // Auditoria

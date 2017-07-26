@@ -69,6 +69,20 @@ div#dcuerpo{
     background-color: #3e8e41;
 }
 
+.gboton {
+    background-color: #758697;
+    border: 1px solid #e7e7e7;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    padding: 3px 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+.gboton:hover {
+    background-color: #3e8e41;
+}
+
 .mboton {
     background-color: transparent;
     border: 0px;
