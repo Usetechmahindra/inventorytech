@@ -83,6 +83,36 @@ div#dcuerpo{
     background-color: #3e8e41;
 }
 
+.gdangerboton {
+    background-color: #758697;
+    border: 1px solid #e7e7e7;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    padding: 3px 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+.gdangerboton:hover {
+    background-color: #e31732;
+}
+
+.dangerboton {
+    background-color: #758697;
+    border: 1px solid #e7e7e7;
+    color: white;
+    padding: 5px 31px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+.dangerboton:hover {
+    background-color:#e31732;
+}
+
+
 .mboton {
     background-color: transparent;
     border: 0px;

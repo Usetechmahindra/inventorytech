@@ -23,6 +23,8 @@ and open the template in the editor.
         if (is_object($rgrupo[0])){
             $rgrupo = get_object_vars($rgrupo[0]);
         }
+        // Refrescar página.
+        header('Location: .');
     }
 
 ?>
@@ -60,6 +62,7 @@ and open the template in the editor.
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         echo ' <input type="submit" class="boton" name="bsave" id="bsaveg" value="Grabar"/>';
         echo ' <input type="submit" class="boton" name="bnew" id="bnewg" value="Nuevo"/>';
+        echo ' <input type="submit" class="dangerboton" name="bdown" id="bdowg" value="Baja"/>';
         echo '</div>';
      ?>
     

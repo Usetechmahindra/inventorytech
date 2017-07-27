@@ -8,14 +8,18 @@
         </style>
         <!Funciones post>
         <?php
-        // Crear clase de para llamada a funciones genericas
-        // Control POST
-        $citem = new citem("item");
-        // Función post
-        if ($_POST['idform'] == 'fitem') {
-            // Recorrer todas las filas. Actualiar 1 a 1.
-            $rfilas = $citem->postauto($gentity,$nentidad);
-        } 
+            // Crear clase de para llamada a funciones genericas
+            // Control POST
+            $citem = new citem("item");
+            // Función post
+            if ($_POST['idform'] == 'fitem') {
+                // Recorrer todas las filas. Actualiar 1 a 1.
+                $rfilas = $citem->postauto($gentity,$nentidad);
+                // Refrescar ventana.
+                echo '<meta http-equiv="refresh" content="0">';
+            }
+            // Parametros de busqueda
+            $ritems = $citem->columnitem($nentidad,$gentity);
         ?>
     </head>
     <body>
@@ -24,8 +28,6 @@
         <thead>
            <tr>
              <?php
-                // Parametros de busqueda
-                $ritems = $citem->columnitem($nentidad,$gentity);
                 // Columnas fijas
                 echo "<th>Nombre</th>";
                 echo "<th>Etiqueta</th>";
@@ -199,7 +201,7 @@
 //                  echo '<input type="hidden" name="idform" value="itemdel">';
 //                  echo '<input type="hidden" name="iddel" value="'.$afila['id'].'">';
                     echo '<td><input type="submit" class="gboton" name="bsave" id="bsaveg" value="Grabar"/></td>';
-                    echo '<td><input type="submit" class="gboton" name="bdown" id="bdown" value="Baja"></td>';
+                    echo '<td><input type="submit" class="gdangerboton" name="bdown" id="bdown" value="Baja"></td>';
                     // Final de fila
                     echo "</tr>";
                     echo '</form>';
@@ -207,7 +209,6 @@
             echo '</tbody>';
             echo '</table>';
             echo '</div>';
-            echo '<hr style="color:'.$_SESSION['color'].';" />';
             echo '<form name="fitem" id="fitem" method="post">';
             echo '<input type="hidden" name="idform" value="fitem">'; 
             echo ' <input type="submit" class="boton" name="bnew" id="bnewg" value="Nuevo"/>';
