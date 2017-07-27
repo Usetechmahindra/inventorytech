@@ -18,24 +18,16 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-        <div id="divtitle">
-            <img src="../upload/images/i_inventario.png" alt="i_import" height="52" align="left">
+        <div class="divtitle">
+            <img src="../upload/images/i_inventario.png" alt="i_inventario" height="47" align="left">
+            <p style="font-weight: bold">Administración de importaciones </p>
+<!--            <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
+            <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+            <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>-->
+            <hr style="color:<?php echo $_SESSION['color'];?>" />
         </div>
-        <p style="font-weight: bold">Administración de importaciones </p>
-        <!--<div class="tabbody">-->
-<!--          <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
-          <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>-->
-<!--        </div>
-
-        <div id="Busqueda" class="tabbodycontent">
-          <?php
-
-          ?>
+        <div class="tabbody">
+            
         </div>
-        <div id="Edición" class="tabbodycontent">
-            <?php
-
-            ?>
-        </div>-->
     </body>
 </html>

@@ -18,30 +18,30 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-        <div id="divtitle">
-            <img src="../upload/images/i_user.png" alt="i_user" height="52" align="left">
+        <div class="divtitle">
+            <img src="../upload/images/i_user.png" alt="i_user" height="47" align="left">
+            <p style="font-weight: bold">Administración de usuarios </p>
+            <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
+            <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+            <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
+            <hr style="color:<?php echo $_SESSION['color'];?>" />
         </div>
-        <p style="font-weight: bold">Administración de usuarios </p>
         <div class="tabbody">
-          <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
-          <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
-          <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
-        </div>
+            <div id="Busqueda" class="tabbodycontent">
+              <?php
 
-        <div id="Busqueda" class="tabbodycontent">
-          <?php
+              ?>
+            </div>
+            <div id="Edición" class="tabbodycontent">
+                <?php
 
-          ?>
-        </div>
-        <div id="Edición" class="tabbodycontent">
-            <?php
+                ?>
+            </div>
+            <div id="Parámetros" class="tabbodycontent">
+                <?php
 
-            ?>
-        </div>
-        <div id="Parámetros" class="tabbodycontent">
-            <?php
-
-            ?>
-        </div>        
+                ?>
+            </div>  
+        </div>      
     </body>
 </html>

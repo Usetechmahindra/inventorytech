@@ -9,17 +9,16 @@ and open the template in the editor.
 */
 
  div.tabbody {
-    overflow: hidden;
-    border: 1px solid #ccc;
     background-color: #f1f1f1;
  }
  /* Style the buttons inside the tab */
  div.divtitle {
     width: 100%;
+    float : top;
  }
- div.tabbody button {
+ div.divtitle button {
      background-color: inherit;
-     float: left;
+     float: bottom;
      border: none;
      outline: none;
      cursor: pointer;
@@ -28,12 +27,12 @@ and open the template in the editor.
  }
 
  /* Change background color of buttons on hover */
- div.tabbody button:hover {
+ div.divtitle button:hover {
      background-color: #ddd;
  }
 
  /* Create an active/current tablink class */
- div.tabbody button.active {
+ div.divtitle button.active {
      background-color: #ccc;
  }
  /* Style the tab content */
@@ -50,10 +49,9 @@ and open the template in the editor.
 /*Formato de las busquedas grid  */
 div#dgrid {
   background-color: white;
-  overflow-y: scroll;
-  overflow-x: scroll;
-  overflow: auto;
   width: 100%;
+  overflow: auto;
+  height: 75%;
 }
 table#tgrid {
   width: 100%;

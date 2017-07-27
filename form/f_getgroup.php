@@ -22,30 +22,31 @@ and open the template in the editor.
         </script>
     </head>
     <body>
-        <div id="divtitle">
-            <img src="../upload/images/i_group.png" alt="i_group" height="52" align="left">
-        </div>
-        <p style="font-weight: bold">Administración de grupos </p>
-        <div class="tabbody">
-          <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
-          <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
-          <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
+        <div class="divtitle">
+            <img src="../upload/images/i_group.png" alt="i_group" height="47" align="left">
+            <p style="font-weight: bold">Administración de grupos </p>
+            <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
+            <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+            <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
+            <hr style="color:<?php echo $_SESSION['color'];?>" />
         </div>
 
-        <div id="Busqueda" class="tabbodycontent">
-          <?php
-            include 'g_group.php';
-          ?>
-        </div>
-        <div id="Edición" class="tabbodycontent">
-            <?php
-                include 'e_group.php';
-            ?>
-        </div>
-        <div id="Parámetros" class="tabbodycontent">
-            <?php
-                include 'g_item.php'
-            ?>
+        <div class="tabbody">
+            <div id="Busqueda" class="tabbodycontent">
+              <?php
+                include 'g_group.php';
+              ?>
+            </div>
+            <div id="Edición" class="tabbodycontent">
+                <?php
+                    include 'e_group.php';
+                ?>
+            </div>
+            <div id="Parámetros" class="tabbodycontent">
+                <?php
+                    include 'g_item.php'
+                ?>
+            </div>
         </div>
     </body>
 </html>
