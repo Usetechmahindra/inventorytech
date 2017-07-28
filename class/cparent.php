@@ -108,8 +108,17 @@ class cparent implements itech
     public function insert($arow)
     {
     }
-    public function audit($arow)
+    public function audit($arow,$ioper=1)
     {
+        // Crea el registro de auditoria. 1 Alta, 2 Modif, 3 Baja
+        
+        try {
+            
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
+            // Si no se ha podido conectar al bucket, no se puede grabar el error.
+            $this->error();
+        }
     }
     public function create($arow)
     {
@@ -271,6 +280,7 @@ class cparent implements itech
         // botones
         unset($avalues['bsave']);
         unset($avalues['bnew']);
+        unset($avalues['bdown']);
         return $avalues;
     }
     // Obtener los datos de una entidad por un valor de busqueda. OP. fkentity
