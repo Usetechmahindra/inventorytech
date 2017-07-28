@@ -29,7 +29,6 @@
            <input type="hidden" name="idform" value="ffindgroup">
             <div id="dfind">
                 <?php
-
                     // Recorrer los parámetros dinámicos de la entidad
                     foreach($afilter as $filtro)
                     {

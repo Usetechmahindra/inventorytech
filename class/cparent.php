@@ -68,9 +68,10 @@ class cparent implements itech
             if(!is_null($nentidad)) {
                 $arow['nentidad'] = $nentidad;
             }
-//            $arow['id'] = $this->nclase.'_'.str_pad($arow['docid'], 4, "0", STR_PAD_LEFT);
             // Las ordenaciones se hacen por docid, no es necesario formatear con 0.
             $arow['id'] = $this->nclase.'_'.$arow['docid'];
+            // Campo name varchar obligatorio
+            $arow['name'] = "";
             $arow['fcreate']=time();
             $arow['ucreate']=$_SESSION['user'];
 
@@ -136,19 +137,21 @@ class cparent implements itech
             }
             // Solo actualizar la fila que se ha indicado.
             // Controlar si es nuevo, llamar a la función create 
-            $_SESSION['textsesion'] ="Actualización realizada.";
             if(empty($arow['id']))
             {
                 // Realizar la busqueda por nombre. Siempre es el campo principal
-                $findname=$this->getbysearch('name', $arow['name'], $arow['fkentity'],FALSE);
+                $findname=$this->getbysearch('pkname', $arow['pkname'], $arow['fkentity'],FALSE);
                 // Si la ha encontrado por nombre
                 if (count($findname) > 0)
                 {
-                    $arow = get_object_vars($findname[0]);
                     $_SESSION['textsesion'] ="Se ha localizado un registro previo.";
-                    return $arow;
+                    return $findname;
                 }else{
-                    $arow = $this->newclass($afila);
+                    // Añadir los campos obligatorios a los del post
+                    $anew = $this->newclass($afila);
+                    foreach ($anew as $key => $value) {
+                        $arow[$key] = $value;
+                    }
                     $_SESSION['textsesion'] ="Nueva creación realizada.";
                 }
             }else{
@@ -161,7 +164,11 @@ class cparent implements itech
             $arow = $bucket->upsert($id,$arow);
             // Correcto
             $arow = $this->getdocid($id);
-            return $arow;
+            $_SESSION['textsesion'] ="Grabación realizada.";
+            // Retornar siempre array de clases.
+            $afinal = array();
+            array_push($afinal,$arow);
+            return $afinal;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
             $this->error();
@@ -178,7 +185,8 @@ class cparent implements itech
                 return -1;
             }
             $arow = $bucket->remove($arow['id']);
-            return $arow;
+            $_SESSION['textsesion']='Fila borrada.';
+            return null;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en borrado: '.$ex->getMessage();
             $this->error();
@@ -350,14 +358,13 @@ class cparent implements itech
                 $rfilas = $this->newclass($pentity,$nentidad);
                 
                 $rfilas = $this->update($rfilas); 
-                $rfilas = get_object_vars($rfilas); 
+                $_SESSION['textsesion'] = "Nueva fila creada.";
                 // Retornar array
                 return $rfilas;
             }         
             // Check update
             if (isset($_POST['bsave'])) {
                 $rfilas = $this->update($rfilas); 
-                $rfilas = get_object_vars($rfilas); 
                 return $rfilas;
             }
             // Baja
@@ -368,9 +375,9 @@ class cparent implements itech
             // Check find buttons
             if (!is_null($rfilas)) {
                 $rfilas = $this->findbutton($pentity);
+                // Retorno
+                return $rfilas;
             }
-            // Retorno
-            return $rfilas;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función postauto: '.$ex->getMessage();
             $this->error();

@@ -65,14 +65,9 @@
                     echo '<input type="hidden" name="entidad" value="item">';
                     echo '<input type="hidden" name="fkentity" value="'.$gentity.'">';
                     echo '<input type="hidden" name="nentidad" value="'.$nentidad.'">';
-                    // Valores de auditoría
-                    echo '<input type="hidden" name="docid" value='.$afila['fcreate'].'>';
-                    echo '<input type="hidden" name="docid" value='.$afila['ucreate'].'>';
-                    echo '<input type="hidden" name="docid" value='.$afila['fmodif'].'>';
-                    echo '<input type="hidden" name="docid" value='.$afila['umodif'].'>';
 
-                    echo '<td><input type="text" name="name" size=15 required="required" value="'.$afila['name'].'"></td>';
-                    echo '<td><input type="text" name="label" size=25 required="required" value="'.$afila['label'].'"></td>';
+                    echo '<td><input type="text" name="name" size=15 value="'.$afila['name'].'"></td>';
+                    echo '<td><input type="text" name="label" size=25 value="'.$afila['label'].'"></td>';
                     echo '<td>';
                         echo '<select name = "type" required="required">';
                         $sop ='<option value="text"';
@@ -132,8 +127,8 @@
                         echo $sop;
                         echo '</select>';
                     echo '</td>';
-                    echo '<td><input type="number" name="size" size=2 min="1" max="9999" required="required" value='.$afila['size'].'></td>';
-                    echo '<td><input type="number" name="ipos" size=2 min="1" max="999" required="required" value='.$afila['ipos'].'></td>';
+                    echo '<td><input type="number" name="size" size=2 min="1" max="9999" value='.$afila['size'].'></td>';
+                    echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['ipos'].'></td>';
                     // Combos si/no para que siempre se grabe en bd. El update masivo tiene que tener los array del mismo tamaño
                     echo '<td>';
                     echo '<select name = "bfind">';
@@ -201,7 +196,7 @@
 //                  echo '<input type="hidden" name="idform" value="itemdel">';
 //                  echo '<input type="hidden" name="iddel" value="'.$afila['id'].'">';
                     echo '<td><input type="submit" class="gboton" name="bsave" id="bsaveg" value="Grabar"/></td>';
-                    echo '<td><input type="submit" class="gdangerboton" name="bdown" id="bdown" value="Baja"></td>';
+                    echo '<td><input type="submit" class="gdangerboton" name="bdown" id="bdown" value="Baja" onclick="return confirm(\'¿Borrar fila?\');"></td>';
                     // Final de fila
                     echo "</tr>";
                     echo '</form>';
@@ -217,7 +212,7 @@
         <?php
             echo '<hr style="color:'.$_SESSION['color'].';" />';
             echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
-        ?>
+        ?>        
     </body>
 </html>
 

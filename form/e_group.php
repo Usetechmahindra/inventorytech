@@ -13,6 +13,7 @@ and open the template in the editor.
         if (count($rgrupo) > 0) {
            $rgrupo = get_object_vars($rgrupo); 
         }
+        $_SESSION['textsesion'] = "";
         // Borrar la cookie
         unset($_COOKIE['cid']);
     }
@@ -20,10 +21,10 @@ and open the template in the editor.
     if ($_POST['idform'] == 'fgroupe') {
         // No grabar el id de formulario
         $rgrupo = $cgroup->postauto($gentity);
-        if (is_object($rgrupo[0])){
+        // Coger la primera coincidencia
+        if (count($rgrupo) > 0) {
             $rgrupo = get_object_vars($rgrupo[0]);
         }
-        // Refrescar página.
         header('Location: .');
     }
 
@@ -62,7 +63,7 @@ and open the template in the editor.
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         echo ' <input type="submit" class="boton" name="bsave" id="bsaveg" value="Grabar"/>';
         echo ' <input type="submit" class="boton" name="bnew" id="bnewg" value="Nuevo"/>';
-        echo ' <input type="submit" class="dangerboton" name="bdown" id="bdowg" value="Baja"/>';
+        echo ' <input type="submit" class="dangerboton" name="bdown" id="bdowg" value="Baja" onclick="return confirm(\'¿Borrar fila?\');">';
         echo '</div>';
      ?>
     

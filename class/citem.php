@@ -26,7 +26,8 @@ class citem extends cparent
                    from techinventory u inner join techinventory e
                    on keys u.fkentity 
                    where u.entidad='".$this->nclase."'"
-                    . " and u.nentidad ='".$pnentidad."'";
+                    . " and u.nentidad ='".$pnentidad."'"
+                    . " and u.docid > 0 ";   // El docid es pkname que es obligatorio y no puede modificarse.
             // Control de entidad padre
             if (!empty($fkentity)) {
                 $n1ql.=" and u.fkentity='".$fkentity."'";
