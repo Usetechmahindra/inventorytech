@@ -71,7 +71,7 @@ class cparent implements itech
             // Las ordenaciones se hacen por docid, no es necesario formatear con 0.
             $arow['id'] = $this->nclase.'_'.$arow['docid'];
             // Campo name varchar obligatorio
-            $arow['name'] = "";
+            $arow['pkname'] = "";
             $arow['fcreate']=time();
             $arow['ucreate']=$_SESSION['user'];
 
@@ -108,12 +108,24 @@ class cparent implements itech
     public function insert($arow)
     {
     }
-    public function audit($arow,$ioper=1)
+    public function audit($id,$arow,$ioper=1)
     {
         // Crea el registro de auditoria. 1 Alta, 2 Modif, 3 Baja
-        
         try {
-            
+            $rowaudit = $arow;
+            $rowaudit[0]->docid = $this->counter(1, 'aud');
+            $rowaudit[0]->id = $id; // Id de la fila que se esta auditando.
+            $rowaudit[0]->typeop = $ioper;
+            $rowaudit[0]->entidad = 'aud_'.$this->nclase;
+            // Recorrer todas las filas pasadas
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            $idaud = 'aud_'.$this->nclase.'_'.$rowaudit[0]->docid;
+            $rowaudit = get_object_vars($rowaudit[0]);
+            $rowaudit = $bucket->upsert($idaud,$rowaudit);
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
             // Si no se ha podido conectar al bucket, no se puede grabar el error.
@@ -135,7 +147,7 @@ class cparent implements itech
             return -1;
         }
     }
-    public function update($arow)
+    public function update($arow,$iop=2)
     {
         try {
             // Recorrer todas las filas pasadas
@@ -157,10 +169,13 @@ class cparent implements itech
                     return $findname;
                 }else{
                     // Añadir los campos obligatorios a los del post
+                    $iop = 1;
+                    $pkname = $arow['pkname'];
                     $anew = $this->newclass($afila);
                     foreach ($anew as $key => $value) {
                         $arow[$key] = $value;
                     }
+                    $arow['pkname'] =$pkname;
                     $_SESSION['textsesion'] ="Nueva creación realizada.";
                 }
             }else{
@@ -177,6 +192,8 @@ class cparent implements itech
             // Retornar siempre array de clases.
             $afinal = array();
             array_push($afinal,$arow);
+            // Auditoria
+            $this->audit($id, $afinal,$iop);
             return $afinal;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
@@ -193,7 +210,10 @@ class cparent implements itech
             {
                 return -1;
             }
+            // Auditoria. 3 Baja.
+            $this->audit($arow['id'], $arow,3);
             $arow = $bucket->remove($arow['id']);
+
             $_SESSION['textsesion']='Fila borrada.';
             return null;
         } catch (Exception $ex) {
@@ -302,7 +322,7 @@ class cparent implements itech
              }                
              // Control de entidad padre
              if (!empty($fkentity)) {
-                 $n1ql.="and u.fkentity='".$fkentity."'";
+                 $n1ql.=" and u.fkentity='".$fkentity."'";
              }
              // Traer filas de entidad
              return $this->select($n1ql);
@@ -362,19 +382,20 @@ class cparent implements itech
         try {
             // Check new
             // $_POST siempre son string reconfigurar a valores correctos
+            // Crea el registro de auditoria. 1 Alta, 2 Modif, 3 Baja
             $rfilas = $this->postdatatype($_POST);
             
             if (isset($_POST['bnew'])) {
                 $rfilas = $this->newclass($pentity,$nentidad);
                 
-                $rfilas = $this->update($rfilas); 
+                $rfilas = $this->update($rfilas,1); 
                 $_SESSION['textsesion'] = "Nueva fila creada.";
                 // Retornar array
                 return $rfilas;
             }         
             // Check update
             if (isset($_POST['bsave'])) {
-                $rfilas = $this->update($rfilas); 
+                $rfilas = $this->update($rfilas,2); 
                 return $rfilas;
             }
             // Baja
