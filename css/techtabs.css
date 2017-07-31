@@ -59,6 +59,19 @@ table#tgrid {
   border-collapse: collapse;
 }
 
+div#dgridaudit {
+  background-color: white;
+  width: 100%;
+  overflow:visible;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+table#tgridaudit {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+
 th, td {
   padding: 4px;
   text-align: left;

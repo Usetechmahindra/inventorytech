@@ -27,6 +27,12 @@ and open the template in the editor.
         }
         header('Location: .');
     }
+    // Cargar filas de auditoria
+    if (count($rgrupo) > 0) {
+        $audrow = $cgroup->getgridaudit($rgrupo['id']);
+    }
+
+    
 
 ?>
 <form name="fgroupe" id="fgroupe" method="post">
@@ -69,5 +75,6 @@ and open the template in the editor.
     
  </form>
  <?php
+ include 'g_audit.php';
  echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
  ?>

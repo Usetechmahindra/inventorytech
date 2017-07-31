@@ -371,7 +371,7 @@ class cparent implements itech
             return $result->value;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función getdocid: '.$ex->getMessage();
-            $this->error();
+//            $this->error(); // Al ser una select por id puede ya no exister de momeno no audit.
             return -1;
         }
         
@@ -491,6 +491,22 @@ class cparent implements itech
             //echo $_SESSION['textsesion'];
             return -1;
         }        
+    }
+    public function getgridaudit($id)
+    {
+        try {
+             $_SESSION['textsesion'] = "";
+             $n1ql="select meta(u).id,u.*
+                    from techinventory u
+                    where u.id='".$id."'";
+
+             // Traer filas de entidad
+             return $this->select($n1ql);
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función getgridaudit: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
     }
     // Log error generico
     public function error() {
