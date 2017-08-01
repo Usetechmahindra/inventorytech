@@ -14,8 +14,8 @@ and open the template in the editor.
            $rgrupo = get_object_vars($rgrupo); 
         }
         $_SESSION['textsesion'] = "";
-        // Borrar la cookie
-        unset($_COOKIE['cid']);
+//        // Borrar la cookie
+//        unset($_COOKIE['cid']);
     }
     // El eventos post
     if ($_POST['idform'] == 'fgroupe') {
@@ -24,13 +24,11 @@ and open the template in the editor.
         // Coger la primera coincidencia
         if (count($rgrupo) > 0) {
             $rgrupo = get_object_vars($rgrupo[0]);
+            setcookie($_COOKIE['cid'],$rgrupo['id']);
         }
         header('Location: .');
     }
-    // Cargar filas de auditoria
-    if (count($rgrupo) > 0) {
-        $audrow = $cgroup->getgridaudit($rgrupo['id']);
-    }
+
 
     
 
@@ -75,6 +73,5 @@ and open the template in the editor.
     
  </form>
  <?php
- include 'g_audit.php';
  echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
  ?>

@@ -4,6 +4,7 @@ require('../class/cparent.php');
 require('../class/cgroup.php');
 require('../class/cuser.php');
 require('../class/citem.php');
+require('../class/caudit.php');
 
 // Función del parametro pasado por el get
 ?>

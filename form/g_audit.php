@@ -5,6 +5,11 @@
  * 
  * 
  */
+$caudit = new caudit("aud"); 
+// Cargar filas de auditoria
+if (isset($_COOKIE['cid'])) {
+    $audrow = $caudit->getgridaudit($_COOKIE['cid']);
+}
 ?>
 <html>
     <head>
@@ -18,8 +23,8 @@
     <body>
         <p style="font-weight: bold">Historial de cambios </p>
         <hr style="color:<?php echo $_SESSION['color']; ?>" />
-        <div id="dgridaudit">
-        <table id="tgridaudit">
+        <div id="dgrid">
+        <table id="tgrid">
         <thead>
            <tr>
              <?php

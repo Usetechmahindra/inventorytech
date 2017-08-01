@@ -11,7 +11,6 @@ and open the template in the editor.
 <html>
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" type="text/css" href="../css/techtabs.css">
         <script>
             $( function() {
                 // Coger la cookie
@@ -27,6 +26,7 @@ and open the template in the editor.
             <p style="font-weight: bold">Administración de grupos </p>
             <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
             <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+            <button class="tablinks" onclick="openTab(event, 'Histórico')">Histórico</button>
             <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>
             <hr style="color:<?php echo $_SESSION['color'];?>" />
         </div>
@@ -40,6 +40,11 @@ and open the template in the editor.
             <div id="Edición" class="tabbodycontent">
                 <?php
                     include 'e_group.php';
+                ?>
+            </div>
+            <div id="Histórico" class="tabbodycontent">
+                <?php
+                    include 'g_audit.php';
                 ?>
             </div>
             <div id="Parámetros" class="tabbodycontent">

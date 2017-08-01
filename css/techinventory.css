@@ -141,3 +141,68 @@ div#dcuerpo{
 .bfind:hover {
     color: #e31732;
 }
+
+ /* Style select tab */
+ 
+ div.tabbody {
+    background-color: #f1f1f1;
+ }
+ /* Style the buttons inside the tab */
+ div.divtitle {
+    width: 100%;
+    float : top;
+ }
+ div.divtitle button {
+     background-color: inherit;
+     float: bottom;
+     border: none;
+     outline: none;
+     cursor: pointer;
+     padding: 8px 16px;
+     transition: 0.3s;
+ }
+
+ /* Change background color of buttons on hover */
+ div.divtitle button:hover {
+     background-color: #ddd;
+ }
+
+ /* Create an active/current tablink class */
+ div.divtitle button.active {
+     background-color: #ccc;
+ }
+ /* Style the tab content */
+ .tabbodycontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+  }
+  
+.labelinput{
+  display: inline-block;
+}
+/*Formato de las busquedas grid  */
+div#dgrid {
+  background-color: white;
+  width: 100%;
+  overflow: auto;
+  height: 75%;
+}
+table#tgrid {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 4px;
+  text-align: left;
+}
+th {
+  color: white;
+}
+tr:hover{
+    background-color:#f5f5f5;
+    cursor: hand;
+}
