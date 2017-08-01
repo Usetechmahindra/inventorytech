@@ -34,12 +34,17 @@ if(isset($_POST['bvalida']))
     <head>
         <meta charset="UTF-8">
         <title>Login TechInventory</title>
-        <link rel="stylesheet" type="text/css" href="css/techinventory.css">
+        <!--<link rel="stylesheet" type="text/css" href="css/techinventory.css">-->
         <style>
+        *{
+            margin:0px;
+            padding:0px;
+          }
         body{
             overflow: hidden;
             background:url(upload/images/techmahindra-security.jpg);
             background-size: cover;
+            font: 85% "Trebuchet MS", sans-serif;
         }
         div#contlogin{
             margin: 200px;
@@ -52,6 +57,20 @@ if(isset($_POST['bvalida']))
         }
         th, td {
             padding: 5px;
+        }
+        .boton {
+            background-color: #758697;
+            border: 1px solid #e7e7e7;
+            color: white;
+            padding: 5px 31px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .boton:hover {
+            background-color: #3e8e41;
         }
         </style>
     </head>

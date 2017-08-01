@@ -112,19 +112,19 @@ class cparent implements itech
     {
         // Crea el registro de auditoria. 1 Alta, 2 Modif, 3 Baja
         try {
-            $rowaudit = $arow;
-            $rowaudit[0]->docid = $this->counter(1, 'aud');
-            $rowaudit[0]->id = $id; // Id de la fila que se esta auditando.
-            $rowaudit[0]->typeop = $ioper;
-            $rowaudit[0]->entidad = 'aud_'.$this->nclase;
+            $rowaudit = get_object_vars($rowaudit[0]);
+            $rowaudit['docid'] = $this->counter(1, 'aud');
+            $rowaudit['id'] = $id; // Id de la fila que se esta auditando.
+            $rowaudit['typeop'] = $ioper;
+            $rowaudit['fmodif'] = time();
+            $rowaudit['entidad'] = 'aud_'.$this->nclase;
             // Recorrer todas las filas pasadas
             $bucket = $this->connbucket();
             if($bucket == -1)
             {
                 return -1;
             }
-            $idaud = 'aud_'.$this->nclase.'_'.$rowaudit[0]->docid;
-            $rowaudit = get_object_vars($rowaudit[0]);
+            $idaud = 'aud_'.$this->nclase.'_'.$rowaudit['docid'];
             $rowaudit = $bucket->upsert($idaud,$rowaudit);
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error al inicializar datos '.$ex->getMessage();
@@ -498,7 +498,7 @@ class cparent implements itech
              $_SESSION['textsesion'] = "";
              $n1ql="select meta(u).id,u.*
                     from techinventory u
-                    where u.id='".$id."'";
+                    where u.id='".$id."' order by docid desc";
 
              // Traer filas de entidad
              return $this->select($n1ql);
