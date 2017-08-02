@@ -6,7 +6,8 @@ require('../class/cuser.php');
 require('../class/citem.php');
 require('../class/caudit.php');
 
-// Función del parametro pasado por el get
+// Funciones
+
 ?>
 <html>
     <head>

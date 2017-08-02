@@ -5,12 +5,18 @@
  * 
  * 
  */
-$caudit = new caudit("aud"); 
+$caudit = new caudit("aud");
 // Cargar filas de auditoria
-if (isset($_COOKIE['cid'])) {
-    $audrow = $caudit->getgridaudit($_COOKIE['cid']);
+if (isset($_SESSION['idact'])) {
+    $audrow = $caudit->getgridaudit($_SESSION['idact']);
+}
+// Recuperar auditoría previa
+if (isset($_POST['baudit'])){
+    $rfila = $caudit->getauditvalues($_POST['id']);
+    header('Location: .');
 }
 ?>
+
 <html>
     <head>
         <style>
@@ -34,6 +40,7 @@ if (isset($_COOKIE['cid'])) {
                 echo "<th>Operación</th>";
                 echo "<th>Fecha</th>";
                 echo "<th>Usuario</th>";
+                echo "<th>Restablecer</th>";
              ?>
            </tr>
         </thead>
@@ -46,8 +53,9 @@ if (isset($_COOKIE['cid'])) {
                     //echo '<tr onclick="openTab(event, \'Edición\')">';
                     // Poner el orden establecido
                     $afila = get_object_vars($afila);
-                    echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
-//                  echo '<tr onclick="fclick(\''.$afila["id"].'\')">';
+                    echo '<form name="faudit" id="faudit" method="post">';
+                    echo '<input type="hidden" name="id" value="'.$afila["id"].'">';
+                   // echo '<tr ondblclick="faudit(\''.$afila["idaudit"].'\')">';
                     switch ($afila["typeop"]) {
                             case 1:
                                 $afila["typeop"] = "Alta";
@@ -55,13 +63,16 @@ if (isset($_COOKIE['cid'])) {
                             case 3:
                                 $afila["typeop"] = "Baja";
                                 break;
+                            case 4:
+                                $afila["typeop"] = "Backup";
+                                break;
                             default:
                                 $afila["typeop"] = "Modificación";
                                 break;
                     }
                     echo "<td>".$afila["typeop"]."</td>";
                     // Auditoria
-                    if(!empty($afila["fmodif"])) {
+                    if(!empty($afila["umodif"])) {
                         echo "<td>".date('d/m/Y H:i:s',$afila["fmodif"])."</td>";
                         echo "<td>".$afila["umodif"]."</td>";
                     }else {
@@ -71,8 +82,10 @@ if (isset($_COOKIE['cid'])) {
 //                    foreach($afila as $clave =>$valor){
 //                        echo "<td>".$valor."</td>";
 //                    }
+                    echo '<td><input type="submit" class="gdangerboton" name="baudit" id="baudit" value="Restablecer" onclick="return confirm(\'¿Recuperar los datos de este cambio?\');"></td>';
                     // Final de fila
                     echo "</tr>";
+                    echo '</form>';
                 }
             ?>
             

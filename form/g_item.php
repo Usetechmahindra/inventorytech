@@ -15,7 +15,7 @@
             if ($_POST['idform'] == 'fitem') {
                 // Recorrer todas las filas. Actualiar 1 a 1.
                 $rfilas = $citem->postauto($gentity,$nentidad);
-                // Refrescar ventana.
+                // Refrescar ventana
                 echo '<meta http-equiv="refresh" content="0">';
             }
             // Parametros de busqueda
@@ -117,6 +117,12 @@
                         if($afila['type']=='email') {
                             $sop.= " SELECTED";      
                         }
+                         $sop ='<option value="password"';
+                        if($afila['type']=='password') {
+                            $sop.= " SELECTED";       
+                        }
+                        $sop.='>Password</option>';
+                        echo $sop;
                         $sop.='>Email</option>';
                         echo $sop;
                         $sop ='<option value="checkbox"';

@@ -79,7 +79,7 @@
                     // Poner el orden establecido
                     $afila = get_object_vars($afila);
                     echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
-                    echo '<tr onclick="fclick(\''.$afila["id"].'\')">';
+                    echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);

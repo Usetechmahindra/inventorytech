@@ -112,12 +112,13 @@ class cparent implements itech
     {
         // Crea el registro de auditoria. 1 Alta, 2 Modif, 3 Baja
         try {
-            $rowaudit = get_object_vars($rowaudit[0]);
+            $rowaudit = get_object_vars($arow[0]);
             $rowaudit['docid'] = $this->counter(1, 'aud');
-            $rowaudit['id'] = $id; // Id de la fila que se esta auditando.
+            $rowaudit['idaudit'] = $id; // Id de la fila que se esta auditando.
+            unset($rowaudit['id']);
             $rowaudit['typeop'] = $ioper;
             $rowaudit['fmodif'] = time();
-            $rowaudit['entidad'] = 'aud_'.$this->nclase;
+            $rowaudit['entidad'] = 'aud_'.$rowaudit['entidad'];
             // Recorrer todas las filas pasadas
             $bucket = $this->connbucket();
             if($bucket == -1)
@@ -367,6 +368,7 @@ class cparent implements itech
                 return -1;
             }
             $result = $bucket->get($pid);
+            // Tanto la busqueda como por id retornan el valor del id
             $result->value->id = $pid;
             return $result->value;
         } catch (Exception $ex) {
@@ -491,22 +493,6 @@ class cparent implements itech
             //echo $_SESSION['textsesion'];
             return -1;
         }        
-    }
-    public function getgridaudit($id)
-    {
-        try {
-             $_SESSION['textsesion'] = "";
-             $n1ql="select meta(u).id,u.*
-                    from techinventory u
-                    where u.id='".$id."' order by docid desc";
-
-             // Traer filas de entidad
-             return $this->select($n1ql);
-        } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función getgridaudit: '.$ex->getMessage();
-            $this->error();
-            return -1;
-        }
     }
     // Log error generico
     public function error() {
