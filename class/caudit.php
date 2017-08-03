@@ -21,7 +21,7 @@ class caudit extends cparent
              $_SESSION['textsesion'] = "";
              $n1ql="select meta(u).id,u.*
                     from techinventory u
-                    where u.idaudit='".$id."' order by docid desc";
+                    where u.idaudit='".$id."' order by fmodif desc";
 
              // Traer filas de entidad
              return $this->select($n1ql);

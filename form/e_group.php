@@ -16,8 +16,6 @@ and open the template in the editor.
            $_SESSION['idact'] = $_COOKIE['cid'];
         }
         $_SESSION['textsesion'] = "";
-//        // Borrar la cookie
-        unset($_COOKIE['cid']);
     }
     // El eventos post
     if ($_POST['idform'] == 'fgroupe'){
@@ -26,9 +24,11 @@ and open the template in the editor.
         // Coger la primera coincidencia
         if (count($rfila) > 0) {
             $rfila = get_object_vars($rfila[0]);
-            $_SESSION['idact'] = $rfila['id'];
-            // Refrescar ventana
-            //echo '<meta http-equiv="refresh" content="0">';
+            $_COOKIE['cid'] = $rfila['id'];
+//            // Refrescar ventana
+//            echo '<meta http-equiv="refresh" content="0">';
+        }else {
+            unset($_COOKIE['cid']);
         }
     }
     header('Location: .');

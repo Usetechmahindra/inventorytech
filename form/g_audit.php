@@ -7,12 +7,15 @@
  */
 $caudit = new caudit("aud");
 // Cargar filas de auditoria
-if (isset($_SESSION['idact'])) {
-    $audrow = $caudit->getgridaudit($_SESSION['idact']);
+if (isset($_COOKIE['cid'])) {
+    $audrow = $caudit->getgridaudit($_COOKIE['cid']);
 }
 // Recuperar auditoría previa
 if (isset($_POST['baudit'])){
+    $_COOKIE['cid'] = $_POST['idaudit'];
     $rfila = $caudit->getauditvalues($_POST['id']);
+    // Refrescar ventana
+    echo '<meta http-equiv="refresh" content="0">';
     header('Location: .');
 }
 ?>
@@ -55,7 +58,8 @@ if (isset($_POST['baudit'])){
                     $afila = get_object_vars($afila);
                     echo '<form name="faudit" id="faudit" method="post">';
                     echo '<input type="hidden" name="id" value="'.$afila["id"].'">';
-                   // echo '<tr ondblclick="faudit(\''.$afila["idaudit"].'\')">';
+                    echo '<input type="hidden" name="idaudit" value="'.$afila["idaudit"].'">';
+                   // echo '<tr ondblclick="faudit(\''.$afila["idaudit"].'\')">'; 
                     switch ($afila["typeop"]) {
                             case 1:
                                 $afila["typeop"] = "Alta";
