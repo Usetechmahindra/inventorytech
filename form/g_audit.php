@@ -7,16 +7,16 @@
  */
 $caudit = new caudit("aud");
 // Cargar filas de auditoria
-if (isset($_COOKIE['cid'])) {
-    $audrow = $caudit->getgridaudit($_COOKIE['cid']);
+if (isset($_SESSION['idact'])) {
+    $audrow = $caudit->getgridaudit($_SESSION['idact']);
 }
 // Recuperar auditoría previa
 if (isset($_POST['baudit'])){
-    $_COOKIE['cid'] = $_POST['idaudit'];
     $rfila = $caudit->getauditvalues($_POST['id']);
+    $_SESSION['idact'] =  get_object_vars($rfila[0])['id'];
     // Refrescar ventana
     echo '<meta http-equiv="refresh" content="0">';
-    header('Location: .');
+    //header('Location: .');
 }
 ?>
 

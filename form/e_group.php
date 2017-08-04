@@ -8,12 +8,15 @@ and open the template in the editor.
     $cgroup = new cgroup("grupo");
     $cols = $cgroup->itementity($gentity,0);
     // Valores de cookies
-    if (isset($_COOKIE['cid'])) {
+    if (isset($_SESSION['idact'])) {
         // Meter en varaible de sesion
-        $rfila = $cgroup->getdocid($_COOKIE['cid']);
+        $rfila = $cgroup->getdocid($_SESSION['idact']);
         if (count($rfila) > 0) {
-           $rfila = get_object_vars($rfila); 
-           $_SESSION['idact'] = $_COOKIE['cid'];
+           $rfila = get_object_vars($rfila);
+           $_SESSION['idact'] = $rfila['id'];
+        }else
+            {
+              unset($_SESSION['idact']); 
         }
         $_SESSION['textsesion'] = "";
     }
@@ -24,11 +27,12 @@ and open the template in the editor.
         // Coger la primera coincidencia
         if (count($rfila) > 0) {
             $rfila = get_object_vars($rfila[0]);
-            $_COOKIE['cid'] = $rfila['id'];
+            $_SESSION['idact'] = $rfila['id'];
 //            // Refrescar ventana
 //            echo '<meta http-equiv="refresh" content="0">';
-        }else {
-            unset($_COOKIE['cid']);
+        }else
+            {
+              unset($_SESSION['idact']); 
         }
     }
     header('Location: .');

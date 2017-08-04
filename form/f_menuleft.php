@@ -26,7 +26,6 @@
 // Pintar dinamicamente estructura de abajo.
 $cuser = new cuser("cuser");
 $cuser->usermenudim();
-//echo $_COOKIE['cactivemenu'];
 ?>
 </div>
 </body>

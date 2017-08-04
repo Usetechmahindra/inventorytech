@@ -5,9 +5,6 @@ require('../class/cgroup.php');
 require('../class/cuser.php');
 require('../class/citem.php');
 require('../class/caudit.php');
-
-// Funciones
-
 ?>
 <html>
     <head>
@@ -40,6 +37,7 @@ require('../class/caudit.php');
                 evt.currentTarget.className += " active";
                 // Guardar tab activa
                 document.cookie = "ctabname="+tabName;
+                // Al finalizar el post desactivar variable
             }
             // Control de active menu
             function openbody(pentity,pform) {
@@ -57,7 +55,9 @@ require('../class/caudit.php');
 //                alert(pid);
                 document.cookie = "cid="+pid;
                 document.cookie = "ctabname=Edición";
-                window.location="../form/f_techinventory.php";
+		//alert(funtion);
+                //window.location="../form/f_techinventory.php";
+                document.myform.submit();
             }
             // Función para obtener una cookie determinada
             function getCookie(cname) {
@@ -88,6 +88,11 @@ require('../class/caudit.php');
     <?php
     // Control cookies
     $gentity = $_COOKIE['centity'];
+    if ($gentity <> $_SESSION['$gentity']) {
+        // Borrar id actual.
+        $_SESSION['$gentity'] = $gentity;
+        unset($_SESSION['idact']);
+    } 
     $gform = $_COOKIE['cform'].'.php';
     // El body dentro de php
         echo '<div id="headbody">';

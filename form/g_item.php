@@ -113,18 +113,21 @@
                         }
                         $sop.='>Número</option>';
                         echo $sop;
+                        
                         $sop ='<option value="email"';
                         if($afila['type']=='email') {
                             $sop.= " SELECTED";      
                         }
-                         $sop ='<option value="password"';
+                        $sop.='>Email</option>';
+                        echo $sop;
+                        
+                        $sop ='<option value="password"';
                         if($afila['type']=='password') {
                             $sop.= " SELECTED";       
                         }
                         $sop.='>Password</option>';
                         echo $sop;
-                        $sop.='>Email</option>';
-                        echo $sop;
+                        
                         $sop ='<option value="checkbox"';
                         if($afila['type']=='checkbox') {
                             $sop.= " SELECTED";      

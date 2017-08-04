@@ -19,7 +19,13 @@
         if ($_POST['idform'] == 'ffindgroup') {
             $rows = $cgroup->postauto($gentity);
         }else {
+            // Controlar formulario grid
+            if ($_POST['idform'] == 'fgroup') {
+                $_SESSION['idact'] = $_POST['id'];
+            }else {
+                // Lanzar la busqueda
                 $rows = $cgroup->getbysearch("", "", $gentity);
+            }
         } 
         ?>
     </head>
@@ -42,7 +48,6 @@
                 ?>    
             </div>
         </form>
-        <form name="fgroup" method="post">
         <div id="dgrid">
         <table id="tgrid">
         <thead>
@@ -66,6 +71,8 @@
                 echo "<th>U. Alta</th>";
                 echo "<th>Modificación</th>";
                 echo "<th>U. Modif.</th>";
+                // Botón de edición
+                echo "<th>Editar</th>";  
              ?>
            </tr>
         </thead>
@@ -76,10 +83,14 @@
                 // Recorrer todas las filas y cada columna
                 foreach($rows as $afila){
                     //echo '<tr onclick="openTab(event, \'Edición\')">';
+                    echo '<tr>';
+                    echo '<form name="fgroup" id="fgroup" method="post">';
+                    echo '<input type="hidden" name="idform" value="fgroup">';
                     // Poner el orden establecido
                     $afila = get_object_vars($afila);
-                    echo '<input type="hidden" name="id[]" value="'.$afila["id"].'">';
-                    echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
+                    
+                    echo '<input type="hidden" name="id" value="'.$afila["id"].'">';
+                    //echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);
@@ -93,11 +104,11 @@
                         echo "<td>".$afila["umodif"]."</td>";
                     }else {
                         echo "<td></td>";
+                        echo "<td></td>";
                     }
-//                    foreach($afila as $clave =>$valor){
-//                        echo "<td>".$valor."</td>";
-//                    }
+                    echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar" onclick="openTab(event, \'Edición\')"></td>';
                     // Final de fila
+                    echo '</form>';
                     echo "</tr>";
                 }
             ?>
