@@ -17,7 +17,7 @@ class citem extends cparent
         
         return $acolclass;
     }
-    public function columnitem($pnentidad,$fkentity)
+    public function columnitem($fkentity)
     {
         try {
             $_SESSION['textsesion'] = "";
@@ -26,7 +26,6 @@ class citem extends cparent
                    from techinventory u inner join techinventory e
                    on keys u.fkentity 
                    where u.entidad='".$this->nclase."'"
-                    . " and u.nentidad ='".$pnentidad."'"
                     . " and u.docid > 0 ";   // El docid es pkname que es obligatorio y no puede modificarse.
             // Control de entidad padre
             if (!empty($fkentity)) {

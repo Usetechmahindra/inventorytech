@@ -5,12 +5,12 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <?php
-    $cgroup = new cgroup("grupo");
-    $cols = $cgroup->itementity($gentity,0);
+    $cuser = new cuser("usuario");
+    $cols = $cuser->itementity($gentity,0);
     // Valores de cookies
     if (isset($_SESSION['idact'])) {
         // Meter en varaible de sesion
-        $rfila = $cgroup->getdocid($_SESSION['idact'],true);
+        $rfila = $cuser->getdocid($_SESSION['idact'],true);
         if (count($rfila) > 0) {
            $rfila = get_object_vars($rfila);
            $_SESSION['idact'] = $rfila['id'];
@@ -20,9 +20,9 @@ and open the template in the editor.
         $_SESSION['textsesion'] = "";
     }
     // El eventos post
-    if ($_POST['idform'] == 'fgroupe'){
+    if ($_POST['idform'] == 'fusere'){
         // No grabar el id de formulario
-        $rfila = $cgroup->postauto($gentity);
+        $rfila = $cuser->postauto($gentity);
         // Coger la primera coincidencia
         if (count($rfila) > 0) {
             $rfila = get_object_vars($rfila[0]);
@@ -33,20 +33,16 @@ and open the template in the editor.
             {
               unset($_SESSION['idact']); 
         }
+        header('Location: .');
     }
-    header('Location: .');
-
-
-    
-
 ?>
-<form name="fgroupe" id="fgroupe" method="post">
+<form name="fusere" id="fusere" method="post">
      <?php
         // Asignar y borrar.
         // Parametro oculto
         echo '<div id="dgride">';
         //<!--Parametro oculto que identificar el form.--> 
-        echo '<input type="hidden" name="idform" value="fgroupe">';
+        echo '<input type="hidden" name="idform" value="fusere">';
         echo '<input type="hidden" name="id" value="'.$rfila['id'].'">';
         echo '<input type="hidden" name="docid" value="'.$rfila['docid'].'">';
         echo '<input type="hidden" name="entidad" value="'.$rfila['entidad'].'">';
@@ -57,14 +53,14 @@ and open the template in the editor.
         {
             $acol = get_object_vars($col);
             // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
-            $cgroup->labelinput($acol['name'],$rfila[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],$acol['breadonly']);
+            $cuser->labelinput($acol['name'],$rfila[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],$acol['breadonly']);
         }
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
-        $cgroup->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','date',20,false,false,true);
-        $cgroup->labelinput('ucreate',$rfila['ucreate'],'U. Alta','text',20,false,false,true);
-        $cgroup->labelinput('fmodif',$rfila['fmodif'],'Fecha Modif.','date',20,false,false,true);
-        $cgroup->labelinput('umodif',$rfila['umodif'],'U. Modif','text',20,false,false,true);
+        $cuser->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','date',20,false,false,true);
+        $cuser->labelinput('ucreate',$rfila['ucreate'],'U. Alta','text',20,false,false,true);
+        $cuser->labelinput('fmodif',$rfila['fmodif'],'Fecha Modif.','date',20,false,false,true);
+        $cuser->labelinput('umodif',$rfila['umodif'],'U. Modif','text',20,false,false,true);
         // Columnas de auditoría. Los campos ocultos almacenan la fecha en unix format.
         echo '<input type="hidden" name="fcreate" value="'.$rfila['fcreate'].'">';
         echo '<input type="hidden" name="ucreate" value="'.$rfila['ucreate'].'">';
@@ -72,15 +68,13 @@ and open the template in the editor.
         echo '<input type="hidden" name="umodif" value="'.$rfila['umodif'].'">'; 
         // Botonera
         echo '<hr style="color:'.$_SESSION['color'].';" />';
-        echo ' <input type="submit" class="boton" name="bsave" id="bsaveg" value="Grabar"/>';
-        echo ' <input type="submit" class="boton" name="bnew" id="bnewg" value="Nuevo"/>';
-        echo ' <input type="submit" class="dangerboton" name="bdown" id="bdowg" value="Baja" onclick="return confirm(\'¿Borrar fila?\');">';
+        echo ' <input type="submit" class="boton" name="bsave" id="bsaveu" value="Grabar"/>';
+        echo ' <input type="submit" class="boton" name="bnew" id="bnewu" value="Nuevo"/>';
+        echo ' <input type="submit" class="dangerboton" name="bdown" id="bdowu" value="Baja" onclick="return confirm(\'¿Borrar fila?\');">';
         echo '</div>';
      ?>
     
  </form>
  <?php
  echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
- // Controlar si no tiene filas y limpiar form
- 
  ?>

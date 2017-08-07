@@ -10,16 +10,16 @@
         <?php
             // Crear clase de para llamada a funciones genericas
             // Control POST
-            $citem = new citem("item");
+            $citem = new citem("item_".$nentidad);
             // Función post
             if ($_POST['idform'] == 'fitem') {
                 // Recorrer todas las filas. Actualiar 1 a 1.
-                $rfilas = $citem->postauto($gentity,$nentidad);
+                $rfilas = $citem->postauto($gentity);
                 // Refrescar ventana
                 echo '<meta http-equiv="refresh" content="0">';
             }
             // Parametros de busqueda
-            $ritems = $citem->columnitem($nentidad,$gentity);
+            $ritems = $citem->columnitem($gentity);
         ?>
     </head>
     <body>
@@ -62,9 +62,8 @@
                     echo '<input type="hidden" name="id" value="'.$afila['id'].'">';
                     echo '<input type="hidden" name="docid" value='.$afila['docid'].'>';
                     // Valores definidos siempre por la posición.
-                    echo '<input type="hidden" name="entidad" value="item">';
+                    echo '<input type="hidden" name="entidad" value="item_'.$nentidad.'">';
                     echo '<input type="hidden" name="fkentity" value="'.$gentity.'">';
-                    echo '<input type="hidden" name="nentidad" value="'.$nentidad.'">';
 
                     echo '<td><input type="text" name="name" size=15 value="'.$afila['name'].'"></td>';
                     echo '<td><input type="text" name="label" size=25 value="'.$afila['label'].'"></td>';

@@ -55,7 +55,7 @@ class cparent implements itech
         //$icount = $_SESSION['bucket']->counter($vpref.'_pruebas', $ivalue, array('initial' => 1));
         return $icount->value;
     }
-    public function newclass($fkentity=null,$nentidad=null)
+    public function newclass($fkentity=null)
     {
         // En array añadir el contador
         try {
@@ -64,9 +64,6 @@ class cparent implements itech
             $arow['docid'] = $this->counter();
             if(!is_null($fkentity)) {
                 $arow['fkentity'] = $fkentity;
-            }
-            if(!is_null($nentidad)) {
-                $arow['nentidad'] = $nentidad;
             }
             // Las ordenaciones se hacen por docid, no es necesario formatear con 0.
             $arow['id'] = $this->nclase.'_'.$arow['docid'];
@@ -118,7 +115,7 @@ class cparent implements itech
             unset($rowaudit['id']);
             $rowaudit['typeop'] = $ioper;
             $rowaudit['fmodif'] = time();
-            $rowaudit['entidad'] = 'aud_'.$rowaudit['entidad'];
+            $rowaudit['entidad'] = 'aud_'.$this->nclase;
             // Recorrer todas las filas pasadas
             $bucket = $this->connbucket();
             if($bucket == -1)
@@ -235,11 +232,12 @@ class cparent implements itech
             if($breadonly) {
                 $sreadonly = "readonly";
             }
+            //$svalue ="NUEVO";
             echo '<div class="labelinput">';
                 echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
                 // Dependiendo del tipo de caja.
                 $this->configlavel($svalue,$stype,$isize);
-                echo '<input type="'.$stype.'" name="'.$skey.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' value="'.$svalue.'" />';
+                echo '<input type="'.$stype.'" name="'.$skey.'" value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' />';
                 // Si es tipo fecha poner su clase formato jquery
                 // Si hay que pintar la busqueda
             echo '</div>  ';
@@ -312,7 +310,8 @@ class cparent implements itech
              $n1ql="select meta(u).id,e.entityname,u.*
                     from techinventory u inner join techinventory e
                     on keys u.fkentity 
-                    where u.entidad='".$this->nclase."'";
+                    where u.entidad='".$this->nclase."'"
+                     . " and u.docid > 0 ";
              // Controla filtro
              if (!empty($item)) {
                  if ($blike) {
@@ -336,7 +335,7 @@ class cparent implements itech
     public function itementity($gentity,$itype=0) {
         try {
             $_SESSION['textsesion'] = "";
-            $n1ql="select u.* from techinventory u where entidad='item' and fkentity ='".$gentity."' and nentidad='".$this->nclase."'";
+            $n1ql="select u.* from techinventory u where entidad='item_".$this->nclase."' and fkentity ='".$gentity."'";
             // Dependiendo del tipo: 0 Todos, 1 grid, 2 campos de filtro
             switch ($itype) {
                case 1:
@@ -358,7 +357,7 @@ class cparent implements itech
             return -1;
         }
     }
-    public function getdocid($pid) {
+    public function getdocid($pid,$bcheckentity=FALSE) {
         try {
             // Obtener por id
             $bucket = $this->connbucket();
@@ -370,6 +369,12 @@ class cparent implements itech
             $result = $bucket->get($pid);
             // Tanto la busqueda como por id retornan el valor del id
             $result->value->id = $pid;
+            // Controlar si se valida nombre de entidad
+            if($bcheckentity) {
+                if ($result->value->entidad <> $this->nclase) {
+                    return null;
+                }
+            }
             return $result->value;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función getdocid: '.$ex->getMessage();
@@ -379,7 +384,7 @@ class cparent implements itech
         
     }
     // Check post auto. Dependiendo. Botones new, update, busquedas.....
-    public function postauto($pentity,$nentidad=null)
+    public function postauto($pentity)
     {
         try {
             // Check new
@@ -388,7 +393,7 @@ class cparent implements itech
             $rfilas = $this->postdatatype($_POST);
             
             if (isset($_POST['bnew'])) {
-                $rfilas = $this->newclass($pentity,$nentidad);
+                $rfilas = $this->newclass($pentity);
                 
                 $rfilas = $this->update($rfilas,1); 
                 $_SESSION['textsesion'] = "Nueva fila creada.";
