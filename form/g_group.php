@@ -97,10 +97,10 @@
                         echo "<td>".$afila[$acol['name']]."</td>";                   
                     }
                     // Auditoria
-                    echo "<td>".date('d/m/Y H:i:s',$afila["fcreate"])."</td>";
+                    echo "<td>".date('d-m-Y H:i:s',$afila["fcreate"])."</td>";
                     echo "<td>".$afila["ucreate"]."</td>";
                     if(!empty($afila["fmodif"])) {
-                        echo "<td>".date('d/m/Y H:i:s',$afila["fmodif"])."</td>";
+                        echo "<td>".date('d-m-Y H:i:s',$afila["fmodif"])."</td>";
                         echo "<td>".$afila["umodif"]."</td>";
                     }else {
                         echo "<td></td>";

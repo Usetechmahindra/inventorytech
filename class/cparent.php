@@ -229,17 +229,21 @@ class cparent implements itech
             if($brequired) {
                 $srequired = "required";
             }
-            if($breadonly) {
-                $sreadonly = "readonly";
-            }
             //$svalue ="NUEVO";
             echo '<div class="labelinput">';
-                echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
-                // Dependiendo del tipo de caja.
-                $this->configlavel($svalue,$stype,$isize);
-                echo '<input type="'.$stype.'" name="'.$skey.'" value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' />';
-                // Si es tipo fecha poner su clase formato jquery
-                // Si hay que pintar la busqueda
+            echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
+            // Dependiendo del tipo de caja.
+            $sclass = "";
+            $this->configlavel($svalue,$stype,$isize,$sclass);
+            $simput = '<input type="'.$stype.'" name="'.$skey.'"';
+            if($breadonly) {
+                $sreadonly = "readonly";
+                $sclass = "";
+            }
+            $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
+            echo $simput;
+            // Si es tipo fecha poner su clase formato jquery
+            // Si hay que pintar la busqueda
             echo '</div>  ';
             if($bfind)
             {
@@ -254,15 +258,26 @@ class cparent implements itech
     
     
     
-    private function configlavel(&$svalue,&$stype,&$isize)
+    private function configlavel(&$svalue,&$stype,&$isize,&$sclass)
     {
         // Permite recotar los parametros
+        
         switch ($stype) {
+            // El formato europeo de php de fechas es - para diferenciar del americano /.
             case 'date':
                 $stype = "text";
                 if ($svalue <> null)
                 {
-                    $svalue = date('d/m/Y H:i:s',$svalue);
+                    $svalue = date('d-m-Y',$svalue);
+                    $isize = 15;
+                }
+                $sclass =  'class="cdate"';
+                break;
+            case 'datetime':
+                $stype = "text";
+                if ($svalue <> null)
+                {
+                    $svalue = date('d-m-Y H:i:s',$svalue);
                     $isize = 15;
                 }
                 break;
@@ -451,6 +466,22 @@ class cparent implements itech
     }
     public function my_arrayclass()
     {
+        // Completar con la llamada de las hijas
+        $acolclass = array(); 
+        // Coger los datetypes de los custom parameters
+        $bucket = $this->connbucket();
+        if($bucket == -1)
+        {
+            return -1;
+        }
+        $n1ql="select name,type from techinventory where entidad='item_".$this->nclase."'";
+        $ccustom=$this->select($n1ql);
+        // Recorrer el array de clases
+        foreach ($ccustom as $cfila) {
+            $afila = get_object_vars($cfila);
+            array_push($acolclass, array("name" => $afila['name'], "type" => $afila['type'],"default" => null)); 
+        }
+        return $acolclass;
     }
     // Función que trata post para configurar los tipos de dato correctos.
     public function postdatatype($arow)
@@ -466,7 +497,11 @@ class cparent implements itech
                 switch ($valor['type']) {
                     case 'number':
                     case 'date':
-                        $arow[$valor['name']] = (int)$arow[$valor['name']];
+                        $arow[$valor['name']] = (int)strtotime($arow[$valor['name']]);
+                        break;
+                    case 'datetype':
+                        $arow[$valor['name']] = (int)strtotime($arow[$valor['name']]);
+//                        $arow[$valor['name']] = (int)$arow[$valor['name']];
                         break;
                     case 'bool':
                         $arow[$valor['name']] = (bool)$arow[$valor['name']];
@@ -483,14 +518,6 @@ class cparent implements itech
             //Control de auditoria
             $arow['fcreate'] = (int)$arow['fcreate'];
             $arow['fmodif'] = (int)$arow['fmodif'];
-            //Control de custom parameters si es distinto de item
-            if ($this->nclase <> 'item') {
-                $cols = $this->itementity($this->nclase,0);
-                foreach ($cols as $valor) {
-                    
-                }
-            }
-
             return $arow;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en ejecución: '.$ex->getMessage();

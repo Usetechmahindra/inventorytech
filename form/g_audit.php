@@ -77,10 +77,10 @@ if (isset($_POST['baudit'])){
                     echo "<td>".$afila["typeop"]."</td>";
                     // Auditoria
                     if(!empty($afila["umodif"])) {
-                        echo "<td>".date('d/m/Y H:i:s',$afila["fmodif"])."</td>";
+                        echo "<td>".date('d-m-Y H:i:s',$afila["fmodif"])."</td>";
                         echo "<td>".$afila["umodif"]."</td>";
                     }else {
-                        echo "<td>".date('d/m/Y H:i:s',$afila["fcreate"])."</td>";
+                        echo "<td>".date('d-m-Y H:i:s',$afila["fcreate"])."</td>";
                         echo "<td>".$afila["ucreate"]."</td>";
                     }
 //                    foreach($afila as $clave =>$valor){

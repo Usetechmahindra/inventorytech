@@ -57,9 +57,9 @@ and open the template in the editor.
         }
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
-        $cuser->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','date',20,false,false,true);
+        $cuser->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);
         $cuser->labelinput('ucreate',$rfila['ucreate'],'U. Alta','text',20,false,false,true);
-        $cuser->labelinput('fmodif',$rfila['fmodif'],'Fecha Modif.','date',20,false,false,true);
+        $cuser->labelinput('fmodif',$rfila['fmodif'],'Fecha Modif.','datetime',20,false,false,true);
         $cuser->labelinput('umodif',$rfila['umodif'],'U. Modif','text',20,false,false,true);
         // Columnas de auditoría. Los campos ocultos almacenan la fecha en unix format.
         echo '<input type="hidden" name="fcreate" value="'.$rfila['fcreate'].'">';
