@@ -86,6 +86,7 @@
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);
+                        $cuser->configlavel($afila[$acol['name']],$acol['type'],$acol['size'],$sclass);
                         echo "<td>".$afila[$acol['name']]."</td>";                   
                     }
                     // Auditoria

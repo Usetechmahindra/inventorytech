@@ -258,7 +258,7 @@ class cparent implements itech
     
     
     
-    private function configlavel(&$svalue,&$stype,&$isize,&$sclass)
+    public function configlavel(&$svalue,&$stype,&$isize,&$sclass)
     {
         // Permite recotar los parametros
         
@@ -269,7 +269,7 @@ class cparent implements itech
                 if ($svalue <> null)
                 {
                     $svalue = date('d-m-Y',$svalue);
-                    $isize = 15;
+                    $isize = 10;
                 }
                 $sclass =  'class="cdate"';
                 break;
@@ -496,6 +496,8 @@ class cparent implements itech
             foreach ($adefault as $valor) {               
                 switch ($valor['type']) {
                     case 'number':
+                        $arow[$valor['name']] = (int)$arow[$valor['name']];
+                        break; 
                     case 'date':
                         $arow[$valor['name']] = (int)strtotime($arow[$valor['name']]);
                         break;
