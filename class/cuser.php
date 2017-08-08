@@ -58,7 +58,7 @@ class cuser extends cparent
             // Conectado a couch. cargar las entidades >= a la fk del usuario (Sesión).
             $result = $bucket->get($_SESSION['fkentity']);
             // Coger el valor de doc ID
-            $n1ql="select meta(e).id,* from techinventory e where e.entidad='entidad' and docid>=".$result->value->docid." order by docid";
+            $n1ql="select meta(e).id,* from techinventory e where e.entidad='entidad' and fkentity='entidad_0'  and docid>=".$result->value->docid." order by docid";
             
             $result = $this->select($n1ql);
 

@@ -5,6 +5,7 @@ require('../class/cgroup.php');
 require('../class/cuser.php');
 require('../class/citem.php');
 require('../class/caudit.php');
+require('../class/centity.php');
 ?>
 <html>
     <head>

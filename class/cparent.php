@@ -263,6 +263,11 @@ class cparent implements itech
         // Permite recotar los parametros
         
         switch ($stype) {
+            case 'checkbox':
+                if(!is_null($svalue)){
+                    $sclass ='checked="checked"';
+                }
+                break;
             // El formato europeo de php de fechas es - para diferenciar del americano /.
             case 'date':
                 $stype = "text";
@@ -505,8 +510,10 @@ class cparent implements itech
                         $arow[$valor['name']] = (int)strtotime($arow[$valor['name']]);
 //                        $arow[$valor['name']] = (int)$arow[$valor['name']];
                         break;
-                    case 'bool':
-                        $arow[$valor['name']] = (bool)$arow[$valor['name']];
+                    case 'checkbox':
+                        if(!is_null($arow[$valor['name']])) {
+                            $arow[$valor['name']] = (bool)TRUE;
+                        }
                         break; 
                     default:
                         $arow[$valor['name']] = (string)$arow[$valor['name']];
