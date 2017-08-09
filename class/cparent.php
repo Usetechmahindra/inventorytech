@@ -235,12 +235,31 @@ class cparent implements itech
             // Dependiendo del tipo de caja.
             $sclass = "";
             $this->configlavel($svalue,$stype,$isize,$sclass);
-            $simput = '<input type="'.$stype.'" name="'.$skey.'"';
-            if($breadonly) {
-                $sreadonly = "readonly";
-                $sclass = "";
-            }
-            $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
+            // Depeniendo del tipo pintar el objeto en cuestión
+            switch ($stype) {
+                case 'timezone':
+                    $simput = '<select name="'.$skey.'" '.$srequired.' '.$sreadonly.' '.$sclass.'>';
+                    $simput .= '<option value="0">Seleccionar zona horaria</option>';
+                    foreach($this->tz_list() as $t) {
+                        $simput .='<option value="'.$t['zone'].'"';
+                        // Si es el valor actual
+                        if ($t['zone'] == $svalue) {
+                            $simput .=" SELECTED ";
+                        }
+                        $simput .='>'.$t['diff_from_GMT'] . ' - ' . $t['zone'];
+                        $simput .='</option>';
+                    }
+                    $simput .='</select>';
+                    break;
+                default:
+                    $simput = '<input type="'.$stype.'" name="'.$skey.'"';
+                    if($breadonly) {
+                        $sreadonly = "readonly";
+                        $sclass = "";
+                    }
+                    $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
+                    break;
+            } 
             echo $simput;
             // Si es tipo fecha poner su clase formato jquery
             // Si hay que pintar la busqueda
@@ -535,6 +554,17 @@ class cparent implements itech
             return -1;
         }        
     }
+    // Función para mostrar los timezones
+    public function tz_list() {
+        $zones_array = array();
+        $timestamp = time();
+        foreach(timezone_identifiers_list() as $key => $zone) {
+          date_default_timezone_set($zone);
+          $zones_array[$key]['zone'] = $zone;
+          $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+        }
+        return $zones_array;
+    }  
     // Log error generico
     public function error() {
         try {
