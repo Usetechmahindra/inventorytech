@@ -69,7 +69,14 @@ class cuser extends cparent
             }
             // Recorrer la filas he ir insertando menu
             foreach($result as $row) {
-                echo "<h3>".$row->e->pkname."</h3>";
+                $ssection = "<h3>";
+                if (isset($row->e->logo)) {
+                    $ssection.='<img src="'.$row->e->logo.'" alt="" style="width:20px;"/> ';
+                }else {
+                    $ssection.='<img src="../upload/images/i_menudef.png" alt="" style="width:20px;"/> ';
+                }
+                $ssection .= $row->e->pkname."</h3>";
+                echo $ssection;
                 echo "<div>";
                 // Control de formularios
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";

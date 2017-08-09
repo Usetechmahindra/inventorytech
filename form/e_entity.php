@@ -36,7 +36,7 @@ and open the template in the editor.
         header('Location: .');
     }
 ?>
-<form name="fentitye" id="fentitye" method="post">
+<form name="fentitye" id="fentitye" method="post" enctype="multipart/form-data">
      <?php
         // Asignar y borrar.
         // Parametro oculto
@@ -55,13 +55,19 @@ and open the template in the editor.
             // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
             $centity->labelinput($acol['name'],$rfila[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],$acol['breadonly']);
         }
-
-        // Campos opcionales entidad_0
-        if ($rfila['fkentity'] == 'entidad_0'){
-            include 'e_entity_menu.php'; 
+        if ($gentity == 'entidad_0') {
+            echo '<hr style="color:'.$_SESSION['color'].';" />';
+            /* 
+            * Campos especificos cuando la entidad está configurando las entidades menú.
+            */
+            $centity->labelinput('color',$rfila['color'],'Color','color',15,false,false,false);
+            $centity->labelinput('colorinvert',$rfila['colorinvert'],'C.Inverso','color',15,false,false,false);
+            $centity->labelinput('buser',$rfila['buser'],'Usuarios','checkbox',15,false,false,false);
+            $centity->labelinput('bgroup',$rfila['bgroup'],'Grupos','checkbox',15,false,false,false);
+            $centity->labelinput('bexcel',$rfila['bexcel'],'Importación','checkbox',15,false,false,false);
         }
-        echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
+        echo '<hr style="color:'.$_SESSION['color'].';" />';
         $centity->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);
         $centity->labelinput('ucreate',$rfila['ucreate'],'U. Alta','text',20,false,false,true);
         $centity->labelinput('fmodif',$rfila['fmodif'],'Fecha Modif.','datetime',20,false,false,true);
@@ -76,6 +82,7 @@ and open the template in the editor.
         echo ' <input type="submit" class="boton" name="bsave" id="bsavee" value="Grabar"/>';
         echo ' <input type="submit" class="boton" name="bnew" id="bnewe" value="Nuevo"/>';
         echo ' <input type="submit" class="dangerboton" name="bdown" id="bdowne" value="Baja" onclick="return confirm(\'¿Borrar fila?\');">';
+        
         echo '</div>';
      ?>
     
