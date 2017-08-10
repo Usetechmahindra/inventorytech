@@ -48,6 +48,7 @@ and open the template in the editor.
         echo '<input type="hidden" name="entidad" value="'.$rfila['entidad'].'">';
         // Forzar a la entidad que esta en la variable del menú elegido
         echo '<input type="hidden" name="fkentity" value="'.$gentity.'">';
+        echo '<input type="hidden" name="logo" value="'.$rfila['logo'].'">';
         // Recorrer los parámetros dinámicos de la entidad
         foreach($cols as $col)
         {
