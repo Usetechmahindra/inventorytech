@@ -252,12 +252,28 @@ class cparent implements itech
                     $simput .='</select>';
                     break;
                 default:
-                    $simput = '<input type="'.$stype.'" name="'.$skey.'"';
-                    if($breadonly) {
-                        $sreadonly = "readonly";
-                        $sclass = "";
+                    // Controlar si es combo entidad_xxxx
+                    if(substr($stype,0,7)=='entidad') {
+                        // Cargar los combos de tipo entidad
+                        $simput= '<select name = "'.$skey.'">';
+                        $simput .= '<option value="0">Seleccionar '.$slabel.'</option>';
+                        $aentidades = $this->comboentidad($stype);
+                        foreach($aentidades as $fila) {
+                            $simput .='<option value="'.$fila['id'].'"';    
+                            if($svalue==$fila['id']) {
+                                $simput.= " SELECTED"; 
+                            }
+                            $simput.= '>'.$fila['pkname'].'</option>';
+                        }
+                        $simput .='</select>';
+                    }else { 
+                        $simput = '<input type="'.$stype.'" name="'.$skey.'"';
+                        if($breadonly) {
+                            $sreadonly = "readonly";
+                            $sclass = "";
+                        }
+                        $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
                     }
-                    $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
                     break;
             } 
             echo $simput;
@@ -564,7 +580,33 @@ class cparent implements itech
           $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
         }
         return $zones_array;
-    }  
+    }
+    // Retorna combo entidad
+    public function comboentidad($fkentity)
+    {
+        try {
+            $_SESSION['textsesion'] = "";
+            $n1ql="select meta(e).id,e.pkname
+                   from techinventory e
+                   where e.entidad = 'entidad'
+                   and e.fkentity='".$fkentity."'"
+                    . " and e.docid > 0 ";   // El docid es pkname que es obligatorio y no puede modificarse.
+            $n1ql.=" order by e.ipos";
+            // Traer filas de entidad
+            $cfilas=$this->select($n1ql);
+            // Recorrer las clases y meter en array
+            $afilas = array();
+            foreach($cfilas as $fila) {
+                array_push($afilas,get_object_vars($fila));
+            }
+            return $afilas;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en ejecución comboentidad: '.$ex->getMessage();
+            // Si no se ha podido conectar al bucket, no se puede grabar el error.
+            //echo $_SESSION['textsesion'];
+            return -1;
+        }
+    }
     // Log error generico
     public function error() {
         try {

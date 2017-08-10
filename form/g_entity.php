@@ -44,7 +44,7 @@
                         $acol['brequeried'] = FALSE;
                         $centity->labelinput($acol['name'],"",$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
                     }
-        echo '<hr style="color:'.$_SESSION['color'].';" />';
+                    echo '<hr style="color:'.$_SESSION['color'].';" />';
                 ?>    
             </div>
         </form>

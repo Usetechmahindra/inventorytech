@@ -70,7 +70,7 @@ class cuser extends cparent
             // Recorrer la filas he ir insertando menu
             foreach($result as $row) {
                 $ssection = "<h3>";
-                if (isset($row->e->logo)) {
+                if ($row->e->logo <> "") {
                     $ssection.='<img src="'.$row->e->logo.'" alt="" style="width:20px;"/> ';
                 }else {
                     $ssection.='<img src="../upload/images/i_menudef.png" alt="" style="width:20px;"/> ';

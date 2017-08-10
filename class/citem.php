@@ -10,10 +10,10 @@ class citem extends cparent
         $acolclass = parent::my_arrayclass();
         // Cada clase tendra sus array default.
         array_push($acolclass, array("name" => "ipos", "type" => "number","default" => 0));     
-        array_push($acolclass, array("name" => "bfind", "type" => "bool","default" => 0));
-        array_push($acolclass, array("name" => "bgrid", "type" => "bool","default" => 0));
-        array_push($acolclass, array("name" => "brequeried", "type" => "bool","default" => 0));
-        array_push($acolclass, array("name" => "breadonly", "type" => "bool","default" => 0));
+        array_push($acolclass, array("name" => "bfind", "type" => "checkbox","default" => FALSE));
+        array_push($acolclass, array("name" => "bgrid", "type" => "checkbox","default" => FALSE));
+        array_push($acolclass, array("name" => "brequeried", "type" => "checkbox","default" => FALSE));
+        array_push($acolclass, array("name" => "breadonly", "type" => "checkbox","default" => FALSE));
         
         return $acolclass;
     }
@@ -40,10 +40,4 @@ class citem extends cparent
             return -1;
         }
     }
-
-//    public function insert($arow);
-//    public function audit($arow);
-
-//    public function update($arow);
-//    public function delete($arow);
 }

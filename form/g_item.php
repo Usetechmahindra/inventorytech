@@ -93,13 +93,16 @@
                         }
                         $sop .= '>Combo Grupo</option>';
                         echo $sop;
-                        $sop ='<option value="comboentity"';    
-                        if($afila['type']=='comboentity') {
-                            $sop.= " SELECTED"; 
-                        }
-                        $sop .= '>Combo Entidad</option>';
-                        echo $sop;
-                        
+                        // Rellenar automáticamente las entidades de menú
+                        $aentidades = $citem->comboentidad('entidad_0');
+                        foreach($aentidades as $fila) {
+                            $sop ='<option value="'.$fila['id'].'"';    
+                            if($afila['type']==$fila['id']) {
+                                $sop.= " SELECTED"; 
+                            }
+                            $sop .= '>'.$fila['pkname'].'</option>';
+                            echo $sop; 
+                        }    
                         $sop ='<option value="date"';
                         if($afila['type']=='date') {
                             $sop.= " SELECTED";       
@@ -138,68 +141,34 @@
                     echo '<td><input type="number" name="size" size=2 min="1" max="9999" value='.$afila['size'].'></td>';
                     echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['ipos'].'></td>';
                     // Combos si/no para que siempre se grabe en bd. El update masivo tiene que tener los array del mismo tamaño
-                    echo '<td>';
-                    echo '<select name = "bfind">';
-                    $sop ='<option value=0';
-                    if($afila['bfind']==0) {
-                        $sop.= " SELECTED";    
-                    }
-                    $sop .='>No</option>';
-                    echo $sop;
-                    $sop ='<option value=1';
-                    if($afila['bfind']==1) {
-                        $sop.= " SELECTED";    
-                    }
-                    $sop .='>Si</option>';
-                    echo $sop;
-                    echo '</td>';
                     
+                    $sop = '<td><input type="checkbox" name="bfind" value="'.$afila['bfind'].'"';
+                    if($afila['bfind']){
+                        $sop .=' checked="checked"';
+                    }
+                    $sop .= '"></td>';
+                    echo $sop;
                     
-                    echo '<td>';
-                    echo '<select name = "bgrid">';
-                    $sop ='<option value=0';
-                    if($afila['bgrid']==0) {
-                        $sop.= " SELECTED";    
+                    $sop = '<td><input type="checkbox" name="bgrid" value="'.$afila['bgrid'].'"';
+                    if($afila['bgrid']){
+                        $sop .=' checked="checked"';
                     }
-                    $sop .='>No</option>';
+                    $sop .= '"></td>';
                     echo $sop;
-                    $sop ='<option value=1';
-                    if($afila['bgrid']==1) {
-                        $sop.= " SELECTED";    
+                    
+                    $sop = '<td><input type="checkbox" name="brequeried" value="'.$afila['brequeried'].'"';
+                    if($afila['brequeried']){
+                        $sop .=' checked="checked"';
                     }
-                    $sop .='>Si</option>';
+                    $sop .= '"></td>';
                     echo $sop;
-                    echo '</td>';
-                    echo '<td>';
-                    echo '<select name = "brequeried">';
-                    $sop ='<option value=0';
-                    if($afila['brequeried']==0) {
-                        $sop.= " SELECTED";    
+
+                    $sop = '<td><input type="checkbox" name="breadonly" value="'.$afila['breadonly'].'"';
+                    if($afila['breadonly']){
+                        $sop .=' checked="checked"';
                     }
-                    $sop .='>No</option>';
+                    $sop .= '"></td>';
                     echo $sop;
-                    $sop ='<option value=1';
-                    if($afila['brequeried']==1) {
-                        $sop.= " SELECTED";    
-                    }
-                    $sop .='>Si</option>';
-                    echo $sop;
-                    echo '</td>';
-                    echo '<td>';
-                    echo '<select name = "breadonly">';
-                    $sop ='<option value=0';
-                    if($afila['breadonly']==0) {
-                        $sop.= " SELECTED";    
-                    }
-                    $sop .='>No</option>';
-                    echo $sop;
-                    $sop ='<option value=1';
-                    if($afila['breadonly']==1) {
-                        $sop.= " SELECTED";    
-                    }
-                    $sop .='>Si</option>';
-                    echo $sop;
-                    echo '</td>';
 //                  echo '<form name="itemdel" id="itemdel" method="post">';
 //                  echo '<input type="hidden" name="idform" value="itemdel">';
 //                  echo '<input type="hidden" name="iddel" value="'.$afila['id'].'">';

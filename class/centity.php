@@ -15,7 +15,6 @@ class centity extends cparent
         array_push($acolclass, array("name" => "timezone", "type" => "text","default" => "Europe/Madrid"));
         array_push($acolclass, array("name" => "color", "type" => "color","default" => "#e31732"));
         array_push($acolclass, array("name" => "colorinvert", "type" => "color","default" => "#636161"));
-        
         return $acolclass;
     }
      public function update($arow,$iop=2)       

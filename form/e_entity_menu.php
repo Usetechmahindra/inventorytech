@@ -29,7 +29,7 @@ if (isset($_POST['bresetl'])){
 
 // Formulario de imagen
 echo '<form name="fentitylogoe" action="" method="POST" enctype="multipart/form-data">';
-if (isset($rfila['logo'])){
+if ($rfila['logo'] <> ""){
     echo '<img src="'.$rfila['logo'].'" alt="IMGLOGO" style="width:75px;" align="middle"/>';
 }else{
     echo '<img src="../upload/images/i_menudef.png" alt="IMGLOGO" style="width:75px;" align="middle"/>';
