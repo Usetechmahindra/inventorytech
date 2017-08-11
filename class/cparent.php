@@ -331,6 +331,7 @@ class cparent implements itech
                 case 'password':
                     // Pasar el decodec y aplicar el default
                     $svalue = base64_decode($svalue);
+                    $sclass .= " autocomplete=off ";
                 default:
                     $simput = '<input type="'.$stype.'" name="'.$skey.'"';
                     if($breadonly) {

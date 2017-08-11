@@ -59,6 +59,7 @@ and open the template in the editor.
         ///////////////////////////////////////
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         $cuser->labelinput('password',$rfila['password'],'Password','password',20,false,false,false);
+//        echo '<input type="hidden" name="password" value="'.$rfila['password'].'">';
         $cuser->labelinput('email',$rfila['email'],'Email','email',30,false,false,false);
         $cuser->labelinput('description',$rfila['description'],'Descripción','text',40,false,false,false);
         $cuser->labelinput('bloginapp',$rfila['bloginapp'],'Login','checkbox',10,false,false,false);
