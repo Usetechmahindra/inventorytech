@@ -81,17 +81,24 @@
                         }
                         $sop .= '>Textarea</option>';
                         echo $sop;
-                        $sop ='<option value="combouser"';    
-                        if($afila['type']=='combouser') {
+                        $sop ='<option value="usuario"';    
+                        if($afila['type']=='usuario') {
                             $sop.= " SELECTED"; 
                         }
                         $sop .= '>Combo Usuarios</option>';
                         echo $sop;
-                        $sop ='<option value="combogroup"';    
-                        if($afila['type']=='combogroup') {
+                        $sop ='<option value="grupo"';    
+                        if($afila['type']=='grupo') {
                             $sop.= " SELECTED"; 
                         }
                         $sop .= '>Combo Grupo</option>';
+                        echo $sop;
+                        
+                        $sop ='<option value="grupo_en"';    
+                        if($afila['type']=='grupo_en') {
+                            $sop.= " SELECTED"; 
+                        }
+                        $sop .= '>Combo Grupo Entidad</option>';
                         echo $sop;
                         // Rellenar automáticamente las entidades de menú
                         $aentidades = $citem->comboentidad('entidad_0');
@@ -116,19 +123,19 @@
                         $sop.='>Número</option>';
                         echo $sop;
                         
-                        $sop ='<option value="email"';
-                        if($afila['type']=='email') {
-                            $sop.= " SELECTED";      
-                        }
-                        $sop.='>Email</option>';
-                        echo $sop;
+//                        $sop ='<option value="email"';
+//                        if($afila['type']=='email') {
+//                            $sop.= " SELECTED";      
+//                        }
+//                        $sop.='>Email</option>';
+//                        echo $sop;  // Formulario de grupo y usuario
                         
-                        $sop ='<option value="password"';
-                        if($afila['type']=='password') {
-                            $sop.= " SELECTED";       
-                        }
-                        $sop.='>Password</option>';
-                        echo $sop;
+//                        $sop ='<option value="password"';
+//                        if($afila['type']=='password') {
+//                            $sop.= " SELECTED";       
+//                        }
+//                        $sop.='>Password</option>';
+//                        echo $sop;    // Se define en el formulario de usuario
                         
                         $sop ='<option value="checkbox"';
                         if($afila['type']=='checkbox') {

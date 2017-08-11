@@ -86,7 +86,7 @@
                     foreach($cols as $col)
                     {
                         $acol = get_object_vars($col);
-                        $centity->configlavel($afila[$acol['name']],$acol['type'],$acol['size'],$sclass);
+                        $afila[$acol['name']] = $centity->rowgrid($afila[$acol['name']], $acol['type']);
                         echo "<td>".$afila[$acol['name']]."</td>";                   
                     }
                     // Auditoria

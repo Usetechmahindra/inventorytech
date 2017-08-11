@@ -59,6 +59,9 @@ and open the template in the editor.
             // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
             $cgroup->labelinput($acol['name'],$rfila[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],$acol['breadonly']);
         }
+        // Campos especificos formulario grupo
+        ///////////////////////////////////////
+        $cgroup->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
         $cgroup->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);

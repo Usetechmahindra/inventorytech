@@ -55,6 +55,18 @@ and open the template in the editor.
             // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
             $cuser->labelinput($acol['name'],$rfila[$acol['name']],$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],$acol['breadonly']);
         }
+        // Campos especificos formulario usuario
+        ///////////////////////////////////////
+        // fkgroup entidad
+        // password (64).
+        // email
+        // description
+        // bloginapp
+        // bread
+        // bshowuser
+        // bshowgroup
+        // bshowentidad
+        // bshowimport
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
         $cuser->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);

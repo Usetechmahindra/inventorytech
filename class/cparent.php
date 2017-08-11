@@ -220,6 +220,62 @@ class cparent implements itech
             return -1;
         }
     }
+    // Permite configurar los campos en el grid al estilo de labelinput
+    public function rowgrid($svalue,$stype) {
+        try {
+            // Depeniendo del tipo pintar el objeto en cuestión
+            $etipo = substr($stype,0,8);
+            switch ($etipo) {
+                case 'checkbox':
+                    if (is_null($svalue)) {
+                       $svalue = "NO"; 
+                    }else {
+                        $svalue = "SI";
+                    }
+                    break;
+                case 'usuario':
+                case 'grupo':
+                case 'grupo_en':
+                case 'entidad_':
+                    // Obtener valor id y ejecutar default
+                    $sdocval = $this->fknamedocid($svalue);
+                    if ($sdocval <> "") {
+                        $svalue = $sdocval;
+                    }
+                case 'timezone':    
+                default:
+                    break;
+            } 
+            return $svalue;            
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error crear valor row: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    private function fknamedocid($docid)
+    {
+        // Retorna el campo fkname del docid
+        try {
+            $_SESSION['textsesion'] = "";
+            $n1ql="select pkname
+                    from techinventory u 
+                    where meta(u).id='".$docid."'";           
+            // Control de entidad padre
+            // Traer filas de entidad
+            $doc=$this->select($n1ql);
+            $sval = "";
+            if (count($doc) > 0) {
+                $doc = get_object_vars($doc[0]);
+                $sval = $doc['pkname'];
+            }
+            return $sval;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error al obtener valor por docid: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
     public function labelinput($skey,$svalue,$slabel,$stype,$isize=10,$brequired=false,$bfind=false,$breadonly=false)
     {
         // A la función se le pasan los parametros para que pinte en bloque el input con el label y su tipo
@@ -231,12 +287,14 @@ class cparent implements itech
             }
             //$svalue ="NUEVO";
             echo '<div class="labelinput">';
+            // Si tiene label añadirla
             echo '<label for="'.$skey.'">'.$slabel.'</label> <br />';
             // Dependiendo del tipo de caja.
             $sclass = "";
             $this->configlavel($svalue,$stype,$isize,$sclass);
             // Depeniendo del tipo pintar el objeto en cuestión
-            switch ($stype) {
+            $etipo = substr($stype,0,8);
+            switch ($etipo) {
                 case 'timezone':
                     $simput = '<select name="'.$skey.'" '.$srequired.' '.$sreadonly.' '.$sclass.'>';
                     $simput .= '<option value="0">Seleccionar zona horaria</option>';
@@ -251,29 +309,30 @@ class cparent implements itech
                     }
                     $simput .='</select>';
                     break;
-                default:
-                    // Controlar si es combo entidad_xxxx
-                    if(substr($stype,0,7)=='entidad') {
-                        // Cargar los combos de tipo entidad
-                        $simput= '<select name = "'.$skey.'">';
-                        $simput .= '<option value="0">Seleccionar '.$slabel.'</option>';
-                        $aentidades = $this->comboentidad($stype);
-                        foreach($aentidades as $fila) {
-                            $simput .='<option value="'.$fila['id'].'"';    
-                            if($svalue==$fila['id']) {
-                                $simput.= " SELECTED"; 
-                            }
-                            $simput.= '>'.$fila['pkname'].'</option>';
+                case 'usuario':
+                case 'grupo':
+                case 'grupo_en':
+                case 'entidad_':
+                    // Cargar los combos de tipo entidad
+                    $simput= '<select name = "'.$skey.'">';
+                    $simput .= '<option value="'.$svalue.'">Seleccionar '.$slabel.'</option>';
+                    $aentidades = $this->comboentidad($stype);
+                    foreach($aentidades as $fila) {
+                        $simput .='<option value="'.$fila['id'].'"';    
+                        if($svalue==$fila['id']) {
+                            $simput.= " SELECTED"; 
                         }
-                        $simput .='</select>';
-                    }else { 
-                        $simput = '<input type="'.$stype.'" name="'.$skey.'"';
-                        if($breadonly) {
-                            $sreadonly = "readonly";
-                            $sclass = "";
-                        }
-                        $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
+                        $simput.= '>'.$fila['pkname'].'</option>';
                     }
+                    $simput .='</select>';
+                    break;
+                default:
+                    $simput = '<input type="'.$stype.'" name="'.$skey.'"';
+                    if($breadonly) {
+                        $sreadonly = "readonly";
+                        $sclass = "";
+                    }
+                    $simput .= ' value="'.$svalue.'" size="'.$isize.'" maxlength="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'" />';
                     break;
             } 
             echo $simput;
@@ -581,17 +640,37 @@ class cparent implements itech
         }
         return $zones_array;
     }
-    // Retorna combo entidad
+    // Retorna combo entidad,grupo,usuario
     public function comboentidad($fkentity)
     {
         try {
             $_SESSION['textsesion'] = "";
             $n1ql="select meta(e).id,e.pkname
-                   from techinventory e
-                   where e.entidad = 'entidad'
-                   and e.fkentity='".$fkentity."'"
-                    . " and e.docid > 0 ";   // El docid es pkname que es obligatorio y no puede modificarse.
-            $n1ql.=" order by e.ipos";
+                   from techinventory e";
+            
+            // Tipo de combo
+            switch ($fkentity){
+                case 'usuario':
+                    $n1ql.=" where e.entidad='usuario'";
+                    // Entidad en uso
+                    $n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'";
+                    break;
+                case 'grupo':
+                    $n1ql.=" where e.entidad='grupo'";
+                    $n1ql.=" and e.fkentity <> '".$_SESSION['$gentity']."'"; 
+                    //$n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'"; // Se Permiten los grupos de todos los niveles
+                    // Entidad en uso
+                    break;
+                case 'grupo_en':
+                    $n1ql.=" where e.entidad='grupo'";
+                    $n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'"; // Se Permiten los grupos de todos los niveles
+                    // Entidad en uso
+                    break;
+                default:
+                    $n1ql.=" where e.entidad = 'entidad' and e.fkentity='".$fkentity."'";
+                    break;
+            }   
+            $n1ql.=" and e.docid > 0"; // El docid es pkname que es obligatorio y no puede modificarse.
             // Traer filas de entidad
             $cfilas=$this->select($n1ql);
             // Recorrer las clases y meter en array
