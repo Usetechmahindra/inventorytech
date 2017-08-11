@@ -233,6 +233,8 @@ class cparent implements itech
                         $svalue = "SI";
                     }
                     break;
+                case 'date':
+                    $svalue = date('d-m-Y',$svalue);
                 case 'usuario':
                 case 'grupo':
                 case 'grupo_en':
@@ -326,6 +328,9 @@ class cparent implements itech
                     }
                     $simput .='</select>';
                     break;
+                case 'password':
+                    // Pasar el decodec y aplicar el default
+                    $svalue = base64_decode($svalue);
                 default:
                     $simput = '<input type="'.$stype.'" name="'.$skey.'"';
                     if($breadonly) {
@@ -609,6 +614,9 @@ class cparent implements itech
                             $arow[$valor['name']] = (bool)TRUE;
                         }
                         break; 
+                    case 'password':
+                        $arow[$valor['name']] = (string)base64_encode($arow[$valor['name']]);
+                        break;
                     default:
                         $arow[$valor['name']] = (string)$arow[$valor['name']];
                         break;
@@ -656,8 +664,9 @@ class cparent implements itech
                     $n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'";
                     break;
                 case 'grupo':
+                    // Entidades globales
                     $n1ql.=" where e.entidad='grupo'";
-                    $n1ql.=" and e.fkentity <> '".$_SESSION['$gentity']."'"; 
+                    $n1ql.=" and e.fkentity = 'entidad_0'"; 
                     //$n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'"; // Se Permiten los grupos de todos los niveles
                     // Entidad en uso
                     break;

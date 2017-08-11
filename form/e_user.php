@@ -57,16 +57,18 @@ and open the template in the editor.
         }
         // Campos especificos formulario usuario
         ///////////////////////////////////////
-        // fkgroup entidad
-        // password (64).
-        // email
-        // description
-        // bloginapp
-        // bread
-        // bshowuser
-        // bshowgroup
-        // bshowentidad
-        // bshowimport
+        echo '<hr style="color:'.$_SESSION['color'].';" />';
+        $cuser->labelinput('password',$rfila['password'],'Password','password',20,false,false,false);
+        $cuser->labelinput('email',$rfila['email'],'Email','email',30,false,false,false);
+        $cuser->labelinput('description',$rfila['description'],'Descripción','text',40,false,false,false);
+        $cuser->labelinput('bloginapp',$rfila['bloginapp'],'Login','checkbox',10,false,false,false);
+        
+        $cuser->labelinput('bread',$rfila['bread'],'Readonly','checkbox',10,false,false,false);
+        $cuser->labelinput('bshowuser',$rfila['bshowuser'],'Adm.Usuarios','checkbox',10,false,false,false);
+        $cuser->labelinput('bshowgroup',$rfila['bshowgroup'],'Adm. Grupos','checkbox',10,false,false,false);
+        $cuser->labelinput('bshowentidad',$rfila['bshowentidad'],'Adm. Entidades','checkbox',10,false,false,false);
+        $cuser->labelinput('bshowimport',$rfila['bshowimport'],'Adm. Import','checkbox',10,false,false,false);
+
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
         $cuser->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);

@@ -61,7 +61,8 @@ and open the template in the editor.
         }
         // Campos especificos formulario grupo
         ///////////////////////////////////////
-        $cgroup->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);
+        echo '<hr style="color:'.$_SESSION['color'].';" />';
+        $cgroup->labelinput('emailgroup',$rfila['emailgroup'],'Email grupo','email',30,false,false,false);
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST
         $cgroup->labelinput('fcreate',$rfila['fcreate'],'Fecha Alta','datetime',20,false,false,true);
