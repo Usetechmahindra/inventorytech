@@ -33,7 +33,15 @@ class cuser extends cparent
             $_SESSION['textsesion']="Bienvenido:".$result[0]->u->description;
             $_SESSION['user']=$result[0]->u->name;
             $_SESSION['fkentity']=$result[0]->u->fkentity;
+            
+            $_SESSION['bread']=$result[0]->u->bread;
+            $_SESSION['bshowuser']=$result[0]->u->bshowuser;
+            $_SESSION['bshowgroup']=$result[0]->u->bshowgroup;
+            $_SESSION['bshowentidad']=$result[0]->u->bshowentidad;
+            $_SESSION['bshowimport']=$result[0]->u->bshowimport;
+            
             $_SESSION['color'] = $result[0]->e->color;
+            $_SESSION['colorinvert'] = $result[0]->e->colorinvert;
             $_SESSION['minsesion'] = 10;
             $_SESSION['timezone'] = $result[0]->e->timezone;
             $_SESSION['tlogon'] = time();
@@ -82,35 +90,33 @@ class cuser extends cparent
 //                $vmenu ="<p onClick=\"location.href='".$vphp."'\" onMouseover=\"\" style=\" cursor: pointer;\">".$vdescripcion."</p>";
 //                "buser":TRUE,"bgroup":TRUE,"bparameter":TRUE,"bexcel":FALSE,
                 // Pintar siempre administración (detalles de entidad).  onclick="return a1_onclick('a1')"
-                echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getentity\')" style="">Entidades</button>';
-                echo '<br>';
-                if($row->e->buser){
+                if($_SESSION['bshowentidad']) {
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getentity\')" style="">Entidades</button>';
+                    echo '<br>';
+                }
+                if($row->e->buser && $_SESSION['bshowuser']){
                     echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getuser\')" style="">Usuarios</button>';
                     echo '<br>';
                 }
-                if($row->e->bgroup){
+                if($row->e->bgroup && $_SESSION['bshowgroup']){
                     echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getgroup\')" style="">Grupos</button>';
                     echo '<br>';
                 }
-                // Parametros por entidad y tipo(entidad,usuario o grupo).
-//                if($row->e->bparameter){
-//                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getitem\')" style="">Parametros</button>';
-//                    echo '<br>';
-//                }
-                if($row->e->bexcel){
+                if($row->e->bexcel && $_SESSION['bshowimport']){
                     echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getimport\')" style="">Importación Excel</button>';
                     echo '<br>';
                 }
                 echo "</div>";
             }
             
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
             $_SESSION['textsesion']='Error en ejecución: '.$e->getMessage();
             // Grabar auditoria de error.
             $this->error($bucket);
             return -1;
         }
     }
+    
 //    public function insert($arow);
 //    public function audit($arow);
 //    public function create($arow);

@@ -6,6 +6,21 @@ require('../class/cuser.php');
 require('../class/citem.php');
 require('../class/caudit.php');
 require('../class/centity.php');
+// Control cookies
+$gentity = $_COOKIE['centity'];
+if ($gentity <> $_SESSION['$gentity']) {
+    // Borrar id actual.
+    $_SESSION['$gentity'] = $gentity;
+    unset($_SESSION['idact']);
+} 
+$gform = $_COOKIE['cform'].'.php';
+// Crea clase user para control de sesión y tiempo
+$cguardian = new cuser("usuario"); 
+// Control timeout de sesion o entidad no permitidad
+if ($cguardian->CheckLogin() < 0) {
+    // Enviar a login
+    header("Location: ../index.php");
+} 
 ?>
 <html>
     <head>
@@ -112,14 +127,6 @@ require('../class/centity.php');
     </head>
     <body>
     <?php
-    // Control cookies
-    $gentity = $_COOKIE['centity'];
-    if ($gentity <> $_SESSION['$gentity']) {
-        // Borrar id actual.
-        $_SESSION['$gentity'] = $gentity;
-        unset($_SESSION['idact']);
-    } 
-    $gform = $_COOKIE['cform'].'.php';
     // El body dentro de php
         echo '<div id="headbody">';
             echo '<img src = "../upload/images/i_inventario.png" width = "75" alt = "i_inventario"/>';

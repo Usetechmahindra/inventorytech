@@ -404,6 +404,15 @@ class cparent implements itech
              return -1;
              // session timed out
          }
+        // Controlar que el nivel que tiene el usuario es correcto
+        if (isset($_SESSION['$gentity']))
+        {
+            if ($_SESSION['fkentity'] > $_SESSION['$gentity'])
+            {
+                $_SESSION['textsesion'] = "El usuario con el que se ha logado no tiene permiso para acceder a ese nivel.";
+                return -1;
+            }  
+        }
          // Añadimos tiempo a la sesion
          $_SESSION['tlogon'] = time();
         return 1;
