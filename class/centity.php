@@ -12,7 +12,7 @@ class centity extends cparent
         array_push($acolclass, array("name" => "buser", "type" => "checkbox","default" => NULL));
         array_push($acolclass, array("name" => "bgroup", "type" => "checkbox","default" => NULL));
         array_push($acolclass, array("name" => "bexcel", "type" => "checkbox","default" => NULL));
-        array_push($acolclass, array("name" => "timezone", "type" => "text","default" => "Europe/Madrid"));
+        array_push($acolclass, array("name" => "timezone", "type" => "text","default" => $_SESSION['timezone']));
         array_push($acolclass, array("name" => "color", "type" => "color","default" => "#e31732"));
         array_push($acolclass, array("name" => "colorinvert", "type" => "color","default" => "#636161"));
         return $acolclass;
@@ -20,6 +20,10 @@ class centity extends cparent
      public function update($arow,$iop=2)       
     {
         // Llamada a la función padre
+        // Control de timezone
+        if ($arow['timezone'] == '0') {
+            $arow['timezone']=$_SESSION['timezone'];
+        }
         $arow=parent::update($arow,$iop);
         // Llamada a función de creación de item auto
         $this->itemdef($arow);
@@ -53,7 +57,7 @@ class centity extends cparent
             $aitem['brequeried'] = true;
             $aitem['breadonly'] = false;
             $aitem['fcreate'] = time();
-            $aitem['ucreate'] = "root";
+            $aitem['ucreate'] = $_SESSION['user'];
             $aresult = $bucket->upsert($key,$aitem);
             // Item de usuarios de entidad
             if($arow[0]->buser) {

@@ -30,6 +30,7 @@ and open the template in the editor.
             <p style="font-weight: bold">Administración de entidades </p>
             <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
             <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
+            <button class="tablinks" onclick="openTab(event, 'Monitor')">Monitor</button>
             <?php
                 if($bmenu) {
                     echo '<button class="tablinks" onclick="openTab(event, \'Logo\')">Logo</button>';
@@ -48,6 +49,11 @@ and open the template in the editor.
             <div id="Edición" class="tabbodycontent">
                 <?php
                     include 'e_entity.php';
+                ?>
+            </div>
+            <div id="Monitor" class="tabbodycontent">
+                <?php
+                  //  include 'e_monitor.php';
                 ?>
             </div>
             <?php
