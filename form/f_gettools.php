@@ -19,14 +19,22 @@ and open the template in the editor.
     <body>
         <div class="divtitle">
             <img src="../upload/images/i_inventario.png" alt="i_inventario" height="47" align="left">
-            <p style="font-weight: bold">Administración de importaciones </p>
-<!--            <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
-            <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
-            <button class="tablinks" onclick="openTab(event, 'Parámetros')">Parámetros</button>-->
+            <p style="font-weight: bold">Herramientas entidad</p>
+            <button class="tablinks" onclick="openTab(event, 'Importación')">Importación</button>
+            <button class="tablinks" onclick="openTab(event, 'Monitores')">Monitores</button>
             <hr style="color:<?php echo $_SESSION['color'];?>" />
         </div>
         <div class="tabbody">
-            
+            <div id="Importación" class="tabbodycontent">
+              <?php
+                include 'g_import.php';
+              ?>
+            </div>
+            <div id="Monitores" class="tabbodycontent">
+              <?php
+                //include 'g_group.php';
+              ?>
+            </div>
         </div>
     </body>
 </html>

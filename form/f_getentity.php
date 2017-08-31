@@ -30,10 +30,11 @@ and open the template in the editor.
             <p style="font-weight: bold">Administración de entidades </p>
             <button class="tablinks" onclick="openTab(event, 'Busqueda')">Busqueda</button>
             <button class="tablinks" onclick="openTab(event, 'Edición')">Edición</button>
-            <button class="tablinks" onclick="openTab(event, 'Monitor')">Monitor</button>
             <?php
                 if($bmenu) {
                     echo '<button class="tablinks" onclick="openTab(event, \'Logo\')">Logo</button>';
+                } else {
+                    echo '<button class="tablinks" onclick="openTab(event, \'Monitor\')">Monitor</button>  ';                  
                 }
             ?>
             <button class="tablinks" onclick="openTab(event, 'Histórico')">Histórico</button>
@@ -53,7 +54,7 @@ and open the template in the editor.
             </div>
             <div id="Monitor" class="tabbodycontent">
                 <?php
-                  //  include 'e_monitor.php';
+                   // include 'e_entity.php';
                 ?>
             </div>
             <?php

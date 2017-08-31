@@ -68,7 +68,7 @@ and open the template in the editor.
         $cuser->labelinput('bshowuser',$rfila['bshowuser'],'Adm.Usuarios','checkbox',10,false,false,false);
         $cuser->labelinput('bshowgroup',$rfila['bshowgroup'],'Adm. Grupos','checkbox',10,false,false,false);
         $cuser->labelinput('bshowentidad',$rfila['bshowentidad'],'Adm. Entidades','checkbox',10,false,false,false);
-        $cuser->labelinput('bshowimport',$rfila['bshowimport'],'Adm. Import','checkbox',10,false,false,false);
+        $cuser->labelinput('bshowtools',$rfila['bshowtools'],'Herramientas','checkbox',10,false,false,false);
 
         echo '<hr style="color:'.$_SESSION['color'].';" />';
         //Los campos diabled no se envian al POST

@@ -38,7 +38,7 @@ class cuser extends cparent
             $_SESSION['bshowuser']=$result[0]->u->bshowuser;
             $_SESSION['bshowgroup']=$result[0]->u->bshowgroup;
             $_SESSION['bshowentidad']=$result[0]->u->bshowentidad;
-            $_SESSION['bshowimport']=$result[0]->u->bshowimport;
+            $_SESSION['bshowtools']=$result[0]->u->bshowtools;
             
             $_SESSION['color'] = $result[0]->e->color;
             $_SESSION['colorinvert'] = $result[0]->e->colorinvert;
@@ -102,8 +102,8 @@ class cuser extends cparent
                     echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getgroup\')" style="">Grupos</button>';
                     echo '<br>';
                 }
-                if($row->e->bexcel && $_SESSION['bshowimport']){
-                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_getimport\')" style="">Importación Excel</button>';
+                if($row->e->btools && $_SESSION['bshowtools']){
+                    echo '<button class="mboton" value="'.$row->id.'" onclick="javascript:openbody(\''.$row->id.'\' , \'f_gettools\')" style="">Herramientas</button>';
                     echo '<br>';
                 }
                 echo "</div>";

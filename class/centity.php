@@ -11,7 +11,7 @@ class centity extends cparent
         // Cada clase tendra sus array default.  
         array_push($acolclass, array("name" => "buser", "type" => "checkbox","default" => NULL));
         array_push($acolclass, array("name" => "bgroup", "type" => "checkbox","default" => NULL));
-        array_push($acolclass, array("name" => "bexcel", "type" => "checkbox","default" => NULL));
+        array_push($acolclass, array("name" => "btools", "type" => "checkbox","default" => NULL));
         array_push($acolclass, array("name" => "timezone", "type" => "text","default" => $_SESSION['timezone']));
         array_push($acolclass, array("name" => "color", "type" => "color","default" => "#e31732"));
         array_push($acolclass, array("name" => "colorinvert", "type" => "color","default" => "#636161"));
@@ -140,6 +140,95 @@ class centity extends cparent
             return -1; 
         }
 
+    }
+    public function findsexcel($gentity) {
+        try {
+            $_SESSION['textsesion'] = "";
+            $n1ql="select u.* from techinventory u where entidad='filesexcel' and fkentity ='".$gentity."'"; 
+            // Control post ( Ver filtros de g_import form).
+            if (!empty($_POST['docid'])) {
+               $n1ql.= " and docid =".$_POST['docid'];
+            }
+            if (!empty($_POST['nfile'])) {
+               $n1ql.= " and pkname ='".strtoupper($_POST['nfile']);
+            }
+            if (!empty($_POST['ddfile'])) {    
+               $n1ql.= " and fcreate >= ".strtotime($_POST['ddfile']);
+            }
+            if (!empty($_POST['hdfile'])) {
+               // Sumar 1 día en segundos 60*60*24 
+               $n1ql.= " and fcreate < ".(strtotime($_POST['hdfile'])+86400);
+            }
+            if (isset($_POST['bproc'])) {
+               $n1ql.= " and bproc=TRUE";
+            }
+            $n1ql.=" order by docid";
+            return $this->select($n1ql);
+            // Añadir 
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función filesexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    public function newexcel($gentity)
+    {
+        try {
+            $target_dir = "../upload/excel/";
+            //$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+            $target_file = $target_dir . $_FILES["fileToUpload"]["name"];
+            $uploadOk = 1;
+            $FileType = pathinfo($target_file,PATHINFO_EXTENSION);
+            // Check if image file is a actual image or fake image
+            if(isset($_POST["bnew"])) {
+                $check = filesize($_FILES["fileToUpload"]["tmp_name"]);
+                if($check !== false) {
+                    $uploadOk = 1;
+                } else {
+                    $_SESSION['textsesion'] = "El fichero no se ha detectado, selecione otro fichero.";
+                    $uploadOk = 0;
+                }
+            }
+            // Check if file already exists. Sustituir
+            if (file_exists($target_file)) {
+            //    echo "Se procederá a sustituir la imagen actual.";
+                //$uploadOk = 0;
+            }
+            // Check file size. "2MB"
+            if ($_FILES["fileToUpload"]["size"] > 2097152) {
+                $_SESSION['textsesion']="Sólo se permite subir ficheros de hasta 2MB.";
+                $uploadOk = 0;
+            }
+            // Allow certain file formats
+            if($FileType != "xlsx") {
+                $_SESSION['textsesion']="El formato compatible es xlsx.Formato de fichero:".$FileType;
+                $uploadOk = 0;
+            }
+            // Check if $uploadOk is set to 0 by an error
+            if ($uploadOk == 0) {
+                $_SESSION['textsesion']="Lo sentimos, el fichero no puede subirse al servidor.";
+            // if everything is ok, try to upload file
+            } else {
+                // Crear entidad tipo fichero excel en BD
+                $rfilas = $this->newclass($gentity);
+                $rfilas['pkname'] = $rfilas['docid'].'_'. $_FILES["fileToUpload"]["name"];
+                $rfilas = $this->update($rfilas,1); 
+                $rfila = get_object_vars($rfilas[0]);
+                $_SESSION['idact'] = $rfila['id'];
+                $_SESSION['textsesion'] = "Excel cargado.";
+                $target_file = $target_dir .$rfila['pkname'];
+                if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                } else {
+                    $_SESSION['textsesion']="Lo sentimos, se produjo un error en la subida del fichero. Vuelva a intentarlo.";
+                    return 0;
+                }
+                return $rfila['docid'];
+            }
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función newexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
     }
 //    public function insert($arow);
 //    public function audit($arow);

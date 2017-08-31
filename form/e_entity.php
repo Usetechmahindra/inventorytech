@@ -65,7 +65,7 @@ and open the template in the editor.
             $centity->labelinput('colorinvert',$rfila['colorinvert'],'C.Inverso','color',15,false,false,false);
             $centity->labelinput('buser',$rfila['buser'],'Usuarios','checkbox',15,false,false,false);
             $centity->labelinput('bgroup',$rfila['bgroup'],'Grupos','checkbox',15,false,false,false);
-            $centity->labelinput('bexcel',$rfila['bexcel'],'Importación','checkbox',15,false,false,false);
+            $centity->labelinput('btools',$rfila['btools'],'Herramientas','checkbox',15,false,false,false);
             // timezone
             $centity->labelinput('timezone',$rfila['timezone'],'Zona horaria','timezone',20,false,false,false);
         }
