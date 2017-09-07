@@ -40,4 +40,36 @@ class citem extends cparent
             return -1;
         }
     }
+    public function intemexcelnew($fkentity,$pkname)
+    {
+        try {
+            // Leer excel
+            $objPHPExcel = new PHPExcel();
+            $target_dir = "../upload/excel/";
+            // Solapa de lectura y 11 columnas
+            $inputFileName = $target_dir.$pkname;
+            /**  Identificar tipo de fichero **/
+            $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+            /**  Crear el lector del fichero con el tipo identifcado **/
+            $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+            $objReader->setReadDataOnly(true);
+            $objPHPExcel = $objReader->load($inputFileName);
+            $objWorksheet =  $objPHPExcel->setActiveSheetIndex(0); 
+            // Cargado $objPHPExcel y con solapa 0.
+            $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+            $acolumn = $sheetData[1];
+            // Detalles de filas
+            //array_shift($sheetData);
+            // Recorrer todas las filas de la hoja
+            $test_array = array();
+            foreach($acolumn as $key=>$val){
+                // Crear campos por cada fila
+                echo $val;
+            }
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función intemexcelnew: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
 }

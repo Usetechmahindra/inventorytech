@@ -6,6 +6,7 @@ require('../class/cuser.php');
 require('../class/citem.php');
 require('../class/caudit.php');
 require('../class/centity.php');
+require('../class/PHPExcel.php');
 // Control cookies
 $gentity = $_COOKIE['centity'];
 if ($gentity <> $_SESSION['$gentity']) {
@@ -26,6 +27,7 @@ if ($cguardian->CheckLogin() < 0) {
     <head>
         <meta charset="UTF-8">
         <title>WEB TechInventory</title>
+        <link rel="icon" href="../upload/images/i_inventario_ico.ico">
         <link rel="stylesheet" type="text/css" href="../css/techinventory.css">
         <link rel="stylesheet" href="../css/jquery-ui_tech.css">
         <script src="../java/jquery.js"></script>

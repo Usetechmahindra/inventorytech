@@ -204,6 +204,7 @@ class PHPExcel_IOFactory
     public static function identify($pFilename)
     {
         $reader = self::createReaderForFile($pFilename);
+        //$reader = self::createReaderForFile('/tmp/pruebas.xlsx');
         $className = get_class($reader);
         $classType = explode('_', $className);
         unset($reader);

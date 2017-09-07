@@ -11,15 +11,19 @@
         // Crear clase de para llamada a funciones genericas
         // Control POST
         $cimport = new centity("filesexcel");
+        $citemexcel = new citem("itemexcel");
         if($_POST['idform'] == 'ffindexcel') {
             $rows = $cimport->findsexcel($gentity);
         }
         if($_POST['idform'] == 'importexcel') {
             // Controlar Nuevo o busqueda
             if(!empty($_FILES["fileToUpload"]["tmp_name"])) {
-               $_POST['docid'] = $cimport->newexcel($gentity); 
+               $rows = $cimport->newexcel($gentity);
+               if ($rows <> 0) {
+                // Creación de detalles de excel
+                    $citemexcel->intemexcelnew($rows['id'], $rows['pkname']);
+               }
             }
-            $rows = $cimport->findsexcel($gentity);
         }
         
         ?>

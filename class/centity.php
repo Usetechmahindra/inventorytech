@@ -200,13 +200,13 @@ class centity extends cparent
                 $uploadOk = 0;
             }
             // Allow certain file formats
-            if($FileType != "xlsx") {
-                $_SESSION['textsesion']="El formato compatible es xlsx.Formato de fichero:".$FileType;
-                $uploadOk = 0;
-            }
+//            if($FileType != "xlsx" && FileType != "xls") {
+//                $_SESSION['textsesion']="El formato compatible es xlsx o xls.Formato de fichero:".$FileType;
+//                $uploadOk = 0;
+//            }
             // Check if $uploadOk is set to 0 by an error
             if ($uploadOk == 0) {
-                $_SESSION['textsesion']="Lo sentimos, el fichero no puede subirse al servidor.";
+               return $uploadOk;     
             // if everything is ok, try to upload file
             } else {
                 // Crear entidad tipo fichero excel en BD
@@ -222,7 +222,7 @@ class centity extends cparent
                     $_SESSION['textsesion']="Lo sentimos, se produjo un error en la subida del fichero. Vuelva a intentarlo.";
                     return 0;
                 }
-                return $rfila['docid'];
+                return $rfila;
             }
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función newexcel: '.$ex->getMessage();
