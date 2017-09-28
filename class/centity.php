@@ -144,7 +144,7 @@ class centity extends cparent
     public function findsexcel($gentity) {
         try {
             $_SESSION['textsesion'] = "";
-            $n1ql="select u.* from techinventory u where entidad='filesexcel' and fkentity ='".$gentity."'"; 
+            $n1ql="select meta(u).id,u.* from techinventory u where entidad='filesexcel' and fkentity ='".$gentity."'"; 
             // Control post ( Ver filtros de g_import form).
             if (!empty($_POST['docid'])) {
                $n1ql.= " and docid =".$_POST['docid'];
@@ -212,20 +212,66 @@ class centity extends cparent
                 // Crear entidad tipo fichero excel en BD
                 $rfilas = $this->newclass($gentity);
                 $rfilas['pkname'] = $rfilas['docid'].'_'. $_FILES["fileToUpload"]["name"];
+                $rfilas['bproc'] = NULL;
                 $rfilas = $this->update($rfilas,1); 
-                $rfila = get_object_vars($rfilas[0]);
-                $_SESSION['idact'] = $rfila['id'];
+                $_SESSION['idact'] = $rfilas[0]->id;
                 $_SESSION['textsesion'] = "Excel cargado.";
-                $target_file = $target_dir .$rfila['pkname'];
+                $target_file = $target_dir .$rfilas[0]->pkname;
                 if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
                 } else {
                     $_SESSION['textsesion']="Lo sentimos, se produjo un error en la subida del fichero. Vuelva a intentarlo.";
                     return 0;
                 }
-                return $rfila;
+                return $rfilas;
             }
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función newexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    public function deleteexcel($docid)
+    {
+        try {
+            // Cargar fila del ID
+            $_SESSION['textsesion'] = "";
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                $_SESSION['textsesion']='Error en función deleteexcel: Sin conexión a base de datos.';
+                return -1;
+            }
+            $doc = $bucket->get($docid);
+            if (count($doc) > 0) {
+                $doc = get_object_vars($doc->value);
+            }else
+            {
+                $_SESSION['textsesion']= "Error al localizar el documento ".$docid;
+                return -1;
+            }
+            // Borrar fichero
+            $_SESSION['textsesion']="Borrando fichero excel.";
+            $target_dir = "../upload/excel/";
+            $target_file = $target_dir .$doc['pkname'];
+            unlink($target_file);
+            $_SESSION['textsesion']="Fichero excel borrado.Borrando detalles del fichero.";
+            // Borrar detalles de fichero item_excel
+            $n1ql = "delete from techinventory where fkentity='".$docid."'";
+            $query = CouchbaseN1qlQuery::fromString($n1ql);
+            // Gets the properties of the given objec
+            $result = $bucket->query($query);
+
+            if($result->metrics['resultCount'] == 0)
+            {
+                $_SESSION['textsesion']="No existían filas de detalles de fichero excel.";
+            }
+            // Borrar cabecera de fichero
+            $bucket->remove($docid);
+            // Borrado correctamente
+            $_SESSION['textsesion']="Fichero excel borrado correctamente.";
+            return 0;
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función deleteexcel: '.$ex->getMessage();
             $this->error();
             return -1;
         }

@@ -11,7 +11,7 @@
         // Crear clase de para llamada a funciones genericas
         // Control POST
         $cimport = new centity("filesexcel");
-        $citemexcel = new citem("itemexcel");
+        $citemexcel = new citem("item_excel");
         if($_POST['idform'] == 'ffindexcel') {
             $rows = $cimport->findsexcel($gentity);
         }
@@ -21,10 +21,15 @@
                $rows = $cimport->newexcel($gentity);
                if ($rows <> 0) {
                 // Creación de detalles de excel
-                    $citemexcel->intemexcelnew($rows['id'], $rows['pkname']);
+                    $citemexcel->intemexcelnew($rows[0]->id, $rows[0]->pkname);
                }
             }
         }
+        // Baja
+        if (isset($_POST['bbaja'])) {
+            // Control de baja
+                $rows=$cimport->deleteexcel($_POST['id']);
+            }
         
         ?>
     </head>
@@ -60,12 +65,14 @@
                 // auditoria
                 echo "<th>ID Fichero</th>";
                 echo "<th>Nombre Fichero</th>";
+                echo "<th>Procesado</th>";
                 echo "<th>Alta</th>";
                 echo "<th>U. Alta</th>";
                 echo "<th>Modificación</th>";
                 echo "<th>U. Modif.</th>";
                 // Botón de edición
-                echo "<th>Editar</th>";  
+                echo "<th>Editar</th>"; 
+                echo "<th>Borrar</th>";  
              ?>
            </tr>
         </thead>
@@ -86,6 +93,10 @@
                     //echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
                     echo "<td>".$afila["docid"]."</td>";
                     echo "<td>".$afila["pkname"]."</td>";
+                    
+                    $afila['bproc'] = $cimport->rowgrid($afila['bproc'], 'checkbox');
+                    echo "<td>".$afila['bproc']."</td>";      
+                    
                     // Auditoria
                     echo "<td>".date('d-m-Y H:i:s',$afila["fcreate"])."</td>";
                     echo "<td>".$afila["ucreate"]."</td>";
@@ -96,7 +107,15 @@
                         echo "<td></td>";
                         echo "<td></td>";
                     }
-                    echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar" onclick="openTab(event, \'Edición\')"></td>';
+                    // Control de botones
+                    if ($afila['bproc'] =='NO')
+                    {
+                        echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar" onclick="openTab(event, \'Edición\')"></td>';
+                        echo '<td><input type="submit" class="gdangerboton" name="bbaja" id="bbaja" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
+                    }else {
+                        echo '<td></td>';
+                        echo '<td></td>';
+                    }
                     // Final de fila
                     echo '</form>';
                     echo "</tr>";

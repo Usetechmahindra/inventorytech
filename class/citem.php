@@ -61,10 +61,27 @@ class citem extends cparent
             // Detalles de filas
             //array_shift($sheetData);
             // Recorrer todas las filas de la hoja
-            $test_array = array();
+            $ipos = 0;
             foreach($acolumn as $key=>$val){
                 // Crear campos por cada fila
-                echo $val;
+                $rfilas = $this->newclass($fkentity);
+                // Borrar columna por defecto de newclass
+                unset($rfilas['pkname']);
+                // La primera fila siempre será pkname
+                $rfilas['ipos']=$ipos;
+                if($ipos==0) {
+                    $rfilas['name'] = 'pkname';
+                }else {
+                    $rfilas['name'] = $val;
+                }
+                $rfilas['label'] = $val;
+                $rfilas['type'] = "text";
+                $rfilas['size'] = 20;
+                // Actualizar fila
+                $rfilas = $this->update($rfilas,1); 
+                // Retornar array
+                $ipos++;
+                //echo $val;
             }
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función intemexcelnew: '.$ex->getMessage();
