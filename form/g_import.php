@@ -12,6 +12,7 @@
         // Control POST
         $cimport = new centity("filesexcel");
         $citemexcel = new citem("item_excel");
+        
         if($_POST['idform'] == 'ffindexcel') {
             $rows = $cimport->findsexcel($gentity);
         }
@@ -50,80 +51,15 @@
             </div>
         </form>
         <div id="dgrid">
-        <form name="importexcel" id="impexcel" method="post" enctype="multipart/form-data">
         <?php
+            echo '<form name="importexcel" id="impexcel" method="post" enctype="multipart/form-data">';
             echo '<input type="hidden" name="idform" value="importexcel">';
             echo '<input type="file" name="fileToUpload" id="fileToUpload">';
             echo '<input type="submit" class="boton" name="bnew" id="bnewi" value="Cargar Excel" onclick="return confirm(\'¿Cargar excel?\');"/>';
-        ?>
-        </form>    
-        <table id="tgrid">
-        <thead>
-           <tr>
-             <?php
-                // Recorrer el array de columnas
-                // auditoria
-                echo "<th>ID Fichero</th>";
-                echo "<th>Nombre Fichero</th>";
-                echo "<th>Procesado</th>";
-                echo "<th>Alta</th>";
-                echo "<th>U. Alta</th>";
-                echo "<th>Modificación</th>";
-                echo "<th>U. Modif.</th>";
-                // Botón de edición
-                echo "<th>Editar</th>"; 
-                echo "<th>Borrar</th>";  
-             ?>
-           </tr>
-        </thead>
-        <tbody>
-            <?php
-    //          $result = mysql_query("SELECT idalert,idparametro,idusuario,estado,tipo,operacion,valor,textalert,nbit,horaminbit,horamaxbit,falta from alertserver where idserver=".$_SESSION['idserver']." order by idusuario,idparametro");
-    //          while( $row = mysql_fetch_assoc( $result ) ){
-                // Recorrer todas las filas y cada columna
-                foreach($rows as $afila){
-                    //echo '<tr onclick="openTab(event, \'Edición\')">';
-                    echo '<tr>';
-                    echo '<form name="fimport" id="fimport" method="post">';
-                    echo '<input type="hidden" name="idform" value="fimport">';
-                    // Poner el orden establecido
-                    $afila = get_object_vars($afila);
-                    
-                    echo '<input type="hidden" name="id" value="'.$afila["id"].'">';
-                    //echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
-                    echo "<td>".$afila["docid"]."</td>";
-                    echo "<td>".$afila["pkname"]."</td>";
-                    
-                    $afila['bproc'] = $cimport->rowgrid($afila['bproc'], 'checkbox');
-                    echo "<td>".$afila['bproc']."</td>";      
-                    
-                    // Auditoria
-                    echo "<td>".date('d-m-Y H:i:s',$afila["fcreate"])."</td>";
-                    echo "<td>".$afila["ucreate"]."</td>";
-                    if(!empty($afila["fmodif"])) {
-                        echo "<td>".date('d-m-Y H:i:s',$afila["fmodif"])."</td>";
-                        echo "<td>".$afila["umodif"]."</td>";
-                    }else {
-                        echo "<td></td>";
-                        echo "<td></td>";
-                    }
-                    // Control de botones
-                    if ($afila['bproc'] =='NO')
-                    {
-                        echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar" onclick="openTab(event, \'Edición\')"></td>';
-                        echo '<td><input type="submit" class="gdangerboton" name="bbaja" id="bbaja" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
-                    }else {
-                        echo '<td></td>';
-                        echo '<td></td>';
-                    }
-                    // Final de fila
-                    echo '</form>';
-                    echo "</tr>";
-                }
-            ?>
-            
-        </tbody>
-        </table>
+            echo '</form>';
+            // Lanzar los detalles del grid (cabecera o detalles)
+            $cimport->gridexcel($rows,$_POST['id']);
+        ?>      
         </div> 
         <?php
             echo '<hr style="color:'.$_SESSION['color'].';" />';

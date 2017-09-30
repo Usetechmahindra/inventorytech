@@ -161,6 +161,8 @@ class centity extends cparent
             }
             if (isset($_POST['bproc'])) {
                $n1ql.= " and bproc=TRUE";
+            }else{
+                $n1ql.= " and bproc is null";     
             }
             $n1ql.=" order by docid";
             return $this->select($n1ql);
@@ -171,6 +173,214 @@ class centity extends cparent
             return -1;
         }
     }
+    
+    public function gridexcel($rows,$id)
+    {
+        echo '<table id="tgrid">';
+        echo '<thead>';
+        if(is_null($id))
+        {
+            $this->gridcabexcel($rows);
+        }else {
+          $this->griddetexcel($id);  
+        }
+        echo '</tbody>';
+        echo '</table>';
+    }
+    
+    private function gridcabexcel($rows)
+    {
+        try {
+            echo '<tr>';
+                    // Recorrer el array de columnas
+                    // auditoria
+                    echo "<th>ID Fichero</th>";
+                    echo "<th>Nombre Fichero</th>";
+                    echo "<th>Procesado</th>";
+                    echo "<th>Alta</th>";
+                    echo "<th>U. Alta</th>";
+                    echo "<th>Modificación</th>";
+                    echo "<th>U. Modif.</th>";
+                    // Botón de edición
+                    echo "<th>Editar</th>"; 
+                    echo "<th>Borrar</th>";  
+            echo '</tr>';
+            echo '</thead>';
+            echo '<tbody>';
+                // Recorrer todas las filas y cada columna
+                foreach($rows as $afila){
+                    //echo '<tr onclick="openTab(event, \'Edición\')">';
+                    echo '<tr>';
+                    echo '<form name="fimport" id="fimport" method="post">';
+                    echo '<input type="hidden" name="idform" value="fimport">';
+                    // Poner el orden establecido
+                    $afila = get_object_vars($afila);
+
+                    echo '<input type="hidden" name="id" value="'.$afila["id"].'">';
+                    //echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
+                    echo "<td>".$afila["docid"]."</td>";
+                    echo "<td>".$afila["pkname"]."</td>";
+
+                    $afila['bproc'] = $this->rowgrid($afila['bproc'], 'checkbox');
+                    echo "<td>".$afila['bproc']."</td>";      
+
+                    // Auditoria
+                    echo "<td>".date('d-m-Y H:i:s',$afila["fcreate"])."</td>";
+                    echo "<td>".$afila["ucreate"]."</td>";
+                    if(!empty($afila["fmodif"])) {
+                        echo "<td>".date('d-m-Y H:i:s',$afila["fmodif"])."</td>";
+                        echo "<td>".$afila["umodif"]."</td>";
+                    }else {
+                        echo "<td></td>";
+                        echo "<td></td>";
+                    }
+                    // Control de botones
+                    if ($afila['bproc'] =='NO')
+                    {
+                        echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar"></td>';
+                        echo '<td><input type="submit" class="gdangerboton" name="bbaja" id="bbaja" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
+                    }else {
+                        echo '<td></td>';
+                        echo '<td></td>';
+                    }
+                    // Final de fila
+                    echo '</form>';
+                    echo "</tr>";
+                }
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función gridcabexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    
+    private function griddetexcel($id)
+    {
+        try {
+            // Cargar los detalles de la fila por el id
+            $n1ql="select meta(u).id,u.* from techinventory u where entidad='item_excel' and fkentity ='".$id."' order by ipos,docid";
+            $rows=$this->select($n1ql);
+            echo '<tr>';
+                    // Recorrer el array de columnas
+                    // auditoria
+                    echo "<th>ID Fichero</th>";
+                    echo "<th>Posición</th>";
+                    echo "<th>Nombre Parámetro</th>";
+                    echo "<th>Tipo</th>";
+                    echo "<th>Tamaño</th>";
+                    echo "<th>Alta</th>";
+                    echo "<th>U. Alta</th>";
+                    echo "<th>Modificación</th>";
+                    echo "<th>U. Modif.</th>";
+                    // Botón de edición
+                    echo "<th>Editar</th>"; 
+                    echo "<th>Borrar</th>";  
+            echo '</tr>';
+            echo '</thead>';
+            echo '<tbody>';
+                // Recorrer todas las filas y cada columna
+                foreach($rows as $afila){
+                    //echo '<tr onclick="openTab(event, \'Edición\')">';
+                    echo '<tr>';
+                    echo '<form name="fimportdet" id="fimportdet" method="post">';
+                    echo '<input type="hidden" name="idform" value="fimportdet">';
+                    // Poner el orden establecido
+                    $afila = get_object_vars($afila);
+
+                    echo '<input type="hidden" name="id" value="'.$afila["id"].'">';
+                    //echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
+                    echo "<td>".$afila["fkentity"]."</td>";
+                    
+                    echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['ipos'].'></td>';
+                    echo '<td><input type="text" name="label" size=25 value="'.$afila['label'].'"></td>';
+                    
+                    echo '<td>';
+                        echo '<select name = "type" required="required">';
+                        $sop ='<option value="text"';
+                        if($afila['type']=='text') {
+                            $sop.= " SELECTED";    
+                        }
+                        $sop .='>Texto</option>';
+                        echo $sop;
+                        $sop ='<option value="textarea"';    
+                        if($afila['type']=='textarea') {
+                            $sop.= " SELECTED"; 
+                        }
+                        $sop .= '>Textarea</option>';
+                        echo $sop;
+                        $sop ='<option value="usuario"';    
+                        if($afila['type']=='usuario') {
+                            $sop.= " SELECTED"; 
+                        }
+                        $sop .= '>Combo Usuarios</option>';
+                        echo $sop;
+                        $sop ='<option value="grupo"';    
+                        if($afila['type']=='grupo') {
+                            $sop.= " SELECTED"; 
+                        }
+                        $sop .= '>Combo Grupo</option>';
+                        echo $sop;
+                        
+                        $sop ='<option value="grupo_en"';    
+                        if($afila['type']=='grupo_en') {
+                            $sop.= " SELECTED"; 
+                        }
+                        // Rellenar automáticamente las entidades de menú
+                        $aentidades = $this->comboentidad('entidad_0');
+                        foreach($aentidades as $fila) {
+                            $sop ='<option value="'.$fila['id'].'"';    
+                            if($afila['type']==$fila['id']) {
+                                $sop.= " SELECTED"; 
+                            }
+                            $sop .= '>'.$fila['pkname'].'</option>';
+                            echo $sop; 
+                        }    
+                        $sop ='<option value="date"';
+                        if($afila['type']=='date') {
+                            $sop.= " SELECTED";       
+                        }
+                        $sop.='>Fecha</option>';
+                        echo $sop;
+                        $sop ='<option value="number"'; 
+                        if($afila['type']=='number') {
+                            $sop.= " SELECTED";     
+                        }
+                        $sop.='>Número</option>';
+                        echo $sop;
+                       $sop ='<option value="checkbox"';
+                        if($afila['type']=='checkbox') {
+                            $sop.= " SELECTED";      
+                        }
+                        $sop.='>Checkbox</option>';
+                        echo $sop;
+                        echo '</select>';
+                    echo '</td>';
+                    
+                    echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['size'].'></td>';  
+                    // Auditoria
+                    echo "<td>".date('d-m-Y',$afila["fcreate"])."</td>";
+                    echo "<td>".$afila["ucreate"]."</td>";
+                    if(!empty($afila["fmodif"])) {
+                        echo "<td>".date('d-m-Y H:i:s',$afila["fmodif"])."</td>";
+                        echo "<td>".$afila["umodif"]."</td>";
+                    }else {
+                        echo "<td></td>";
+                        echo "<td></td>";
+                    }
+                    // Control de botones
+                    echo '<td><input type="submit" class="gboton" name="beditdet" id="beditdet" value="Editar"></td>';
+                    echo '<td><input type="submit" class="gdangerboton" name="bbajadet" id="bbajadet" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
+                    // Final de fila
+                    echo '</form>';
+                    echo "</tr>";
+            }            
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función griddetexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    
     public function newexcel($gentity)
     {
         try {
