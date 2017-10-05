@@ -30,7 +30,12 @@
         if (isset($_POST['bbaja'])) {
             // Control de baja
                 $rows=$cimport->deleteexcel($_POST['id']);
-            }
+        }
+        // Edición detalles
+        if (isset($_POST['beditdet'])) {
+            $rows=$citemexcel->intemexcelupdate();
+        }
+        
         
         ?>
     </head>

@@ -266,15 +266,13 @@ class centity extends cparent
                     echo "<th>ID Fichero</th>";
                     echo "<th>Posición</th>";
                     echo "<th>Nombre Parámetro</th>";
+                    echo "<th>Procesar</th>";
                     echo "<th>Tipo</th>";
                     echo "<th>Tamaño</th>";
-                    echo "<th>Alta</th>";
-                    echo "<th>U. Alta</th>";
                     echo "<th>Modificación</th>";
                     echo "<th>U. Modif.</th>";
                     // Botón de edición
                     echo "<th>Editar</th>"; 
-                    echo "<th>Borrar</th>";  
             echo '</tr>';
             echo '</thead>';
             echo '<tbody>';
@@ -283,7 +281,7 @@ class centity extends cparent
                     //echo '<tr onclick="openTab(event, \'Edición\')">';
                     echo '<tr>';
                     echo '<form name="fimportdet" id="fimportdet" method="post">';
-                    echo '<input type="hidden" name="idform" value="fimportdet">';
+                    ///////echo '<input type="hidden" name="idform" value="fimportdet">';  // En esta ocasión no es necesario
                     // Poner el orden establecido
                     $afila = get_object_vars($afila);
 
@@ -291,8 +289,16 @@ class centity extends cparent
                     //echo '<tr ondblclick="fclick(\''.$afila["id"].'\')">';
                     echo "<td>".$afila["fkentity"]."</td>";
                     
+                    
+                    
                     echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['ipos'].'></td>';
                     echo '<td><input type="text" name="label" size=25 value="'.$afila['label'].'"></td>';
+                    $col='<td><input type="checkbox" name="bproc" size=10 value="'.$afila['bproc'].'"';
+                    if(!is_null($afila['bproc'])){
+                        $col.=' checked';
+                    }
+                    $col.='></td>';
+                    echo $col;
                     
                     echo '<td>';
                         echo '<select name = "type" required="required">';
@@ -347,7 +353,7 @@ class centity extends cparent
                         }
                         $sop.='>Número</option>';
                         echo $sop;
-                       $sop ='<option value="checkbox"';
+                        $sop ='<option value="checkbox"';
                         if($afila['type']=='checkbox') {
                             $sop.= " SELECTED";      
                         }
@@ -356,10 +362,8 @@ class centity extends cparent
                         echo '</select>';
                     echo '</td>';
                     
-                    echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['size'].'></td>';  
+                    echo '<td><input type="number" name="size" size=2 min="1" max="999" value='.$afila['size'].'></td>';  
                     // Auditoria
-                    echo "<td>".date('d-m-Y',$afila["fcreate"])."</td>";
-                    echo "<td>".$afila["ucreate"]."</td>";
                     if(!empty($afila["fmodif"])) {
                         echo "<td>".date('d-m-Y H:i:s',$afila["fmodif"])."</td>";
                         echo "<td>".$afila["umodif"]."</td>";
@@ -368,8 +372,7 @@ class centity extends cparent
                         echo "<td></td>";
                     }
                     // Control de botones
-                    echo '<td><input type="submit" class="gboton" name="beditdet" id="beditdet" value="Editar"></td>';
-                    echo '<td><input type="submit" class="gdangerboton" name="bbajadet" id="bbajadet" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
+                    echo '<td><input type="submit" class="gboton" name="beditdet" id="beditdet" value="Grabar"></td>';
                     // Final de fila
                     echo '</form>';
                     echo "</tr>";

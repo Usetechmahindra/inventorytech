@@ -61,7 +61,7 @@ class citem extends cparent
             // Detalles de filas
             //array_shift($sheetData);
             // Recorrer todas las filas de la hoja
-            $ipos = 0;
+            $ipos = 1;
             foreach($acolumn as $key=>$val){
                 // Crear campos por cada fila
                 $rfilas = $this->newclass($fkentity);
@@ -69,7 +69,7 @@ class citem extends cparent
                 unset($rfilas['pkname']);
                 // La primera fila siempre será pkname
                 $rfilas['ipos']=$ipos;
-                if($ipos==0) {
+                if($ipos==1) {
                     $rfilas['name'] = 'pkname';
                 }else {
                     $rfilas['name'] = $val;
@@ -77,6 +77,7 @@ class citem extends cparent
                 $rfilas['label'] = $val;
                 $rfilas['type'] = "text";
                 $rfilas['size'] = 20;
+                $rfilas['bproc'] = true;
                 // Actualizar fila
                 $rfilas = $this->update($rfilas,1); 
                 // Retornar array
@@ -87,6 +88,37 @@ class citem extends cparent
             $_SESSION['textsesion']='Error en función intemexcelnew: '.$ex->getMessage();
             $this->error();
             return -1;
+        }
+    }
+    
+    public function intemexcelupdate()
+    {
+        try {
+            // Cargar por ID
+            $arow=$this->getdocid($_POST['id']);
+            // Igualar al post menos el id de formulario
+            foreach ($_POST as $key => $value) {
+                $arow->$key = $value;
+            }
+            // Control de procesado nulo
+            $arow->bproc = $_POST['bproc'];
+            $arow->fmodif=time(); 
+            $arow->umodif=$_SESSION['user'];
+            // Actualizar
+            $bucket = $this->connbucket();
+            if($bucket == -1)
+            {
+                return -1;
+            }
+            $id= $arow->fkentity;
+            $arow = $bucket->upsert($arow->id,$arow);
+            // Retornar las filas del fichero griddetexcel
+            $_POST['id'] = $id;
+            
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función intemexcelupdate: '.$ex->getMessage();
+            $this->error();
+            return -1;  
         }
     }
 }
