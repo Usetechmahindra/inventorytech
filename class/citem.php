@@ -72,9 +72,9 @@ class citem extends cparent
                 if($ipos==1) {
                     $rfilas['name'] = 'pkname';
                 }else {
-                    $rfilas['name'] = $val;
+                    $rfilas['name'] = trim($val);
                 }
-                $rfilas['label'] = $val;
+                $rfilas['label'] = trim($val);
                 $rfilas['type'] = "text";
                 $rfilas['size'] = 20;
                 $rfilas['bproc'] = true;
@@ -98,6 +98,12 @@ class citem extends cparent
             $arow=$this->getdocid($_POST['id']);
             // Igualar al post menos el id de formulario
             foreach ($_POST as $key => $value) {
+                // Control de valores int
+                 switch ($key) {
+                   case 'ipos':
+                   case 'size':
+                       $value = (int)$value;
+                 }
                 $arow->$key = $value;
             }
             // Control de procesado nulo

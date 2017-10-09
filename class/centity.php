@@ -203,6 +203,7 @@ class centity extends cparent
                     echo "<th>U. Modif.</th>";
                     // Botón de edición
                     echo "<th>Editar</th>"; 
+                    echo "<th>Procesar</th>"; 
                     echo "<th>Borrar</th>";  
             echo '</tr>';
             echo '</thead>';
@@ -238,6 +239,7 @@ class centity extends cparent
                     if ($afila['bproc'] =='NO')
                     {
                         echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar"></td>';
+                        echo '<td><input type="submit" class="gboton" name="bproc" id="bproc" value="Procesar" onclick="return confirm(\'¿Procesar fichero?\');"></td>';
                         echo '<td><input type="submit" class="gdangerboton" name="bbaja" id="bbaja" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
                     }else {
                         echo '<td></td>';
