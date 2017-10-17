@@ -35,7 +35,8 @@ for($i=1; $i<=$total; $i++){
     sleep(1);
 }
 // Tell user that the process is completed
-echo '<script language="javascript">document.getElementById("information").innerHTML="Process completed"</script>';
+echo '<script language="javascript">document.getElementById("information").innerHTML="Proceso finalizado"</script>';
+
 ?>
 </body>
 </html>

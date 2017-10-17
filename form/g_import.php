@@ -37,19 +37,22 @@
         }      
         ?>
         <SCRIPT LANGUAGE="JavaScript">
-            function MyPopUpWin() {
-            var iMyWidth;
-            var iMyHeight;
-            //half the screen width minus half the new window width (plus 5 pixel borders).
-            iMyWidth = (window.screen.width/2) - (75 + 10);
-            //half the screen height minus half the new window height (plus title and status bars).
-            iMyHeight = (window.screen.height/2) - (100 + 50);
-            //Open the window.
-            var win2 = window.open("pop_procexcel.php","Progress POP UP","status=no,height=300,width=520,resizable=no,left=" + iMyWidth + ",top=" + iMyHeight + ",screenX=" + iMyWidth + ",screenY=" + iMyHeight + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
-            win2.focus();
-            }
-</SCRIPT>
-
+                function PopUpProc(pid) {
+                    if (!confirm('¿Desea procesar el fichero?'))
+                    {
+                        return 0;
+                    }
+                    var iMyWidth;
+                    var iMyHeight;
+                    //half the screen width minus half the new window width (plus 5 pixel borders).
+                    iMyWidth = (window.screen.width/2) - (75 + 10);
+                    //half the screen height minus half the new window height (plus title and status bars).
+                    iMyHeight = (window.screen.height/2) - (100 + 50);
+                    //Open the window.
+                    var win2 = window.open("pop_procexcel.php?id="+pid,"Progress POP UP","status=no,height=300,width=520,resizable=no,left=" + iMyWidth + ",top=" + iMyHeight + ",screenX=" + iMyWidth + ",screenY=" + iMyHeight + ",toolbar=no,menubar=no,scrollbars=no,location=no,directories=no");
+                    win2.focus();
+                }
+        </SCRIPT>
     </head>
     <body>
         <form name="ffindexcel" id="ffind" method="post">
@@ -82,7 +85,6 @@
             echo '<hr style="color:'.$_SESSION['color'].';" />';
             echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
         ?>
-        <A HREF="javascript:MyPopUpWin()">This is the link</a>
         </form>
     </body>
 </html>

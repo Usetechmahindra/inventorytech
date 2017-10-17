@@ -178,11 +178,11 @@ class centity extends cparent
     {
         echo '<table id="tgrid">';
         echo '<thead>';
-        if(is_null($id))
+        if(isset($_POST['bedit']))
         {
-            $this->gridcabexcel($rows);
+            $this->griddetexcel($id);  
         }else {
-          $this->griddetexcel($id);  
+            $this->gridcabexcel($rows);
         }
         echo '</tbody>';
         echo '</table>';
@@ -239,7 +239,7 @@ class centity extends cparent
                     if ($afila['bproc'] =='NO')
                     {
                         echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar"></td>';
-                        echo '<td><input type="submit" class="gboton" name="bproc" id="bproc" value="Procesar" onclick="return confirm(\'¿Procesar fichero?\');"></td>';
+                        echo '<td><input type="submit" class="gboton" name="bproc" id="bproc" value="Procesar" onclick="javascript:PopUpProc(\''.$afila["id"].'\')"></td>';
                         echo '<td><input type="submit" class="gdangerboton" name="bbaja" id="bbaja" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
                     }else {
                         echo '<td></td>';
