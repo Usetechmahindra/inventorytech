@@ -107,7 +107,8 @@ class citem extends cparent
                 $arow->$key = $value;
             }
             // Control de procesado nulo
-            $arow->bproc = $_POST['bproc'];
+            
+            $arow->bproc = isset($_POST['bproc']);
             $arow->fmodif=time(); 
             $arow->umodif=$_SESSION['user'];
             // Actualizar
@@ -123,6 +124,70 @@ class citem extends cparent
             
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función intemexcelupdate: '.$ex->getMessage();
+            $this->error();
+            return -1;  
+        }
+    }
+    
+    public function syncparm($pkentity)
+    {
+        try {
+            $n1ql="select meta(u).id,u.* from techinventory u where entidad='item_excel' and fkentity ='".$pkentity."'"
+            . " and bproc = true"
+            . " order by ipos,docid";
+            $rows=$this->select($n1ql);
+
+            // Total processes
+            $total = count($rows);
+            // Loop through process
+            echo '<p>Sincronizando parámetros de entidad: '.$total.' </p>';
+            for($i=1; $i<=$total; $i++){
+                // Calculate the percentation
+                $percent = intval($i/$total * 100)."%";
+
+                // Javascript for updating the progress bar and information
+                echo '<script language="javascript">
+                document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
+                document.getElementById("information").innerHTML="'.$i.' Fila(s) procesadas.";
+                </script>';
+
+
+            // This is for the buffer achieve the minimum size in order to flush data
+                echo str_repeat(' ',1024*64);
+
+
+            // Send output to browser immediately
+                flush();
+
+
+            // Sleep one second so we can see the delay
+                sleep(1);
+            }
+            echo '<p>Cargando detalles de fichero: '.$total.' </p>';
+            for($i=1; $i<=$total; $i++){
+                // Calculate the percentation
+                $percent = intval($i/$total * 100)."%";
+
+                // Javascript for updating the progress bar and information
+                echo '<script language="javascript">
+                document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
+                document.getElementById("information").innerHTML="'.$i.' Fila(s) procesadas.";
+                </script>';
+
+
+            // This is for the buffer achieve the minimum size in order to flush data
+                echo str_repeat(' ',1024*64);
+
+
+            // Send output to browser immediately
+                flush();
+
+
+            // Sleep one second so we can see the delay
+                sleep(1);
+            }
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función syncparm: '.$ex->getMessage();
             $this->error();
             return -1;  
         }

@@ -178,7 +178,7 @@ class centity extends cparent
     {
         echo '<table id="tgrid">';
         echo '<thead>';
-        if(isset($_POST['bedit']))
+        if(isset($_POST['bedit']) || isset($_POST['beditdet']))
         {
             $this->griddetexcel($id);  
         }else {
@@ -296,7 +296,7 @@ class centity extends cparent
                     echo '<td><input type="number" name="ipos" size=2 min="1" max="999" value='.$afila['ipos'].'></td>';
                     echo '<td><input type="text" name="label" size=25 value="'.$afila['label'].'"></td>';
                     $col='<td><input type="checkbox" name="bproc" size=10 value="'.$afila['bproc'].'"';
-                    if(!is_null($afila['bproc'])){
+                    if($afila['bproc'] == true){
                         $col.=' checked';
                     }
                     $col.='></td>';
