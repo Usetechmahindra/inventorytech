@@ -374,7 +374,9 @@ class centity extends cparent
                         echo "<td></td>";
                     }
                     // Control de botones
-                    echo '<td><input type="submit" class="gboton" name="beditdet" id="beditdet" value="Grabar"></td>';
+                    if ($afila["ipos"] > -1) {
+                        echo '<td><input type="submit" class="gboton" name="beditdet" id="beditdet" value="Grabar"></td>';
+                    }
                     // Final de fila
                     echo '</form>';
                     echo "</tr>";
@@ -490,6 +492,39 @@ class centity extends cparent
             $this->error();
             return -1;
         }
+    }
+    public function procexcel($pkentity)
+    {
+       try {
+           
+           echo '<p>Cargando detalles de fichero: '.$total.' </p>';
+           for($i=1; $i<=$total; $i++){
+                // Calculate the percentation
+                $percent = intval($i/$total * 100)."%";
+
+                // Javascript for updating the progress bar and information
+                echo '<script language="javascript">
+                document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
+                document.getElementById("information").innerHTML="'.$i.' Fila(s) procesadas.";
+                </script>';
+
+
+            // This is for the buffer achieve the minimum size in order to flush data
+                echo str_repeat(' ',1024*64);
+
+
+            // Send output to browser immediately
+                flush();
+
+
+            // Sleep one second so we can see the delay
+                sleep(1);
+            }
+       } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función procexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+       }
     }
 //    public function insert($arow);
 //    public function audit($arow);

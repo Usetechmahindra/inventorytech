@@ -40,6 +40,7 @@
     <?php
     // 1º Sincronizar parámetros excel con parámetros de la entidad:Crear o Actualizar
     $citemexcelp->syncparm($_GET['id']);
+    $cimportp->procexcel($_GET['id']);
 //        $error = $_SESSION['textsesion'];
 //    }
 //    // 2º Grabar los detalles

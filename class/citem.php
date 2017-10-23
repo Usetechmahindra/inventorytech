@@ -71,8 +71,9 @@ class citem extends cparent
                 $rfilas['ipos']=$ipos;
                 if($ipos==1) {
                     $rfilas['name'] = 'pkname';
+                    $rfilas['ipos'] = -1;
                 }else {
-                    $rfilas['name'] = trim($val);
+                    $rfilas['name'] = strtolower(trim($val));
                 }
                 $rfilas['label'] = trim($val);
                 $rfilas['type'] = "text";
@@ -133,7 +134,7 @@ class citem extends cparent
     {
         try {
             $n1ql="select meta(u).id,u.* from techinventory u where entidad='item_excel' and fkentity ='".$pkentity."'"
-            . " and bproc = true"
+            . " and bproc = true and ipos > 0 "  // El primero siempre es pkname y se deja el de por defecto de intem_entidad.
             . " order by ipos,docid";
             $rows=$this->select($n1ql);
 
@@ -141,9 +142,10 @@ class citem extends cparent
             $total = count($rows);
             // Loop through process
             echo '<p>Sincronizando parámetros de entidad: '.$total.' </p>';
-            for($i=1; $i<=$total; $i++){
+            
+            for($i=0; $i<$total; $i++){
                 // Calculate the percentation
-                $percent = intval($i/$total * 100)."%";
+                $percent = intval(($i+1)/$total * 100)."%";
 
                 // Javascript for updating the progress bar and information
                 echo '<script language="javascript">
@@ -159,35 +161,43 @@ class citem extends cparent
             // Send output to browser immediately
                 flush();
 
-
+                $this->updateparmexcel($rows[$i]);
             // Sleep one second so we can see the delay
-                sleep(1);
-            }
-            echo '<p>Cargando detalles de fichero: '.$total.' </p>';
-            for($i=1; $i<=$total; $i++){
-                // Calculate the percentation
-                $percent = intval($i/$total * 100)."%";
-
-                // Javascript for updating the progress bar and information
-                echo '<script language="javascript">
-                document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
-                document.getElementById("information").innerHTML="'.$i.' Fila(s) procesadas.";
-                </script>';
-
-
-            // This is for the buffer achieve the minimum size in order to flush data
-                echo str_repeat(' ',1024*64);
-
-
-            // Send output to browser immediately
-                flush();
-
-
-            // Sleep one second so we can see the delay
-                sleep(1);
+            //    sleep(1);
             }
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función syncparm: '.$ex->getMessage();
+            $this->error();
+            return -1;  
+        }
+    }
+    // Actualiza / Crea parametro
+    public function updateparmexcel($crow)
+    {
+        try {
+            // Cargar el parametro
+            $this->nclase = 'item_entidad';
+            $findname=$this->getbysearch('name', $crow->name, $_SESSION['$gentity'],FALSE);
+            // Tanto si encuentra como no, actualizar el parametro
+            $findname = get_object_vars($findname[0]);
+            $cols = get_object_vars($crow);
+            $findname['bfind']=$findname['bfind'];
+            $findname['bgrid']=$findname['bgrid'];
+            $findname['breadonly']=$findname['breadonly'];
+            $findname['brequeried']=$findname['brequeried'];
+            $findname['entidad']=$findname['entidad'];
+            $findname['fkentity']=$_SESSION['$gentity'];
+            // Datos de item_fileexel
+            $findname['ipos'] = $cols['ipos'];
+            $findname['label']= $cols['label'];
+            $findname['name'] = $cols['name'];
+            $findname['size'] = $cols['size'];
+            $findname['type'] = $cols['type'];
+            // UPDATE
+            $this->update($findname, 2);
+            
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función updateparmexcel: '.$ex->getMessage();
             $this->error();
             return -1;  
         }
