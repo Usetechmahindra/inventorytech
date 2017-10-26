@@ -10,8 +10,9 @@
     require('../class/caudit.php');
     require('../class/centity.php');
     require('../class/PHPExcel.php');
-    $cimportp = new centity("filesexcel");
-    $citemexcelp = new citem("item_excel");
+    // Crear clases
+    $cimportp = new centity("entidad");
+    $citemexcelp = new citem("item_entidad");
 ?>
 <SCRIPT LANGUAGE="JavaScript">
     function closepopup()
@@ -39,37 +40,14 @@
 <form name="ffindexcel" id="ffind" method="post">
     <?php
     // 1º Sincronizar parámetros excel con parámetros de la entidad:Crear o Actualizar
-    $citemexcelp->syncparm($_GET['id']);
-    $cimportp->procexcel($_GET['id']);
-//        $error = $_SESSION['textsesion'];
-//    }
-//    // 2º Grabar los detalles
-//    // Total processes
-//    $total = 10;
-//    // Loop through process
-//
-//    for($i=1; $i<=$total; $i++){
-//        // Calculate the percentation
-//        $percent = intval($i/$total * 100)."%";
-//
-//        // Javascript for updating the progress bar and information
-//        echo '<script language="javascript">
-//        document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
-//        document.getElementById("information").innerHTML="'.$i.' Fila(s) procesadas.";
-//        </script>';
-//
-//
-//    // This is for the buffer achieve the minimum size in order to flush data
-//        echo str_repeat(' ',1024*64);
-//
-//
-//    // Send output to browser immediately
-//        flush();
-//
-//
-//    // Sleep one second so we can see the delay
-//        sleep(1);
-//    }
+    if ($citemexcelp->syncparm($_GET['id']) <> -1)
+    {
+        if($cimportp->procexcel($_GET['id'])<> -1) 
+        {
+            // Actualizar el ficehro a procesado
+            $cimportp->changefilestatus($_GET['id'],true);
+        }
+    }
     // Tell user that the process is completed
     echo '<script language="javascript">document.getElementById("information").innerHTML="Proceso finalizado."'.$error.'</script>';
     echo ' <input type="submit" class="boton" name="bclose" id="bclose" value="Cerrar" onclick="javascript:closepopup()">';

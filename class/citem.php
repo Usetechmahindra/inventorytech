@@ -165,6 +165,7 @@ class citem extends cparent
             // Sleep one second so we can see the delay
             //    sleep(1);
             }
+            return $total;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función syncparm: '.$ex->getMessage();
             $this->error();

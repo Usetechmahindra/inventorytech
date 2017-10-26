@@ -496,35 +496,106 @@ class centity extends cparent
     public function procexcel($pkentity)
     {
        try {
-           
-           echo '<p>Cargando detalles de fichero: '.$total.' </p>';
-           for($i=1; $i<=$total; $i++){
+           // Cargar el nombre 
+           $rfexcel = $this->getdocid($pkentity);
+           if ($rfexcel == -1) {
+               echo $_SESSION['textsesion'];
+               return -1;
+           }
+           // Cargar los parámetros
+           $filasparm = $this->getparamexcel($pkentity);
+           if ($filasparm == -1) {
+               echo $_SESSION['textsesion'];
+               return -1;
+           }
+           $objPHPExcel = new PHPExcel();
+           $target_dir = "../upload/excel/";
+           $inputFileName = $target_dir . $rfexcel->pkname;
+           $inputFileType = PHPExcel_IOFactory::identify($inputFileName);
+           /**  Crear el lector del fichero con el tipo identifcado **/
+           $objReader = PHPExcel_IOFactory::createReader($inputFileType);
+           $objReader->setReadDataOnly(true);
+           $objPHPExcel = $objReader->load($inputFileName);
+           $objWorksheet =  $objPHPExcel->setActiveSheetIndex(0); 
+           // Cargado $objPHPExcel y con solapa 0.
+           $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+           $total =  count($sheetData);
+           // Primera fila nombre de columnas.
+           $percent = intval(1/$total * 100)."%";
+           echo '<p>Cargando detalles de fichero: '.$rfexcel->pkname.'.Total de filas:'.$total.' </p>';
+           $this->showprogress(1,$percent);
+           for($i=2; $i<=$total; $i++){
                 // Calculate the percentation
                 $percent = intval($i/$total * 100)."%";
-
-                // Javascript for updating the progress bar and information
-                echo '<script language="javascript">
-                document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
-                document.getElementById("information").innerHTML="'.$i.' Fila(s) procesadas.";
-                </script>';
-
-
-            // This is for the buffer achieve the minimum size in order to flush data
-                echo str_repeat(' ',1024*64);
-
-
-            // Send output to browser immediately
-                flush();
-
-
-            // Sleep one second so we can see the delay
-                sleep(1);
+                $this->showprogress($i,$percent);
+                // Fila a procesar
+                $afila = $sheetData[$i];
+                // Recorrer las filas. La columna corresponde en el mismo orden a $filasparm
+                $icol = 0;
+                // Cargar , si existe la fila
+                //echo $afila['A'];
+                $arow = array();
+                $arow['fkentity'] = $_SESSION['$gentity'];
+                foreach ($afila as $vcol) {
+                    // Si la columna se puede procesar
+                    if ($filasparm[$icol]->bproc) {
+                        $arow[$filasparm[$icol]->name] = $vcol;
+                    }
+                    $icol ++;
+                }
+                // En $arrow tengo la nueva entidad, lanzar el update/creación
+                if ($this->update($arow,2) == -1){
+                    echo $_SESSION['textsesion'];
+                    return -1;
+                }
             }
+            return  $total; 
        } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función procexcel: '.$ex->getMessage();
             $this->error();
             return -1;
-       }
+       }    
+    }
+    private function showprogress($icont,$percent)
+    {
+        // Javascript for updating the progress bar and information
+        echo '<script language="javascript">
+        document.getElementById("progress").innerHTML="<div style=\"width:'.$percent.';background-color:#3e8e41;\">&nbsp;</div>";
+        document.getElementById("information").innerHTML="'.$icont.' Fila(s) procesadas.";
+        </script>';
+        // This is for the buffer achieve the minimum size in order to flush data
+        echo str_repeat(' ',1024*64);
+        // Send output to browser immediately
+        flush();
+    }
+    
+    private function getparamexcel($pkentity)
+    {
+        // Retorna el array de filas de parametros. Importate la ordenación por docid que es como se leio del excel
+        try {
+            $n1ql="select meta(u).id,u.* from techinventory u where entidad='item_excel' and fkentity ='".$pkentity."' order by docid";
+            return $this->select($n1ql);
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función getparamexcel: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
+    
+    public function changefilestatus($idfile,$bproc = false)
+    {
+        try {
+            // Cargar el fichero.
+            $cfile=$this->getdocid($idfile);
+            $cfile = get_object_vars($cfile);
+            // Actualizar estado.
+            $cfile['bproc'] = $bproc;
+            $this->update($cfile, 2);
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función changefilestatus: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
     }
 //    public function insert($arow);
 //    public function audit($arow);
