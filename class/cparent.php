@@ -328,6 +328,17 @@ class cparent implements itech
                     }
                     $simput .='</select>';
                     break;
+                case 'textarea':
+                    $simput = '<'.$stype.' name="'.$skey.'"';
+                    if($breadonly) {
+                        $sreadonly = "readonly";
+                        $sclass = "";
+                    }
+                    $simput .= ' rows=4 cols="'.$isize.'" '.$srequired.' '.$sreadonly.' '.$sclass.'>';
+                    $simput .= $svalue;
+                    $simput .= '</textarea>';
+                    break;
+                // password coge el resto de propiedades de default, por eso no hace break
                 case 'password':
                     // Pasar el decodec y aplicar el default
                     $svalue = base64_decode($svalue);
@@ -461,6 +472,44 @@ class cparent implements itech
             return -1;
         }
     }
+    // La función convierte la fecha a Nº y realiza la busqueda desde/hasta si esta en post.
+    private function getbydate($item,$fkentity)
+    {
+        try {
+            // Controlar el nombre del item
+            
+            $_SESSION['textsesion'] = "";
+            $n1ql="select meta(u).id,e.entityname,u.*
+                    from techinventory u inner join techinventory e
+                    on keys u.fkentity 
+                    where u.entidad='".$this->nclase."'"
+                    . " and u.docid > 0 ";
+            // Filtro desde edición
+            if (!empty($_POST[$item->name])) {
+                // Convertir a int
+                $n1ql.= " and u.".$item->name." = ".(strtotime($_POST[$item->name]));
+            }
+            // Controla filtro desde
+            if (!empty($_POST['D_'.$item->name])) {
+                // Convertir a int
+                $n1ql.= " and u.".$item->name." >= ".(strtotime($_POST['D_'.$item->name]));
+            }
+            // Controla filtro hasta
+            if (!empty($_POST['H_'.$item->name])) {
+                $n1ql.= " and u.".$item->name." <= ".(strtotime($_POST['H_'.$item->name]));
+            }              
+             // Control de entidad padre
+             if (!empty($fkentity)) {
+                 $n1ql.=" and u.fkentity='".$fkentity."'";
+             }
+             // Traer filas de entidad
+             return $this->select($n1ql);
+        } catch (Exception $ex) {
+            $_SESSION['textsesion']='Error en función getbydate: '.$ex->getMessage();
+            $this->error();
+            return -1;
+        }
+    }
     public function itementity($gentity,$itype=0) {
         try {
             $_SESSION['textsesion'] = "";
@@ -562,13 +611,21 @@ class cparent implements itech
             {
                 $rfilas=$_POST;
                 $acol = get_object_vars($filtro);
-                // Localizar por boton: f+valor de campo
-                $clave = array_search('f'.$acol['name'], array_keys($_POST));
-                // Si es distinto de false ha encontrado la columna en el post
-                if($clave <> FALSE) {
-                    // Realizar la busqueda.
-                    $rfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
-                    return $rfilas;
+                // Si el filtro es de tipo fecha llamar a función de fecha
+                switch ($filtro->type)
+                {
+                    case 'date':
+                        return $this->getbydate($filtro,$pentity);
+                        break;
+                    default:
+                        // Localizar por boton: f+valor de campo
+                        $clave = array_search('f'.$acol['name'], array_keys($_POST));
+                        // Si es distinto de false ha encontrado la columna en el post
+                        if($clave <> FALSE) {
+                            // Realizar la busqueda.
+                            $rfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
+                            return $rfilas;
+                        }
                 }
             }
 
@@ -588,7 +645,7 @@ class cparent implements itech
         {
             return -1;
         }
-        $n1ql="select name,type from techinventory where entidad='item_".$this->nclase."'";
+        $n1ql="select name,type from techinventory where entidad='item_".$this->nclase."' and fkentity='".$_SESSION['$gentity']."'";
         $ccustom=$this->select($n1ql);
         // Recorrer el array de clases
         foreach ($ccustom as $cfila) {

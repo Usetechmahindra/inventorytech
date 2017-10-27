@@ -236,9 +236,9 @@ class centity extends cparent
                         echo "<td></td>";
                     }
                     // Control de botones
+                    echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar"></td>';
                     if ($afila['bproc'] =='NO')
                     {
-                        echo '<td><input type="submit" class="gboton" name="bedit" id="bedit" value="Editar"></td>';
                         echo '<td><input type="submit" class="gboton" name="bproc" id="bproc" value="Procesar" onclick="javascript:PopUpProc(\''.$afila["id"].'\')"></td>';
                         echo '<td><input type="submit" class="gdangerboton" name="bbaja" id="bbaja" value="Borrar" onclick="return confirm(\'¿Borrar fila?\');"></td>';
                     }else {
@@ -260,7 +260,8 @@ class centity extends cparent
     {
         try {
             // Cargar los detalles de la fila por el id
-            $n1ql="select meta(u).id,u.* from techinventory u where entidad='item_excel' and fkentity ='".$id."' order by ipos,docid";
+            $n1ql="select meta(u).id,u.*,e.bproc pfile from techinventory u inner join techinventory e on keys u.fkentity"
+                    . " where u.entidad='item_excel' and u.fkentity ='".$id."' order by u.ipos,u.docid";
             $rows=$this->select($n1ql);
             echo '<tr>';
                     // Recorrer el array de columnas
@@ -374,7 +375,7 @@ class centity extends cparent
                         echo "<td></td>";
                     }
                     // Control de botones
-                    if ($afila["ipos"] > -1) {
+                    if ($afila["ipos"] > -1 && $afila["pfile"] == false) {
                         echo '<td><input type="submit" class="gboton" name="beditdet" id="beditdet" value="Grabar"></td>';
                     }
                     // Final de fila

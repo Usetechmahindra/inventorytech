@@ -22,9 +22,9 @@
             // Controlar formulario grid
             if ($_POST['idform'] == 'fgroup') {
                 $_SESSION['idact'] = $_POST['id'];
-            }else {
-                // Lanzar la busqueda
-                $rows = $cgroup->getbysearch("", "", $gentity);
+//            }else {
+//                // Lanzar la busqueda
+//                $rows = $cgroup->getbysearch("", "", $gentity);
             }
         } 
         ?>
@@ -42,7 +42,14 @@
                         // $skey,$svalue,$slabel,$stype,$isize=10,$bfind=false,$readonly=""
                         // Requerido al falso
                         $acol['brequeried'] = FALSE;
-                        $cgroup->labelinput($acol['name'],"",$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
+                         // Si es tipo date pintar desde / hasta
+                        if ($acol['type'] <> 'date') {
+                            $cgroup->labelinput($acol['name'],"",$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false);
+                        }
+                        else{
+                               $cgroup->labelinput('D_'.$acol['name'],"",'D. '.$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],false,false); 
+                               $cgroup->labelinput('H_'.$acol['name'],"",'H. '.$acol['label'],$acol['type'],$acol['size'],$acol['brequeried'],$acol['bfind'],false); 
+                        }
                     }
         echo '<hr style="color:'.$_SESSION['color'].';" />';
                 ?>    
