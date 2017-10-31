@@ -54,7 +54,7 @@ and open the template in the editor.
             </div>
             <div id="Monitor" class="tabbodycontent">
                 <?php
-                   // include 'e_entity.php';
+                   include 'g_entitymonitor.php';
                 ?>
             </div>
             <?php

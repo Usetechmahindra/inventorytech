@@ -7,6 +7,7 @@ require('../class/citem.php');
 require('../class/caudit.php');
 require('../class/centity.php');
 require('../class/PHPExcel.php');
+require('../class/cmonitor.php');
 // Control cookies
 $gentity = $_COOKIE['centity'];
 if ($gentity <> $_SESSION['$gentity']) {

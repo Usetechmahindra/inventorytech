@@ -311,6 +311,7 @@ class cparent implements itech
                     }
                     $simput .='</select>';
                     break;
+                case 'monitor':
                 case 'usuario':
                 case 'grupo':
                 case 'grupo_en':
@@ -740,6 +741,11 @@ class cparent implements itech
                 case 'grupo_en':
                     $n1ql.=" where e.entidad='grupo'";
                     $n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'"; // Se Permiten los grupos de todos los niveles
+                    // Entidad en uso
+                    break;
+                case 'monitor':
+                    $n1ql.=" where e.entidad='monitor'";
+                    $n1ql.=" and e.fkentity = '".$_SESSION['$gentity']."'";
                     // Entidad en uso
                     break;
                 default:
