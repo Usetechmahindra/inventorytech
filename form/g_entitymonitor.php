@@ -14,11 +14,10 @@
         // Control POST
         include("../class/fusioncharts/fusioncharts.php");
         $cmon = new cmonitor("item_monitor");
-        $cmon->createchart();
         
-//        if($_POST['idform'] == 'ffinditem') {
-//            $rows = $cimport->findsexcel($gentity);
-//        }
+        if($_POST['idform'] == 'ffinditem') {
+            $stexto = $cmon->createchart();
+        }
 //        if($_POST['idform'] == 'importexcel') {
 //            // Controlar Nuevo o busqueda
 //            if(!empty($_FILES["fileToUpload"]["tmp_name"])) {
@@ -41,16 +40,14 @@
            <input type="hidden" name="idform" value="ffinditem">
             <div id="dfind">
                 <?php
-                    $cmon->labelinput('monitor',"",'Monitor','monitor',30,false,false,false);
+                    $cmon->labelinput('monitor1',"",'Monitor 1','monitor',30,false,false,false);
+                    //$cmon->labelinput('monitor2',"",'Monitor 2','monitor',30,false,false,false);
                     $cmon->labelinput('ddfile',"",'Desde','date',10,false,false,false);
                     $cmon->labelinput('hdfile',"",'Hasta','date',10,false,false,false);
                     echo '<input type="radio" name="grafica" value="area" checked> Area ';
                     echo '<input type="radio" name="grafica" value="pie"> Pie ';
                     echo '<input type="radio" name="grafica" value="column"> Columnas ';
                     echo ' <input type="submit" class="bfind" name="fbutton" id="fbutton" value=""/> ';
-                    echo '<hr style="color:'.$_SESSION['color'].';" />';
-                    
-                    
                 ?>    
             </div>
         </form>
@@ -60,11 +57,12 @@
         <div id="dgridhistorico">
             
         </div>
-        <?php
-            echo '<hr style="color:'.$_SESSION['color'].';" />';
-            echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
-        ?>
-        </form>
+        <div id="pie">
+            <?php
+                echo '<hr style="color:'.$_SESSION['color'].';" />';
+                echo '<p style="color:'.$_SESSION['color'].';">'.$stexto."</p>";
+            ?>
+        </div>
     </body>
 </html>
 
