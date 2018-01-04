@@ -106,6 +106,12 @@ class cmonitor extends cparent{
                     "caption"=> $rcfg[0]->m->descripcion,
                     "xAxisname"=> "Fecha lectura",
                     "yAxisName"=> "(".$rcfg[0]->m->unidad.")",
+                    "formatNumberScale"=> "0",
+                    "inDecimalSeparator"=> ",",
+                    "inThousandSeparator"=> ".",
+//                    "numberScaleValue"=> "1024,1024,1024",
+//                    "numberScaleUnit"=> " MB, GB, TB",
+//                    "defaultNumberScale"=> $rcfg[0]->m->unidad
                     //"numberPrefix"=> $rcfg[0]->m->unidad,
 //                    "legendItemFontColor"=> "#666666",
 //                    "theme"=> "zune"
