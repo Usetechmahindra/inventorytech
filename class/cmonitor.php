@@ -124,16 +124,12 @@ class cmonitor extends cparent{
             }
             $arrData["categories"]=array(array("category"=>$categoryArray));
             // Serie final
-            $adata = null;
-            foreach($dataseries as $serie) {
-                foreach($serie as $det) {
-                    $longitud = count($det);
-                    for($i=0; $i<$longitud; $i++)
-                    {
-                        array_push($adata, array("value" => $det)); 
-                    }
+            foreach($dataseries as $key => $values) {
+                $adata = array();
+                foreach($values as $row) {
+                    array_push($adata, array("value" => $row)); 
                 }
-                array_push($arrData["dataset"], array("seriesName"=> $name, "renderAs"=>"area", "data"=>$det));
+                array_push($arrData["dataset"], array("seriesName"=> $key, "renderAs"=>"area", "data"=>$adata));
             }
             
 
@@ -193,7 +189,8 @@ class cmonitor extends cparent{
                 for($i = 1; $i < count($rcfg); $i++)
                 {
                     $col=$rcfg[$i]->p->pkname;
-                    $series[$afila[$nserie]][$afila['fcreate']][$afila[$nserie]."_".$col]=$afila[$col];
+                    $series[$afila[$nserie]."_".$col][$afila['fcreate']]=$afila[$col];
+                   // $series[$afila[$nserie]][$afila['fcreate']][$afila[$nserie]."_".$col]=$afila[$col];
                 }
             }
             // Retornar el array de series
