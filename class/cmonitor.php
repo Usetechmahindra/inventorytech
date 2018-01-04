@@ -126,9 +126,17 @@ class cmonitor extends cparent{
             // Serie final
             foreach($dataseries as $key => $values) {
                 $adata = array();
-                foreach($values as $row) {
-                    array_push($adata, array("value" => $row)); 
+                // En vez de recorrer el array de valores de la serie. Recorrer siempre el array de categorías y pintar hueco o valor
+                foreach($categoryArray as $fcreate) {
+                    if (array_key_exists($fcreate['label'], $values)) {
+                        array_push($adata, array("value" => $values[$fcreate['label']])); 
+                    }else {
+                        array_push($adata, array("value" => 0)); 
+                    }
                 }
+//                foreach($values as $row) {
+//                    array_push($adata, array("value" => $row)); 
+//                }
                 array_push($arrData["dataset"], array("seriesName"=> $key, "renderAs"=>"area", "data"=>$adata));
             }
             
