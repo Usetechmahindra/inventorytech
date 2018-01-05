@@ -25,22 +25,124 @@ class cmonitor extends cparent{
             if (count($rows) <= 0) {
                 return $_SESSION['textsesion'];
             }
-            // Tipo de gráfica
+            // El tipo de render muestra el tipo de gráfica
+            $categoryArray=array();
+            $dataseries=array();
+            $achart=array("chart" =>array("caption"=> $rcfg[0]->m->descripcion,
+                    "xAxisname"=> "Fecha lectura",
+                    "formatNumberScale"=> 0,
+                    "exportEnabled" => 1,
+                    "showLegend" => "1",
+                    "legendBgColor" => "#ffffff",
+                    "legendBorderAlpha" => "0",
+                    "legendShadow" => "0",
+                    "legendItemFontSize" => "10",
+                    "legendItemFontColor" => "#666666"));
+            // Config escala
+            $achart=$this->configscale($achart,$rcfg[0]->m->unidad);
+            $arrData = $achart;
+            // Inicializar elemeno dataset
+            $arrData["dataset"]=array();
+            // Crear categoría unica con todos los valores
+            $categoryArray=$this->createcategory($rows,$categoryArray);
+            if ( $categoryArray < 0) {
+                return -1;
+            } 
+            $dataseries=$this->createseries($rows,$rcfg);
+            if ($dataseries < 0) {
+                return -1;
+            }
+            $arrData["categories"]=array(array("category"=>$categoryArray));
+            // Serie final
+            foreach($dataseries as $key => $values) {
+                $adata = array();
+                // En vez de recorrer el array de valores de la serie. Recorrer siempre el array de categorías y pintar hueco o valor
+                foreach($categoryArray as $fcreate) {
+                    // Controlar en UNIX TIME
+                    if (array_key_exists($fcreate['label'], $values)) {
+                        array_push($adata, array("value" => $values[$fcreate['label']]));
+                    }else {
+                        array_push($adata, array("value" => 0)); 
+                    }
+                }
+//                foreach($values as $row) {
+//                    array_push($adata, array("value" => $row)); 
+//                }
+                array_push($arrData["dataset"], array("seriesName"=> $key, "renderAs"=>$_POST['grafica'], "data"=>$adata));
+            }     
+            /*JSON Encode the data to retrieve the string containing the JSON representation of the data in the array. */
+            $jsonEncodedData = json_encode($arrData);
+
+            // chart object
             switch ($_POST['grafica'])
             {
-                case 'area':
-                    return $this->areachart($rcfg,$rows);
-                case 'pie':
-                case 'column':
-                default:
-                    $_SESSION['textsesion']="Sin código para mostrar:".$_POST['grafica'];
-                    return $_SESSION['textsesion'];
+               case  'pie3d':
+                   $msChart = new FusionCharts("pie3d", "ex1" , "95%", "55%", "dgraf", "json", $jsonEncodedData);
+                   break;
+               case 'doughnut2d':
+                   $msChart = new FusionCharts("doughnut2d", "ex1" , "95%", "55%", "dgraf", "json", $jsonEncodedData);
+                   break;
+               default:
+                    $msChart = new FusionCharts("mscombi2d", "ex1" , "95%", "55%", "dgraf", "json", $jsonEncodedData);  
             }
+            
+            
+            //$columnChart = new FusionCharts("column2d", "ex1", "95%", "55%", "dgraf", "json", $achar.$adata);
+            
+            ///// $jsonEncodedData = json_encode($arrData);
+            ///// $columnChart = new FusionCharts("stackedarea2d", "Grafica / Hora" , 700, 300, "graf_hora", "json", $jsonEncodedData);
+            // Render the chart
+            $msChart->render();        
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función createchart: '.$ex->getMessage();
             $this->error();
             return -1;
         }
+    }
+    private function configscale($achart,$unidad)
+    {
+        $achart['chart']['yAxisName']="(".$unidad.")";
+        switch ($unidad)
+        {
+            case  'KB':
+                $achart['chart']['numberScaleValue'] = "1024,1024,1024";
+            case  'MB':
+                $achart['chart']['numberScaleValue'] = "1024,1024";
+            case  'GB':
+                $achart['chart']['numberScaleValue'] = "1024";
+            case  'TB':
+                $achart['chart']['numberScaleUnit']= "KB MB, GB, TB";
+                $achart['chart']['theme'] = "fint";
+                $achart['chart']['scaleRecursively'] = 1;
+                break;
+            default:
+                $achart['chart']['scaleRecursively'] = 1;
+                $achart['chart']['theme'] = "zune";
+        } 
+        return $achart;
+//        $arrData = array(
+//                    "chart" => array(
+//                    "caption"=> $rcfg[0]->m->descripcion,
+//                    "xAxisname"=> "Fecha lectura",
+//                    "yAxisName"=> "(".$rcfg[0]->m->unidad.")",
+//                    "formatNumberScale"=> "0",
+//                    "inDecimalSeparator"=> ",",
+//                    "inThousandSeparator"=> ".",
+//                    "exportEnabled" => 1,
+//                    "showLegend" => "1",
+//                    "legendBgColor" => "#ffffff",
+//                    "legendBorderAlpha" => "0",
+//                    "legendShadow" => "0",
+//                    "legendItemFontSize" => "10",
+//                    "legendItemFontColor" => "#666666",
+////                    "numberScaleValue"=> "1024,1024,1024",
+////                    "numberScaleUnit"=> "KB MB, GB, TB",
+////                    "defaultNumberScale"=> $rcfg[0]->m->unidad
+//                    //"numberPrefix"=> $rcfg[0]->m->unidad,
+////                    "legendItemFontColor"=> "#666666",
+////                    "theme"=> "zune"
+//                    )
+//                );
     }
     private function rowsmonitor($monitor,$psort)
     {
@@ -57,10 +159,17 @@ class cmonitor extends cparent{
                     where u.entidad='".$this->nclase."'
                     and u.fkentity='".$_SESSION['idact']."'
                     and u.fkmonitor='".$monitor."' and u.".$psort." is not null"; 
+            // Filtro de fechas fcreate fechas numéricas
+            if(!empty($_POST['ddfile'])) {
+              $n1ql.=" and u.fcreate>".strtotime($_POST['ddfile']);  
+            }
+            if(!empty($_POST['hdfile'])) {
+              $fecha = new DateTime($_POST['hdfile']);
+              $fecha->add(new DateInterval('P1D'));
+              $n1ql.=" and u.fcreate<".$fecha->getTimestamp();  
+            }
             // Ordenar serie y luego fecha
             $n1ql.=" order by u.".$psort.",u.fcreate";
-            // Filtro de fechas fcreate fechas numéricas
-            
             // Retornar filas
             return $this->select($n1ql);
                 
@@ -94,83 +203,6 @@ class cmonitor extends cparent{
         }
     }
     
-    private function areachart($rcfg,$rows)
-    {
-        try {
-            // Con la configuración y las filas pintar en formato area.
-            $categoryArray=array();
-            $dataseries=array();
-          
-            $arrData = array(
-                "chart" => array(
-                    "caption"=> $rcfg[0]->m->descripcion,
-                    "xAxisname"=> "Fecha lectura",
-                    "yAxisName"=> "(".$rcfg[0]->m->unidad.")",
-                    "formatNumberScale"=> "0",
-                    "inDecimalSeparator"=> ",",
-                    "inThousandSeparator"=> ".",
-//                    "numberScaleValue"=> "1024,1024,1024",
-//                    "numberScaleUnit"=> " MB, GB, TB",
-//                    "defaultNumberScale"=> $rcfg[0]->m->unidad
-                    //"numberPrefix"=> $rcfg[0]->m->unidad,
-//                    "legendItemFontColor"=> "#666666",
-//                    "theme"=> "zune"
-                    )
-                );
-            // Inicializar elemeno dataset
-            $arrData["dataset"]=array();
-            // Crear categoría unica con todos los valores
-            $categoryArray=$this->createcategory($rows,$categoryArray);
-            if ( $categoryArray < 0) {
-                return -1;
-            } 
-            $dataseries=$this->createseries($rows,$rcfg);
-            if ($dataseries < 0) {
-                return -1;
-            }
-            $arrData["categories"]=array(array("category"=>$categoryArray));
-            // Serie final
-            foreach($dataseries as $key => $values) {
-                $adata = array();
-                // En vez de recorrer el array de valores de la serie. Recorrer siempre el array de categorías y pintar hueco o valor
-                foreach($categoryArray as $fcreate) {
-                    if (array_key_exists($fcreate['label'], $values)) {
-                        array_push($adata, array("value" => $values[$fcreate['label']])); 
-                    }else {
-                        array_push($adata, array("value" => 0)); 
-                    }
-                }
-//                foreach($values as $row) {
-//                    array_push($adata, array("value" => $row)); 
-//                }
-                array_push($arrData["dataset"], array("seriesName"=> $key, "renderAs"=>"area", "data"=>$adata));
-            }
-            
-
-            
-            // creating dataset object
-           // array_push($arrData["dataset"], array("seriesName"=> "Usado", "renderAs"=>"area", "data"=>$dataseries2));
-            //$arrData["dataset"] = array(array("seriesName"=> "Asignado", "renderAs"=>"area", "data"=>$dataseries1), array("seriesName"=> "Usado",  "renderAs"=>"area", "data"=>$dataseries2),array("seriesName"=> "Profit",  "renderAs"=>"area", "data"=>$dataseries3));
-
-
-            /*JSON Encode the data to retrieve the string containing the JSON representation of the data in the array. */
-            $jsonEncodedData = json_encode($arrData);
-
-            // chart object
-            $msChart = new FusionCharts("mscombi2d", "ex1" , "95%", "55%", "dgraf", "json", $jsonEncodedData);
-
-            //$columnChart = new FusionCharts("column2d", "ex1", "95%", "55%", "dgraf", "json", $achar.$adata);
-            
-            ///// $jsonEncodedData = json_encode($arrData);
-            ///// $columnChart = new FusionCharts("stackedarea2d", "Grafica / Hora" , 700, 300, "graf_hora", "json", $jsonEncodedData);
-            // Render the chart
-            $msChart->render();
-        } catch (Exception $ex) {
-            $_SESSION['textsesion']='Error en función areachart: '.$ex->getMessage();
-            $this->error();
-            return -1;
-        }
-    }
     // Función crea categoría. Se pretende tener una categoría ordenada de todos los valores no repetidos.
     private function createcategory($rows,$categoryArray)
     {
@@ -180,7 +212,9 @@ class cmonitor extends cparent{
             foreach($rows as $fila) {
                 $afila = get_object_vars($fila);
                 if (in_array( array("label" => $afila['fcreate']), $categoryArray) == false) {
-                    array_push($categoryArray, array("label"=> $afila['fcreate']));
+                    //array_push($categoryArray, array("label"=> $afila['fcreate']));
+                    // Unix to time
+                    array_push($categoryArray, array("label"=> date('d-m-Y H:i:s',$afila['fcreate'])));
                 }
             }
             // Ordenar categoría
@@ -203,7 +237,9 @@ class cmonitor extends cparent{
                 for($i = 1; $i < count($rcfg); $i++)
                 {
                     $col=$rcfg[$i]->p->pkname;
-                    $series[$afila[$nserie]."_".$col][$afila['fcreate']]=$afila[$col];
+                    //$series[$afila[$nserie]."_".$col][$afila['fcreate']]=$afila[$col];
+                    // Unixtime
+                    $series[$afila[$nserie]."_".$col][date('d-m-Y H:i:s',$afila['fcreate'])]=$afila[$col];
                    // $series[$afila[$nserie]][$afila['fcreate']][$afila[$nserie]."_".$col]=$afila[$col];
                 }
             }

@@ -385,7 +385,7 @@ class cparent implements itech
                 $stype = "text";
                 if ($svalue <> null)
                 {
-                    $svalue = date('d-m-Y',$svalue);
+                    $svalue = date('d-m-Y',strtotime($svalue));
                     $isize = 10;
                 }
                 $sclass =  'class="cdate"';
@@ -394,7 +394,7 @@ class cparent implements itech
                 $stype = "text";
                 if ($svalue <> null)
                 {
-                    $svalue = date('d-m-Y H:i:s',$svalue);
+                    $svalue = date('d-m-Y H:i:s',strtotime($svalue));
                     $isize = 15;
                 }
                 break;
