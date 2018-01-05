@@ -120,29 +120,6 @@ class cmonitor extends cparent{
                 $achart['chart']['theme'] = "zune";
         } 
         return $achart;
-//        $arrData = array(
-//                    "chart" => array(
-//                    "caption"=> $rcfg[0]->m->descripcion,
-//                    "xAxisname"=> "Fecha lectura",
-//                    "yAxisName"=> "(".$rcfg[0]->m->unidad.")",
-//                    "formatNumberScale"=> "0",
-//                    "inDecimalSeparator"=> ",",
-//                    "inThousandSeparator"=> ".",
-//                    "exportEnabled" => 1,
-//                    "showLegend" => "1",
-//                    "legendBgColor" => "#ffffff",
-//                    "legendBorderAlpha" => "0",
-//                    "legendShadow" => "0",
-//                    "legendItemFontSize" => "10",
-//                    "legendItemFontColor" => "#666666",
-////                    "numberScaleValue"=> "1024,1024,1024",
-////                    "numberScaleUnit"=> "KB MB, GB, TB",
-////                    "defaultNumberScale"=> $rcfg[0]->m->unidad
-//                    //"numberPrefix"=> $rcfg[0]->m->unidad,
-////                    "legendItemFontColor"=> "#666666",
-////                    "theme"=> "zune"
-//                    )
-//                );
     }
     private function rowsmonitor($monitor,$psort)
     {
