@@ -138,12 +138,12 @@ class cmonitor extends cparent{
                     and u.fkmonitor='".$monitor."' and u.".$psort." is not null"; 
             // Filtro de fechas fcreate fechas numéricas
             if(!empty($_POST['ddfile'])) {
-              $n1ql.=" and u.fcreate>".strtotime($_POST['ddfile']);  
+              $n1ql.= " and u.fcreate"." >= ".strtotime($_POST['ddfile']);  
             }
             if(!empty($_POST['hdfile'])) {
               $fecha = new DateTime($_POST['hdfile']);
               $fecha->add(new DateInterval('P1D'));
-              $n1ql.=" and u.fcreate<".$fecha->getTimestamp();  
+              $n1ql.= " and u.fcreate"." < ".$fecha->getTimestamp();  
             }
             // Ordenar serie y luego fecha
             $n1ql.=" order by u.".$psort.",u.fcreate";

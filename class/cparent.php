@@ -159,7 +159,7 @@ class cparent implements itech
             if(empty($arow['id']))
             {
                 // Realizar la busqueda por nombre. Siempre es el campo principal
-                $findname=$this->getbysearch('pkname', $arow['pkname'], $arow['fkentity'],FALSE);
+                $findname=$this->getbysearch('pkname', $arow['pkname'], FALSE);
                 // Si la ha encontrado por nombre
                 if (count($findname) > 0)
                 {
@@ -385,7 +385,7 @@ class cparent implements itech
                 $stype = "text";
                 if ($svalue <> null)
                 {
-                    $svalue = date('d-m-Y',strtotime($svalue));
+                    $svalue = date('d-m-Y',$svalue);
                     $isize = 10;
                 }
                 $sclass =  'class="cdate"';
@@ -394,7 +394,7 @@ class cparent implements itech
                 $stype = "text";
                 if ($svalue <> null)
                 {
-                    $svalue = date('d-m-Y H:i:s',strtotime($svalue));
+                    $svalue = date('d-m-Y H:i:s',$svalue);
                     $isize = 15;
                 }
                 break;
@@ -444,15 +444,11 @@ class cparent implements itech
         return $avalues;
     }
     // Obtener los datos de una entidad por un valor de busqueda. OP. fkentity
-    public function getbysearch($item,$value,$fkentity,$blike=TRUE)
+    public function getbysearch($item,$value,$blike=TRUE)
     {
         try {
              $_SESSION['textsesion'] = "";
-             $n1ql="select meta(u).id,e.entityname,u.*
-                    from techinventory u inner join techinventory e
-                    on keys u.fkentity 
-                    where u.entidad='".$this->nclase."'"
-                     . " and u.docid > 0 ";
+             $n1ql="";
              // Controla filtro
              if (!empty($item)) {
                  if ($blike) {
@@ -461,12 +457,8 @@ class cparent implements itech
                     $n1ql.=" and u.".$item." = '".$value."'"; 
                  }
              }                
-             // Control de entidad padre
-             if (!empty($fkentity)) {
-                 $n1ql.=" and u.fkentity='".$fkentity."'";
-             }
              // Traer filas de entidad
-             return $this->select($n1ql);
+             return $n1ql;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función getbysearch: '.$ex->getMessage();
             $this->error();
@@ -474,17 +466,13 @@ class cparent implements itech
         }
     }
     // La función convierte la fecha a Nº y realiza la busqueda desde/hasta si esta en post.
-    private function getbydate($item,$fkentity)
+    private function getbydate($item)
     {
         try {
             // Controlar el nombre del item
             
             $_SESSION['textsesion'] = "";
-            $n1ql="select meta(u).id,e.entityname,u.*
-                    from techinventory u inner join techinventory e
-                    on keys u.fkentity 
-                    where u.entidad='".$this->nclase."'"
-                    . " and u.docid > 0 ";
+            $n1ql="";
             // Filtro desde edición
             if (!empty($_POST[$item->name])) {
                 // Convertir a int
@@ -493,18 +481,17 @@ class cparent implements itech
             // Controla filtro desde
             if (!empty($_POST['D_'.$item->name])) {
                 // Convertir a int
-                $n1ql.= " and u.".$item->name." >= ".(strtotime($_POST['D_'.$item->name]));
+                $n1ql.= " and u.".$item->name." >= ".strtotime($_POST['D_'.$item->name]);
             }
-            // Controla filtro hasta
+            // Controla filtro hasta. Añadir 1 día
             if (!empty($_POST['H_'.$item->name])) {
-                $n1ql.= " and u.".$item->name." <= ".(strtotime($_POST['H_'.$item->name]));
+                $fecha = new DateTime($_POST['H_'.$item->name]);
+                $fecha->add(new DateInterval('P1D'));
+                $n1ql.= " and u.".$item->name." < ".$fecha->getTimestamp();
             }              
-             // Control de entidad padre
-             if (!empty($fkentity)) {
-                 $n1ql.=" and u.fkentity='".$fkentity."'";
-             }
+
              // Traer filas de entidad
-             return $this->select($n1ql);
+             return $n1ql;
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función getbydate: '.$ex->getMessage();
             $this->error();
@@ -608,28 +595,35 @@ class cparent implements itech
         try {
             // Localizar y recorrer los campos de busqueda para identificar el boton q lanzo el post
             $afilter = $this->itementity($pentity,TRUE);
+            // Si el filtro es de tipo fecha llamar a función de fecha
+            $n1ql="select meta(u).id,e.entityname,u.*
+            from techinventory u inner join techinventory e
+            on keys u.fkentity 
+            where u.entidad='".$this->nclase."'"
+            . " and u.docid > 0 ";
+            // Control de entidad padre
+            if (!empty($pentity)) {
+                $n1ql.=" and u.fkentity='".$pentity."'";
+            }
+            $rfilas=$_POST;
             foreach($afilter as $filtro)
             {
-                $rfilas=$_POST;
                 $acol = get_object_vars($filtro);
-                // Si el filtro es de tipo fecha llamar a función de fecha
+                // Controlar si existe valor en POST
                 switch ($filtro->type)
-                {
-                    case 'date':
-                        return $this->getbydate($filtro,$pentity);
-                        break;
-                    default:
-                        // Localizar por boton: f+valor de campo
-                        $clave = array_search('f'.$acol['name'], array_keys($_POST));
-                        // Si es distinto de false ha encontrado la columna en el post
-                        if($clave <> FALSE) {
-                            // Realizar la busqueda.
-                            $rfilas=$this->getbysearch($acol['name'],$_POST[$acol['name']],$pentity);
-                            return $rfilas;
-                        }
-                }
+                    {
+                        case 'date':
+                            $n1ql.=$this->getbydate($filtro);
+                            break;
+                        default:
+                            if($rfilas[$filtro->name]<>"")
+                            {
+                                $n1ql.=$this->getbysearch($acol['name'],$rfilas[$acol['name']]);
+                            }
+                    }
             }
-
+            // Retornar las filas
+            return $this->select($n1ql);
         } catch (Exception $ex) {
             $_SESSION['textsesion']='Error en función findbutton: '.$ex->getMessage();
             $this->error();

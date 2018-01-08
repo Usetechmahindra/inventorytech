@@ -42,8 +42,8 @@
                 <?php
                     $cmon->labelinput('monitor1',$_POST['monitor1'],'Monitor 1','monitor',30,false,false,false);
                     //$cmon->labelinput('monitor2',"",'Monitor 2','monitor',30,false,false,false);
-                    $cmon->labelinput('ddfile',$_POST['ddfile'],'Desde','date',10,false,false,false);
-                    $cmon->labelinput('hdfile',$_POST['hdfile'],'Hasta','date',10,false,false,false);
+                    $cmon->labelinput('ddfile',strtotime($_POST['ddfile']),'Desde','date',10,false,false,false);
+                    $cmon->labelinput('hdfile',strtotime($_POST['hdfile']),'Hasta','date',10,false,false,false);
                     echo ' Multiseries: ';
                     echo '<input type="radio" name="grafica" value="area" checked> Area ';
                     echo '<input type="radio" name="grafica" value="column"> Columnas ';
