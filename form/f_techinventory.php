@@ -122,7 +122,7 @@ if ($cguardian->CheckLogin() < 0) {
         </script>
         <style>
         body{
-            background:url(../upload/images/techmahindra-security.jpg);
+            background:url(../upload/images/security.jpg);
             background-size: cover;
 /*            overflow: hidden;*/
         }

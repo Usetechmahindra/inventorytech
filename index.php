@@ -42,7 +42,7 @@ if(isset($_POST['bvalida']))
           }
         body{
             overflow: hidden;
-            background:url(upload/images/techmahindra-security.jpg);
+            background:url(upload/images/security.jpg);
             background-size: cover;
             font: 85% "Trebuchet MS", sans-serif;
         }
