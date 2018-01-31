@@ -1,0 +1,109 @@
+-- Creación bucket seguro con parametro password
+couchbase-cli bucket-create -c 192.168.1.203:8091 \
+       --bucket=techinventory \
+       --bucket-type=couchbase \
+	   --bucket-password=bigdata \
+       --bucket-ramsize=128 \
+       -u Administrator -p bigdata	
+	   
+-- Password de bucket
+cbq
+\SET -creds techinventory:bigdata;
+
+-- Crear indice primario
+create primary index `pk_techinventory`on `techinventory`; 
+// Indice por entidad
+
+// Indice de aplicación. Se pueden crear antes que los docs
+CREATE INDEX `ix_entidad` ON `techinventory`(entidad);
+CREATE INDEX `ix_entidadid` ON `techinventory`(entidad,docid);
+CREATE INDEX `ix_group` ON `techinventory`(fkentity);
+CREATE INDEX `ix_user` ON `techinventory`(fkgroup);
+CREATE INDEX `ix_audit` ON `techinventory`(idaudit);
+CREATE INDEX `ix_pkname` ON `techinventory`(entidad,pkname);
+CREATE INDEX `ix_pkname` ON `techinventory`(entidad,pkname);
+CREATE INDEX `ix_fkmonitor` ON `techinventory`(fkentity,fkmonitor);
+--CREATE INDEX `ix_username` ON `techinventory`(entidad,name,bloginapp);
+--CREATE INDEX `ix_item` ON `techinventory`(entidad,nentidad);
+--DROP INDEX techinventory.ix_audit;
+ 
+// Crear entidad inicial: Inventario. Añadir grupo y usuario root.
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("entidad_0", { "docid": 0, "entidad": "entidad","fkentity":"entidad_0","pkname":"Inventario","description": "Nivel inicial aplicación","buser":TRUE,"bgroup":TRUE,"btools":FALSE,"timezone":"Europe/Madrid","fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL,"color":"#e31732","colorinvert":"#636161","logo":NULL}) RETURNING * ;
+-- Usuario codec/endodec 64: YmlnZGF0YQ== / bigdata
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("grupo_0", { "docid": 0, "entidad": "grupo", "fkentity":"entidad_0","pkname": "grouproot","description": "Grupo administrador aplicación","emailgroup":NULL,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("usuario_0", { "docid": 0, "entidad": "usuario","fkentity":"entidad_0","fkgroup":"grupo_0","pkname": "root", "password":"YmlnZGF0YQ==","bloginapp":TRUE,"bread":FALSE,"bshowuser":TRUE,"bshowgroup":TRUE,"bshowentidad":TRUE,"bshowtools":TRUE,"email":NULL,"description": "Usuario primario aplicación","fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+-- Campos dinámicos de entidades. El campo pkname siempre debe de existir doc0 no se trata nunca pero existe.
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_grupo_entidad_0", { "docid": 0, "entidad": "item_grupo","fkentity":"entidad_0","name":"pkname","label":"Nombre grupo","type":"text","size":20,"ipos":-1,"bfind":true,"bgrid":true,"brequeried":true,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_usuario_entidad_0", { "docid": 0, "entidad": "item_usuario","fkentity":"entidad_0","name":"pkname","label":"Nombre usuario","type":"text","size":20,"ipos":-1,"bfind":true,"bgrid":true,"brequeried":true,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_entidad_0", { "docid": 0, "entidad": "item_entidad","fkentity":"entidad_0","name":"pkname","label":"Nombre entidad","type":"text","size":20,"ipos":-1,"bfind":true,"bgrid":true,"brequeried":true,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+
+-- Entidad monitor... PRUEBAS
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("monitor_0", { "docid": 1, "entidad": "monitor","fkentity":"entidad_31","pkname":"Tablespaces Oracle","descripcion":"Ocupación de los tablespaces de B.D. Oracle","script":"ocupaciontbs.sql","activo":true,"unidad":"MB","programacion":1,"dia":null,"hora":"07:00","fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("param_monitor_0", { "docid": 0, "entidad": "param_monitor","fkentity":"monitor_0","pkname":"tablespace","ipos":1,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("param_monitor_-1", { "docid": -1, "entidad": "param_monitor","fkentity":"monitor_0","pkname":"asignado","ipos":2,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("param_monitor_-2", { "docid": -2, "entidad": "param_monitor","fkentity":"monitor_0","pkname":"usado","ipos":3,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+----- Importate FCREATE es la fecha de la lectura que será el eje Y: Todos los tbs de una lectura tienen la misma fecha.
+1508734800
+1508821200
+1508907600
+1508994000
+1509037200
+1509080400
+
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_00", { "docid": 0, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"system","asignado":1024,"usado":827,"fcreate":1508734800,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-10", { "docid": -1, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"system","asignado":1024,"usado":827,"fcreate":1508821200,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-20", { "docid": -2, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"system","asignado":1024,"usado":830,"fcreate":1508907600,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-30", { "docid": -3, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"system","asignado":1024,"usado":950,"fcreate":1508994000,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-40", { "docid": -4, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"system","asignado":1024,"usado":900,"fcreate":1509080400,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-50", { "docid": -5, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":"Error en conexión ORA-1215","tablespace":null,"asignado":null,"usado":null,"fcreate":'28-10-2017 07:00',"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_0", { "docid": -6, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"user","asignado":512,"usado":350,"fcreate":1508734800,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-1", { "docid": -10, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"user","asignado":512,"usado":360,"fcreate":1508821200,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-2", { "docid": -20, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"user","asignado":512,"usado":380,"fcreate":1508907600,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-3", { "docid": -30, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"user","asignado":512,"usado":450,"fcreate":1508994000,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-4", { "docid": -40, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"user","asignado":512,"usado":370,"fcreate":1509080400,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+-- Lectura intermedía... ver como crea el array completo
+UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_monitor_-5", { "docid": -50, "entidad": "item_monitor","fkentity":"entidad_64","fkmonitor":"monitor_0","error":null,"tablespace":"user","asignado":512,"usado":357,"fcreate":1509037200,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+
+
+-- select * from techinventory where entidad='entidad' and fkentity='entidad_31' and db_name='DM2CN';
+------ OBSOLETOS
+-- Entidad 1 y subentidades // Ejemplo... Luego crearlo desde menú
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("entidad_1", { "docid": 1, "entidad": "entidad","fkentity":"entidad_0","pkname":"CPD","description": "Administración CPD empresa","buser":TRUE,"bgroup":TRUE,"btools":TRUE,"timezone":"Europe/Madrid","fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL,"color":"#e31732","colorinvert":"#636161","logo":NULL}) RETURNING * ;
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("entidad_2", { "docid": 2, "entidad": "entidad","fkentity":"entidad_0","pkname":"Virtualización host","description": "Administración servidores de virtualización","buser":TRUE,"bgroup":TRUE,"btools":TRUE,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL,"timezone":"Europe/Madrid","color":"#e31732","colorinvert":"#636161","logo":NULL}) RETURNING * ;
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("detentidad_0", { "docid": 0, "entidad": "detentidad","fkentity":"entidad_1","pkname":"CPD1","description": "CPD Santander 1","fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL })RETURNING * ;
+
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_grupo_00", { "docid": 0, "entidad": "item_grupo","fkentity":"entidad_0","name":"description","label":"Descripción grupo","type":"text","size":50,"ipos":0,"bfind":false,"bgrid":true,"brequeried":false,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_usuario_00", { "docid": 0, "entidad": "item_usuario","fkentity":"entidad_0","name":"description","label":"Nombre completo","type":"text","size":50,"ipos":0,"bfind":false,"bgrid":true,"brequeried":true,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_entidad_00", { "docid": 0, "entidad": "item_entidad","fkentity":"entidad_0","name":"description","label":"Descripción","type":"text","size":50,"ipos":0,"bfind":false,"bgrid":true,"brequeried":false,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_1", { "docid": 1, "entidad": "item","fkentity":"entidad_0","name":"description","label":"Descripción grupo","type":"text","size":60,"ipos":2,"bfind":false,"bgrid":true,"brequeried":false,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+--UPSERT INTO techinventory (KEY, VALUE) VALUES ("item_2", { "docid": 2, "entidad": "item","fkentity":"entidad_0","name":"emailgroup","label":"Email Grupo","type":"email","size":30,"ipos":3,"bfind":false,"bgrid":false,"brequeried":false,"breadonly":false,"fcreate":NULL,"ucreate":"root","fmodif":NULL,"umodif":NULL}) RETURNING * ;
+
+select * from techinventory where entidad='item' and nentidad='grupo' order by ipos;
+
+
+EJEMPLO CLAVE / VALOR https://www.couchbase.com/products/n1ql
+-------------------------------------------------------------""
+select u.*
+from techinventory u inner join techinventory g
+on keys u.fkgroup
+where g.fkentity='entidad_0000';
+
+select * from techinventory u where u.pkname='ES-TIBCO';
+
+
+select meta(g).id,e.entityname,g.*
+from techinventory g inner join techinventory e on keys g.fkentity
+where g.fkentity='entidad_0000'
+and g.entidad='grupo';
+
+
+select meta(u).id,* from techinventory u inner join techinventory e on keys g.fkentity
+where u.entidad='usuario' 
+and u.username='".$_POST['user']."' 
+and bloginapp=TRUE
