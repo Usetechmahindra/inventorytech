@@ -92,7 +92,7 @@ class centity extends cparent
             //Control de nombre path+id+type
             $target_file = $target_dir.$_POST['id'].'.'.$imageFileType;
             // Check if image file is a actual image or fake image
-            if(isset($_POST["update_imagen"])) {
+            if(isset($_POST["bsavel"])) {
                 $check = getimagesize($_FILES['image']["tmp_name"]);
                 if($check !== false) {
                     $_SESSION['textsesion']="El fichero es del tipo imagen - " . $check["mime"] . ".";
