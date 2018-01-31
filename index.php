@@ -77,7 +77,7 @@ if(isset($_POST['bvalida']))
     <body>
     <?php 
     // El body dentro de php
-        echo '<img src = "upload/images/Tech_Mahindra_logo.png" alt = "techmahindra-white"/>';
+        echo '<img src = "upload/images/logo.png" height = "57" alt = "tech-white"/>';
         echo '<div id="contlogin">';
         echo '<form name="flogin" method="post">';
         

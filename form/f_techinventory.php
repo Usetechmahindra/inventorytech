@@ -133,7 +133,7 @@ if ($cguardian->CheckLogin() < 0) {
     // El body dentro de php
         echo '<div id="headbody">';
             echo '<img src = "../upload/images/i_inventario.png" width = "75" alt = "i_inventario"/>';
-            echo '<img src = "../upload/images/Tech_Mahindra_logo.png" style="opacity: 0.5; filter: alpha(opacity=50);" alt = "techmahindra-white"/>';
+            echo '<img src = "../upload/images/logo.png" height = "57" style="opacity: 0.5; filter: alpha(opacity=50);" alt = "tech-white"/>';
         echo '</div>';
         echo '<div id="contenedor">';
             echo '<div id="detbody">';
