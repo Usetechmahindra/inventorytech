@@ -91,5 +91,5 @@ and open the template in the editor.
     
  </form>
  <?php
- echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
+    echo '<p style="color:'.$_SESSION['color'].';">'.$_SESSION['textsesion']."</p>";
  ?>

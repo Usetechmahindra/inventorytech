@@ -4,13 +4,27 @@
  */
 class cuser extends cparent
 {
+    public function my_arrayclass()
+    {
+        // Retorna el array de campos obligatorios de la clase
+        $acolclass = parent::my_arrayclass();
+        // Cada clase tendra sus array default. 
+        array_push($acolclass, array("name" => "password", "type" => "password","default" => NULL));
+        array_push($acolclass, array("name" => "bloginapp", "type" => "checkbox","default" => NULL));
+        array_push($acolclass, array("name" => "bread", "type" => "checkbox","default" => NULL));
+        array_push($acolclass, array("name" => "bshowuser", "type" => "checkbox","default" => NULL));
+        array_push($acolclass, array("name" => "bshowgroup", "type" => "checkbox","default" => NULL));
+        array_push($acolclass, array("name" => "bshowentidad", "type" => "checkbox","default" => NULL));
+        array_push($acolclass, array("name" => "bshowtools", "type" => "checkbox","default" => NULL));
+        return $acolclass;
+    }
     public function login()
     {
         // Localizar doc tipo usuario
         try {
             $n1ql="select meta(u).id,* from techinventory u inner join techinventory e on keys u.fkentity
                 where u.entidad='usuario' 
-                and u.name='".$_POST['user']."' 
+                and u.pkname='".$_POST['user']."' 
                 and u.bloginapp=TRUE";
             // Gets the properties of the given objec
             $result = $this->select($n1ql);
@@ -31,14 +45,14 @@ class cuser extends cparent
                 return 0; 
             }
             $_SESSION['textsesion']="Bienvenido:".$result[0]->u->description;
-            $_SESSION['user']=$result[0]->u->name;
+            $_SESSION['user']=$result[0]->u->pkname;
             $_SESSION['fkentity']=$result[0]->u->fkentity;
             
-            $_SESSION['bread']=$result[0]->u->bread;
-            $_SESSION['bshowuser']=$result[0]->u->bshowuser;
-            $_SESSION['bshowgroup']=$result[0]->u->bshowgroup;
-            $_SESSION['bshowentidad']=$result[0]->u->bshowentidad;
-            $_SESSION['bshowtools']=$result[0]->u->bshowtools;
+            $_SESSION['bread']=(bool)$result[0]->u->bread;
+            $_SESSION['bshowuser']=(bool)$result[0]->u->bshowuser;
+            $_SESSION['bshowgroup']=(bool)$result[0]->u->bshowgroup;
+            $_SESSION['bshowentidad']=(bool)$result[0]->u->bshowentidad;
+            $_SESSION['bshowtools']=(bool)$result[0]->u->bshowtools;
             
             $_SESSION['color'] = $result[0]->e->color;
             $_SESSION['colorinvert'] = $result[0]->e->colorinvert;

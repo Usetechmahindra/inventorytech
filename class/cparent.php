@@ -475,6 +475,10 @@ class cparent implements itech
             $n1ql="";
             // Filtro desde edición
             if (!empty($_POST[$item->name])) {
+                if (strtotime($_POST[$item->name])==FALSE)
+                {
+                    return $n1ql;
+                }
                 // Convertir a int
                 $n1ql.= " and u.".$item->name." = ".(strtotime($_POST[$item->name]));
             }
@@ -557,8 +561,8 @@ class cparent implements itech
             // $_POST siempre son string reconfigurar a valores correctos
             // Crea el registro de auditoria. 1 Alta, 2 Modif, 3 Baja
             $rfilas = $this->postdatatype($_POST);
-            
-            if (isset($_POST['bnew'])) {
+          
+            if (isset($_POST['bnew']) and $_SESSION['bread']==0) {
                 $rfilas = $this->newclass($pentity);
                 
                 $rfilas = $this->update($rfilas,1); 
@@ -567,12 +571,12 @@ class cparent implements itech
                 return $rfilas;
             }         
             // Check update
-            if (isset($_POST['bsave'])) {
+            if (isset($_POST['bsave']) and $_SESSION['bread']==0) {
                 $rfilas = $this->update($rfilas,2); 
                 return $rfilas;
             }
             // Baja
-            if (isset($_POST['bdown'])) {
+            if (isset($_POST['bdown']) and $_SESSION['bread']==0) {
                 // Control de baja
                 return $this->delete($rfilas);
             }
@@ -610,17 +614,17 @@ class cparent implements itech
             {
                 $acol = get_object_vars($filtro);
                 // Controlar si existe valor en POST
+                if($rfilas[$filtro->name]<>"")
+                {
                 switch ($filtro->type)
                     {
                         case 'date':
                             $n1ql.=$this->getbydate($filtro);
                             break;
                         default:
-                            if($rfilas[$filtro->name]<>"")
-                            {
-                                $n1ql.=$this->getbysearch($acol['name'],$rfilas[$acol['name']]);
-                            }
+                            $n1ql.=$this->getbysearch($acol['name'],$rfilas[$acol['name']]);
                     }
+                }
             }
             // Retornar las filas
             return $this->select($n1ql);
